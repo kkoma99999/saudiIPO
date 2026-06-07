@@ -61,10 +61,10 @@ unchecked task, check off one task at a time and commit per task.
 
 ## Phase 3 - Ingestion
 
-- [ ] scripts/requirements.txt + venv. ACCEPTANCE: pip install works; import yfinance, psycopg succeed.
+- [x] scripts/requirements.txt + venv. ACCEPTANCE: pip install works; import yfinance, psycopg succeed. (yfinance 1.4.1 + psycopg verified on local Python 3.14.)
 - [ ] scripts/db.py: connection, ingest_log writer, schema-contract assert, upsert SQL. ACCEPTANCE: writes an ingest_log row; aborts on schema drift.
-- [ ] scripts/calendar.py Sun-Thu helper + test_calendar.py. ACCEPTANCE: False for Fri/Sat, True Sun-Thu.
-- [ ] scripts/adjustment.py pure Decimal funcs + test_adjustment.py hand-built bonus case. ACCEPTANCE: golden 1-for-5 bonus asserts adjusted offer 8.3333, total return 35.20%; fails if adjustment skipped.
+- [x] scripts/market_calendar.py Sun-Thu helper + test_market_calendar.py (named market_calendar to avoid shadowing stdlib calendar). ACCEPTANCE: False for Fri/Sat, True Sun-Thu.
+- [x] scripts/adjustment.py pure Decimal funcs + test_adjustment.py hand-built bonus case. ACCEPTANCE: golden 1-for-5 bonus asserts adjusted offer 8.3333, total return 35.20%; fails if adjustment skipped.
 - [ ] scripts/backfill.py: per symbol from ipo_date, auto_adjust=False, raw prices + dividends + splits, idempotent upserts. ACCEPTANCE: dry run prints symbols and date ranges; real run writes prices_daily and one ingest_log row per symbol.
 - [ ] Missing or empty Yahoo data stays empty + ingest_log row (status empty/partial/skipped). ACCEPTANCE: a no-data symbol writes zero price rows and one log row.
 - [ ] Backfill TASI index into index_prices. ACCEPTANCE: ^TASI.SR closes stored where available.

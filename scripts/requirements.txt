@@ -1,0 +1,7 @@
+# Ingestion and tests. Target runtime is Python 3.12 (see .github/workflows).
+# Locally any Python 3.12+ works for the pure math tests; yfinance and psycopg
+# are only needed by backfill.py and daily.py.
+yfinance>=0.2.50
+psycopg[binary]>=3.2
+python-dotenv>=1.0
+pytest>=8.0
