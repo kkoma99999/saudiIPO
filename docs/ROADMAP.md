@@ -73,10 +73,10 @@ unchecked task, check off one task at a time and commit per task.
 
 ## Phase 4 - Metrics
 
-- [ ] src/lib/metrics.ts pure module (no IO), decimal.js. ACCEPTANCE: no db/fetch imports.
-- [ ] priceReturn, totalReturn, yieldOnOffer, cagr, compareToIndex implemented. ACCEPTANCE: each exported, typed.
-- [ ] metrics.test.ts written, includes the bonus golden case matching Python. ACCEPTANCE: all tests pass, golden case agrees with Phase 3.
-- [ ] Phase 4 boundary: typecheck + tests, update ROADMAP, commit, status. ACCEPTANCE: green.
+- [x] src/lib/metrics.ts pure module (no IO), decimal.js. ACCEPTANCE: no db/fetch imports.
+- [x] priceReturn, totalReturn, yieldOnOffer, cagr, compareToIndex implemented. ACCEPTANCE: each exported, typed.
+- [x] metrics.test.ts written, includes the bonus golden case matching Python. ACCEPTANCE: all tests pass, golden case agrees with Phase 3.
+- [x] Phase 4 boundary: typecheck + tests, update ROADMAP, commit, status. ACCEPTANCE: green. (19 TS tests pass; golden case equals Python.)
 
 ## Phase 5 - UI
 
