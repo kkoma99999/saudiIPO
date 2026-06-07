@@ -189,7 +189,10 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
 }
 
 export async function getCohorts(): Promise<CohortSummary[]> {
-  const all = await getAllCompanyMetrics();
+  return summarizeCohorts(await getAllCompanyMetrics());
+}
+
+export function summarizeCohorts(all: CompanyMetrics[]): CohortSummary[] {
   const byYear = new Map<number, CompanyMetrics[]>();
   for (const c of all) {
     const y = ipoYear(c.ipoDate);
