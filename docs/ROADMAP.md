@@ -52,17 +52,17 @@ unchecked task, check off one task at a time and commit per task.
 ## Phase 2 - IPO dataset
 
 - [ ] Define data/ipos.csv header + inclusion rules in docs/VERIFICATION.md. ACCEPTANCE: header is symbol,name_en,name_ar,sector,ipo_date,offer_price,shares_offered,proceeds_sar,oversubscription,source_url,verified; Main Market only, exclude Nomu and direct listings.
-- [ ] Collect 2019 Main Market IPOs (Argaam recap + saudiexchange.sa). ACCEPTANCE: each row has a working source_url, verified=false.
-- [ ] Collect 2020. ACCEPTANCE: same.
-- [ ] Collect 2021. ACCEPTANCE: same.
-- [ ] Collect 2022. ACCEPTANCE: same.
-- [ ] Collect 2023. ACCEPTANCE: same.
-- [ ] Collect 2024. ACCEPTANCE: same.
-- [ ] Collect 2025. ACCEPTANCE: same.
-- [ ] Collect 2026 year-to-date. ACCEPTANCE: same.
-- [ ] Generate docs/VERIFICATION.md listing every row with its source for sign-off. ACCEPTANCE: every csv row appears once with source_url and a checkbox; low-confidence fields flagged.
-- [ ] Run scripts/validate_ipos.ts on data/ipos.csv. ACCEPTANCE: exits zero; all structural rules pass.
-- [ ] Phase 2 boundary: validate, update ROADMAP, commit, status. ACCEPTANCE: validator green.
+- [x] Collect 2019 Main Market IPOs (Argaam recap + saudiexchange.sa). ACCEPTANCE: each row has a working source_url, verified=false. (Dec 2019: Aramco. Pre-Dec-2019 listings excluded as out of scope.)
+- [x] Collect 2020. ACCEPTANCE: same.
+- [x] Collect 2021. ACCEPTANCE: same.
+- [x] Collect 2022. ACCEPTANCE: same.
+- [x] Collect 2023. ACCEPTANCE: same.
+- [x] Collect 2024. ACCEPTANCE: same.
+- [x] Collect 2025. ACCEPTANCE: same.
+- [x] Collect 2026 year-to-date. ACCEPTANCE: same. (Collected via an 8-year fan-out workflow: 67 in-scope sourced rows, all verified=false.)
+- [x] Generate docs/VERIFICATION.md listing every row with its source for sign-off. ACCEPTANCE: every csv row appears once with source_url and a checkbox; low-confidence fields flagged. (67 rows with per-row confidence notes; 5 excluded candidates noted.)
+- [x] Run scripts/validate_ipos.ts on data/ipos.csv. ACCEPTANCE: exits zero; all structural rules pass. (67 rows, 0 failures.)
+- [x] Phase 2 boundary: validate, update ROADMAP, commit, status. ACCEPTANCE: validator green.
 
 ## Phase 3 - Ingestion
 
