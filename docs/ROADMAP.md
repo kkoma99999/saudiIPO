@@ -26,23 +26,23 @@ unchecked task, check off one task at a time and commit per task.
 
 - [x] git init + .gitignore. ACCEPTANCE: repo initialized, node_modules and .env ignored.
 - [x] CLAUDE.md with the 7 iron rules and the session protocol. ACCEPTANCE: file present, commit references it.
-- [ ] .claude/skills/tadawul-data/SKILL.md. ACCEPTANCE: valid frontmatter, all market-rule sections present.
-- [ ] .mcp.json with next-devtools and playwright. ACCEPTANCE: parses as JSON, both servers listed.
+- [x] .claude/skills/tadawul-data/SKILL.md. ACCEPTANCE: valid frontmatter, all market-rule sections present.
+- [x] .mcp.json with next-devtools and playwright. ACCEPTANCE: parses as JSON, both servers listed.
 - [x] Initialize Next.js 16 + TS strict + Tailwind 4 + shadcn/ui (npm). ACCEPTANCE: npm run build and tsc --noEmit pass.
 - [x] npm scripts: dev, build, start, test, typecheck, db:push, db:generate, db:migrate, validate:ipos. ACCEPTANCE: each runs.
-- [ ] Drizzle config + src/db/schema.ts companies table. ACCEPTANCE: compiles; symbol char(4) PK, name_en, name_ar, sector.
-- [ ] ipos table. ACCEPTANCE: symbol FK, ipo_date, offer_price numeric, shares_offered, proceeds_sar numeric, oversubscription, source_url, verified.
-- [ ] prices_daily with index on symbol and unique (symbol,date). ACCEPTANCE: migration creates both; close/adj_close numeric.
-- [ ] dividends table. ACCEPTANCE: symbol, ex_date, amount numeric, source, verified; unique (symbol,ex_date,source).
-- [ ] corporate_actions table. ACCEPTANCE: symbol, action_date, type enum, factor numeric, ratio_text, source; unique (symbol,action_date).
-- [ ] index_prices table. ACCEPTANCE: index_symbol, date, close numeric; unique (index_symbol,date).
-- [ ] ingest_log table. ACCEPTANCE: run_at, run_id, symbol, source, status, rows_written, message; index on symbol.
-- [ ] Generate first Drizzle migration. ACCEPTANCE: migration file under drizzle/ applies to a fresh DB.
-- [ ] docker-compose.yml postgres:16 with healthcheck. ACCEPTANCE: docker compose up -d serves 5432 with a named volume.
-- [ ] .env.example. ACCEPTANCE: DATABASE_URL (local + Neon comment), NEXT_PUBLIC_SITE_URL; no real secrets.
-- [ ] Apply migrations to local Docker DB. ACCEPTANCE: all 7 tables exist.
-- [ ] scripts/validate_ipos.ts. ACCEPTANCE: runs on a sample csv, per-row pass/fail, exits non-zero on bad data.
-- [ ] Phase 1 boundary: typecheck + tests, update ROADMAP, commit, 5-line status. ACCEPTANCE: tsc and tests pass.
+- [x] Drizzle config + src/db/schema.ts companies table. ACCEPTANCE: compiles; symbol char(4) PK, name_en, name_ar, sector.
+- [x] ipos table. ACCEPTANCE: symbol FK, ipo_date, offer_price numeric, shares_offered, proceeds_sar numeric, oversubscription, source_url, verified.
+- [x] prices_daily with index on symbol and unique (symbol,date). ACCEPTANCE: migration creates both; close/adj_close numeric.
+- [x] dividends table. ACCEPTANCE: symbol, ex_date, amount numeric, source, verified; unique (symbol,ex_date,source).
+- [x] corporate_actions table. ACCEPTANCE: symbol, action_date, type enum, factor numeric, ratio_text, source; unique (symbol,action_date).
+- [x] index_prices table. ACCEPTANCE: index_symbol, date, close numeric; unique (index_symbol,date).
+- [x] ingest_log table. ACCEPTANCE: run_at, run_id, symbol, source, status, rows_written, message; index on symbol.
+- [x] Generate first Drizzle migration. ACCEPTANCE: migration file under drizzle/ applies to a fresh DB.
+- [x] docker-compose.yml postgres:16 with healthcheck. ACCEPTANCE: docker compose up -d serves 5432 with a named volume.
+- [x] .env.example. ACCEPTANCE: DATABASE_URL (local + Neon comment), NEXT_PUBLIC_SITE_URL; no real secrets.
+- [x] Apply migrations to local Docker DB. ACCEPTANCE: all 7 tables exist.
+- [x] scripts/validate_ipos.ts. ACCEPTANCE: runs on a sample csv, per-row pass/fail, exits non-zero on bad data.
+- [x] Phase 1 boundary: typecheck + tests, update ROADMAP, commit, 5-line status. ACCEPTANCE: tsc and tests pass.
 
 ## Phase 2 - IPO dataset
 
