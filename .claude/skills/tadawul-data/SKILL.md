@@ -72,6 +72,38 @@ forward by F(after that date).
   corporate_actions with the share-multiplier factor and a source. The math treats
   split and bonus identically; the type field is informational.
 
+## yfinance price basis (important, do not get this wrong)
+
+Pull history with auto_adjust=False. Then:
+
+- Close is already split and bonus adjusted by yfinance into CURRENT-share basis. It
+  is not the true raw price. The most recent Close is the actual current price
+  (there are no later actions to adjust it).
+- Adj Close is split and dividend adjusted. We keep it only as a cross-check and do
+  not use it in return math (it folds dividends into price, which would double-count
+  against total_return).
+- Dividends are raw, meaning per the share count on the ex-date, not split adjusted.
+
+Because Close is in current-share basis and the latest Close needs no adjustment,
+the iron-rule formulas are correct for a return measured to today when you:
+
+- use the latest Close as adjusted_close,
+- use adjusted_offer_price = offer_price / F, where F is the cumulative factor of
+  all post-IPO actions,
+- divide each raw dividend by the factor of actions after its ex-date.
+
+Do not pass a historical yfinance Close through an extra split adjustment; it is
+already adjusted, so that would double count. For the price-vs-TASI chart, use the
+Close series as is (it is self-consistent in current-share basis) and index both the
+stock and the index to 100 at the IPO date.
+
+## Data quality on .SR
+
+Some .SR series carry Yahoo scaling or gap issues. For example Aramco (2222.SR) shows
+a whole-series scale that sits below the real historical prices. We do not correct
+source data by hand. Such rows stay verified=false and are flagged for a human in
+docs/VERIFICATION.md.
+
 ## Worked golden example (the shared unit-test fixture)
 
 Raw offer 10.00 SAR, one 1-for-5 bonus (factor 1.20) after IPO, one 2.00 dividend

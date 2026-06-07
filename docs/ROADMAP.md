@@ -21,6 +21,11 @@ unchecked task, check off one task at a time and commit per task.
       DONE WHEN: the inclusion-rules section is signed off.
 - [ ] Confirm ambiguous corporate actions (bonus or split) where the source is unclear.
       DONE WHEN: each ambiguous corporate_actions row is marked reviewed.
+- [ ] Spot-check .SR price fidelity. yfinance Close is split/bonus adjusted to
+      current-share basis and some series carry Yahoo scaling issues (Aramco 2222.SR
+      sits below real historical prices). Confirm the current price and headline
+      return look right for a few large names before trusting the numbers.
+      DONE WHEN: a human has sanity-checked a sample and noted any bad series.
 
 ## Phase 1 - Foundation
 
