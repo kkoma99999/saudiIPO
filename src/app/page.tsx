@@ -5,6 +5,8 @@ import { ReturnBadge } from "@/components/shared/ReturnBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { strings } from "@/lib/i18n/strings";
 
+export const dynamic = "force-dynamic";
+
 function median(xs: number[]): number | null {
   if (!xs.length) return null;
   const s = [...xs].sort((a, b) => a - b);

@@ -21,6 +21,13 @@ unchecked task, check off one task at a time and commit per task.
       DONE WHEN: the inclusion-rules section is signed off.
 - [ ] Confirm ambiguous corporate actions (bonus or split) where the source is unclear.
       DONE WHEN: each ambiguous corporate_actions row is marked reviewed.
+      KNOWN ISSUE: yfinance reports four 1.10 split events for Aramco (2222),
+      including two only four days apart (2020-06-04 and 2020-06-08), which looks
+      like a duplicate/artifact. The cumulative factor 1.1^4 = 1.464 inflates
+      Aramco's adjusted return (shows +23.5% price return while the current price
+      27 is below the 32 offer). Verify Aramco's real bonus history and correct or
+      remove the bad corporate_actions rows. Other large names may have similar
+      yfinance .SR artifacts.
 - [ ] Spot-check .SR price fidelity. yfinance Close is split/bonus adjusted to
       current-share basis and some series carry Yahoo scaling issues (Aramco 2222.SR
       sits below real historical prices). Confirm the current price and headline
@@ -85,15 +92,15 @@ unchecked task, check off one task at a time and commit per task.
 
 ## Phase 5 - UI
 
-- [ ] src/db/client.ts (server-only) + queries.ts + lib/format + lib/i18n. ACCEPTANCE: server components read the DB.
-- [ ] Invoke frontend-design; build layout, tokens, shared components (ReturnBadge, UnverifiedBadge). ACCEPTANCE: single reusable UnverifiedBadge used by all pages.
-- [ ] / cohort dashboard by IPO year. ACCEPTANCE: renders real data, unverified badge where verified=false.
-- [ ] Playwright MCP screenshot-and-fix loop on /. ACCEPTANCE: screenshot captured, issues fixed, no console errors.
-- [ ] /ipos sortable filterable table (server fetch + client IpoTable). ACCEPTANCE: filter by year/sector/return, sort by columns, badges present.
-- [ ] Playwright loop on /ipos. ACCEPTANCE: clean final screenshot.
-- [ ] /company/[symbol]: details, price-vs-TASI chart (Recharts client), dividend history; not-found for unknown symbol. ACCEPTANCE: valid symbol renders chart + metrics; unknown shows not-found.
-- [ ] Playwright loop on /company/[symbol]. ACCEPTANCE: clean final screenshot.
-- [ ] Phase 5 boundary: typecheck + tests + build, update ROADMAP, commit, status. ACCEPTANCE: build passes.
+- [x] src/db/client.ts (server-only) + queries.ts + lib/format + lib/i18n. ACCEPTANCE: server components read the DB.
+- [x] Invoke frontend-design; build layout, tokens, shared components (ReturnBadge, UnverifiedBadge). ACCEPTANCE: single reusable UnverifiedBadge used by all pages. (Editorial-finance theme: bone/ink/emerald/gold, Fraunces + Geist Mono.)
+- [x] / cohort dashboard by IPO year. ACCEPTANCE: renders real data, unverified badge where verified=false.
+- [x] Playwright MCP screenshot-and-fix loop on /. ACCEPTANCE: screenshot captured, issues fixed, no console errors. (claude-in-chrome was denied; used direct Playwright headless. Home screenshot reviewed, no console/page errors.)
+- [x] /ipos sortable filterable table (server fetch + client IpoTable). ACCEPTANCE: filter by year/sector/return, sort by columns, badges present.
+- [x] Playwright loop on /ipos. ACCEPTANCE: clean final screenshot. (Reviewed; clean.)
+- [x] /company/[symbol]: details, price-vs-TASI chart (Recharts client), dividend history; not-found for unknown symbol. ACCEPTANCE: valid symbol renders chart + metrics; unknown shows not-found. (/company/9999 returns 404.)
+- [x] Playwright loop on /company/[symbol]. ACCEPTANCE: clean final screenshot. (Reviewed; chart renders both lines indexed to 100. Surfaced the Aramco .SR split artifact, logged to NEEDS HUMAN.)
+- [x] Phase 5 boundary: typecheck + tests + build, update ROADMAP, commit, status. ACCEPTANCE: build passes. (typecheck + 19 tests + production build green; data pages force-dynamic.)
 
 ## Phase 6 - Automation
 
