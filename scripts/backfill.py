@@ -89,9 +89,14 @@ def parse_history(symbol, df):
     prices, dividends, actions = [], [], []
     for idx, r in df.iterrows():
         d = idx.date().isoformat()
-        prices.append((symbol, d, _num(r.get("Open")), _num(r.get("High")),
-                       _num(r.get("Low")), _num(r.get("Close")),
-                       _num(r.get("Adj Close")), _vol(r.get("Volume"))))
+        close = _num(r.get("Close"))
+        # Close is required. Skip rows with no close (halts, bad source rows); a row
+        # without a close is not a usable price. Dividends and splits on that date
+        # are still captured below.
+        if close is not None:
+            prices.append((symbol, d, _num(r.get("Open")), _num(r.get("High")),
+                           _num(r.get("Low")), close,
+                           _num(r.get("Adj Close")), _vol(r.get("Volume"))))
         div = r.get("Dividends")
         if div is not None and not pd.isna(div) and float(div) != 0.0:
             dividends.append((symbol, d, float(div)))
