@@ -47,16 +47,42 @@ Edge cases for human sign-off (NEEDS HUMAN):
 
 ## Sources
 
-- Argaam annual IPO recap articles, 2019 through 2026.
-- Saudi Exchange company pages, https://www.saudiexchange.sa
-- Each row records the specific page used in `source_url`.
+Confirmed fetchable (public) during source probing:
+
+- Argaam per-IPO news articles, for example
+  https://www.argaam.com/en/article/articledetail/id/1453871 (Theeb debut). These
+  carry offer price, listing date, shares offered, proceeds, and oversubscription in
+  the body text.
+- Argaam company profile pages, for example
+  https://www.argaam.com/en/tadawul/tasi/theeb. These carry the 4-digit symbol and
+  sector reliably, but usually not the IPO price or date.
+- Argaam public IPO monitor, https://www.argaam.com/en/disclosures/ipo/3. Public
+  table with symbol, listing date, offer price, and a Type column (IPO vs Private
+  Offering vs Right Issue) that helps exclude non-IPOs. Most recent years only on
+  the first pages; older pages load by script.
+- Saudipedia and reputable financial news (Zawya, Reuters, Arabian Business) as
+  cross-checks.
+
+Not usable as a data source:
+
+- Argaam annual IPO recap articles (for example id/1780417) put the full table
+  behind a login, so the tables are not fetchable. The article search snippet
+  sometimes lists names and dates, which can seed the per-year list.
+- saudiexchange.sa company pages are script-rendered, so a plain fetch does not
+  return the data. They are reachable with a real browser if needed.
+
+Each row records the specific page used in `source_url`.
 
 ## Methodology
 
-Rows are collected by fetching the source pages above and recording only values that
-appear on a fetched page. Offer price, date, and sector are usually available.
-Shares offered, total proceeds, and oversubscription are often not on the recap page
-and are left empty for later verification.
+Rows are collected by fetching the public source pages above and recording only
+values that appear on a fetched page, with the exact page used as `source_url`.
+Symbol, name, listing date, offer price, and sector are usually available. Shares
+offered, total proceeds, and oversubscription are sometimes available in the per-IPO
+article and otherwise left empty. The Type column on the Argaam monitor and the
+per-article text are used to exclude private offerings, right issues, direct
+listings, and Nomu transfers. Nothing is filled from memory; an unconfirmed field
+stays empty and is flagged below for human verification.
 
 ## Row checklist
 
