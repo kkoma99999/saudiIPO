@@ -110,8 +110,8 @@ unchecked task, check off one task at a time and commit per task.
 
 ## Phase 7 - Polish
 
-- [ ] Loading and empty states on all pages. ACCEPTANCE: each page has a skeleton and a clear empty state.
-- [ ] SEO metadata per route + generateMetadata for company pages. ACCEPTANCE: specific titles per page.
-- [ ] Open Graph tags + default OG image. ACCEPTANCE: og:title/description/image exposed.
-- [ ] /data-sources disclaimer page (Argaam + saudiexchange.sa, badge meaning, not investment advice). ACCEPTANCE: page present, linked from footer.
-- [ ] Final pass: grep for em dashes/emojis/filler in src; typecheck + tests + build green. ACCEPTANCE: clean checkout passes all checks.
+- [x] Loading and empty states on all pages. ACCEPTANCE: each page has a skeleton and a clear empty state. (loading.tsx for /, /ipos, /company; EmptyState in pages; error.tsx boundary.)
+- [x] SEO metadata per route + generateMetadata for company pages. ACCEPTANCE: specific titles per page. (root template title, per-route metadata, company generateMetadata.)
+- [x] Open Graph tags + default OG image. ACCEPTANCE: og:title/description/image exposed. (root openGraph + opengraph-image.tsx generated.)
+- [x] /data-sources disclaimer page (Argaam + saudiexchange.sa, badge meaning, not investment advice). ACCEPTANCE: page present, linked from footer.
+- [x] Final pass: grep for em dashes/emojis/filler in src; typecheck + tests + build green. ACCEPTANCE: clean checkout passes all checks. (no em dashes/emojis/filler outside the rule definition; all checks pass.)
