@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16
+    container_name: saudi_ipo_db
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: saudiipo
+      POSTGRES_PASSWORD: saudiipo
+      POSTGRES_DB: saudiipo
+    volumes:
+      - saudi_ipo_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U saudiipo -d saudiipo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  saudi_ipo_pgdata:
