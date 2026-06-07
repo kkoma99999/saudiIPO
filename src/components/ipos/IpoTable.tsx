@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { CompanyMetrics } from "@/types/domain";
 import { ReturnBadge } from "@/components/shared/ReturnBadge";
 import { UnverifiedBadge } from "@/components/shared/UnverifiedBadge";
+import { CompanyLogo } from "@/components/shared/CompanyLogo";
 import { formatSar, formatDate, ipoYear } from "@/lib/format";
 import { strings } from "@/lib/i18n/strings";
 
@@ -140,7 +141,8 @@ export function IpoTable({
             {filtered.map((r) => (
               <tr key={r.symbol} className="border-b border-border/50 transition-colors last:border-0 hover:bg-accent/30">
                 <td className="px-3 py-2.5">
-                  <Link href={`/company/${r.symbol}`} className="group flex items-center gap-2">
+                  <Link href={`/company/${r.symbol}`} className="group flex items-center gap-2.5">
+                    <CompanyLogo symbol={r.symbol} name={r.nameEn} size={26} />
                     <span className="font-mono text-xs text-muted-foreground tnum">{r.symbol}</span>
                     <span className="font-medium text-foreground group-hover:text-primary">{r.nameEn}</span>
                     {!r.verified && <UnverifiedBadge />}
