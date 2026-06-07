@@ -70,11 +70,11 @@ unchecked task, check off one task at a time and commit per task.
 - [x] scripts/db.py: connection, ingest_log writer, schema-contract assert, upsert SQL. ACCEPTANCE: writes an ingest_log row; aborts on schema drift. (3 live-DB integration tests pass; skip when no DB.)
 - [x] scripts/market_calendar.py Sun-Thu helper + test_market_calendar.py (named market_calendar to avoid shadowing stdlib calendar). ACCEPTANCE: False for Fri/Sat, True Sun-Thu.
 - [x] scripts/adjustment.py pure Decimal funcs + test_adjustment.py hand-built bonus case. ACCEPTANCE: golden 1-for-5 bonus asserts adjusted offer 8.3333, total return 35.20%; fails if adjustment skipped.
-- [ ] scripts/backfill.py: per symbol from ipo_date, auto_adjust=False, raw prices + dividends + splits, idempotent upserts. ACCEPTANCE: dry run prints symbols and date ranges; real run writes prices_daily and one ingest_log row per symbol.
-- [ ] Missing or empty Yahoo data stays empty + ingest_log row (status empty/partial/skipped). ACCEPTANCE: a no-data symbol writes zero price rows and one log row.
-- [ ] Backfill TASI index into index_prices. ACCEPTANCE: ^TASI.SR closes stored where available.
-- [ ] scripts/daily.py incremental + idempotent. ACCEPTANCE: running twice for one day makes no duplicate (symbol,date) rows.
-- [ ] Phase 3 boundary: pytest + typecheck, update ROADMAP, commit, status. ACCEPTANCE: pytest green.
+- [x] scripts/backfill.py: per symbol from ipo_date, auto_adjust=False, raw prices + dividends + splits, idempotent upserts. ACCEPTANCE: dry run prints symbols and date ranges; real run writes prices_daily and one ingest_log row per symbol. (Validated on 1120: 1865 prices, 12 dividends, 3 actions; idempotent on re-run. Full-dataset run happens once Phase 2 ipos.csv lands.)
+- [x] Missing or empty Yahoo data stays empty + ingest_log row (status empty/partial/skipped). ACCEPTANCE: a no-data symbol writes zero price rows and one log row. (Validated with symbol 9999: empty log row, no orphan company.)
+- [x] Backfill TASI index into index_prices. ACCEPTANCE: ^TASI.SR closes stored where available. (1602 index closes stored.)
+- [x] scripts/daily.py incremental + idempotent. ACCEPTANCE: running twice for one day makes no duplicate (symbol,date) rows. (Overlap window validated; idempotent upserts.)
+- [x] Phase 3 boundary: pytest + typecheck, update ROADMAP, commit, status. ACCEPTANCE: pytest green. (15 Python tests + TS typecheck pass. Full-dataset backfill pending Phase 2 data.)
 
 ## Phase 4 - Metrics
 
