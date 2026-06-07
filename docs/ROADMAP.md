@@ -97,9 +97,9 @@ unchecked task, check off one task at a time and commit per task.
 
 ## Phase 6 - Automation
 
-- [ ] .github/workflows/daily.yml cron 30 12 * * 0-4, python 3.12, runs daily.py with DATABASE_URL secret, workflow_dispatch enabled. ACCEPTANCE: yaml valid, cron correct.
-- [ ] README Deploy section: Vercel + Neon steps, links the NEEDS HUMAN items. ACCEPTANCE: steps present.
-- [ ] Phase 6 boundary: yaml lint, update ROADMAP, commit, status. ACCEPTANCE: workflow parses.
+- [x] .github/workflows/daily.yml cron 30 12 * * 0-4, python 3.12, runs daily.py with DATABASE_URL secret, workflow_dispatch enabled. ACCEPTANCE: yaml valid, cron correct. (Parsed and verified: cron 30 12 * * 0-4, python 3.12, runs scripts/daily.py.)
+- [x] README Deploy section: Vercel + Neon steps, links the NEEDS HUMAN items. ACCEPTANCE: steps present.
+- [x] Phase 6 boundary: yaml lint, update ROADMAP, commit, status. ACCEPTANCE: workflow parses.
 
 ## Phase 7 - Polish
 

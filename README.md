@@ -71,11 +71,44 @@ python backfill.py          # full history
 python daily.py             # incremental, run by the daily cron
 ```
 
-## Deploy
+## Deploy (Vercel + Neon)
 
-See the Deploy section added in Phase 6 for the Vercel and Neon setup steps. The
-account creation and secret setup are tracked as NEEDS HUMAN items in
-docs/ROADMAP.md.
+Most of this is one-time setup a person does. The matching NEEDS HUMAN items in
+docs/ROADMAP.md track it.
+
+### 1. Neon Postgres (NEEDS HUMAN)
+
+- Create a Neon project and a database.
+- Copy the pooled connection string for the app, and a direct (non-pooled) string
+  for migrations and the cron job per Neon's guidance.
+
+### 2. GitHub secret (NEEDS HUMAN)
+
+- Repo Settings, then Secrets and variables, then Actions, then New repository
+  secret.
+- Name it DATABASE_URL with the Neon connection string the cron should use.
+
+### 3. Vercel project (NEEDS HUMAN)
+
+- Import this repo into Vercel.
+- Set DATABASE_URL and NEXT_PUBLIC_SITE_URL in Project Settings, Environment
+  Variables, for Production (and Preview if you want preview data).
+- Deploy.
+
+### 4. Run migrations against Neon
+
+- With DATABASE_URL pointing at Neon, run `npm run db:migrate`.
+- Confirm the tables exist.
+
+### 5. Seed and backfill
+
+- Load data/ipos.csv, then run `python scripts/backfill.py` once against Neon.
+
+### 6. Confirm the cron
+
+- The daily-ingest workflow runs `30 12 * * 0-4` (Sunday to Thursday, 12:30 UTC).
+- Trigger it once by hand from the Actions tab (workflow_dispatch) to confirm it
+  writes rows and an ingest_log entry.
 
 ## Progress
 
