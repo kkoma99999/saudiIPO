@@ -19,20 +19,22 @@ unchecked task, check off one task at a time and commit per task.
 - [ ] Sign off the Main Market inclusion rules (Nomu transfers, direct listings to
       exclude) in docs/VERIFICATION.md.
       DONE WHEN: the inclusion-rules section is signed off.
-- [ ] Confirm ambiguous corporate actions (bonus or split) where the source is unclear.
-      DONE WHEN: each ambiguous corporate_actions row is marked reviewed.
-      KNOWN ISSUE: yfinance reports four 1.10 split events for Aramco (2222),
-      including two only four days apart (2020-06-04 and 2020-06-08), which looks
-      like a duplicate/artifact. The cumulative factor 1.1^4 = 1.464 inflates
-      Aramco's adjusted return (shows +23.5% price return while the current price
-      27 is below the 32 offer). Verify Aramco's real bonus history and correct or
-      remove the bad corporate_actions rows. Other large names may have similar
-      yfinance .SR artifacts.
-- [ ] Spot-check .SR price fidelity. yfinance Close is split/bonus adjusted to
-      current-share basis and some series carry Yahoo scaling issues (Aramco 2222.SR
-      sits below real historical prices). Confirm the current price and headline
-      return look right for a few large names before trusting the numbers.
-      DONE WHEN: a human has sanity-checked a sample and noted any bad series.
+- [x] RESOLVED by the finance audit (docs/FINANCE_AUDIT.md). Corporate actions for
+      17 companies are now verified in data/corporate_actions.csv with sources;
+      Aramco is 1.21 (2 bonuses), Alsaif and BinDawood are par changes (factor 10),
+      Naqi has none (the split was rejected). Confirmed against saudiexchange for
+      Aramco and Alsaif. A human may still spot-check the remaining single-bonus
+      companies against their source_url.
+- [ ] Rights issues: 1322 (AMAK) and 2082 (ACWA) had rights issues that the math
+      does not model. They carry a data-caveat badge and their returns are best
+      effort. Decide whether to model the rights dilution or accept the caveat.
+      DONE WHEN: a human has reviewed both and confirmed the treatment.
+- [ ] Dividend gaps: 13 of 67 companies have zero dividends in the data. Some paid
+      none (recent IPOs); some are yfinance .SR gaps. Cross-check the dividend
+      history against saudiexchange for the older zero-dividend names and add any
+      missing payments to data (never from memory).
+      DONE WHEN: each zero-dividend company older than 2 years is confirmed correct
+      or has its missing dividends added with a source.
 
 ## Phase 1 - Foundation
 
