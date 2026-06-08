@@ -9,7 +9,13 @@ import { CompanyLogo } from "@/components/shared/CompanyLogo";
 import { formatSar, formatDate, ipoYear } from "@/lib/format";
 import { strings } from "@/lib/i18n/strings";
 
-type SortKey = "ipoDate" | "totalReturn" | "priceReturn" | "alpha" | "offerPrice";
+type SortKey =
+  | "ipoDate"
+  | "totalReturn"
+  | "priceReturn"
+  | "alpha"
+  | "offerPrice"
+  | "cumulativeDividends";
 
 const num = (v: number | null) => (v === null ? Number.NEGATIVE_INFINITY : v);
 
@@ -132,6 +138,9 @@ export function IpoTable({
               <ThSort onClick={() => toggleSort("totalReturn")} active={sortKey === "totalReturn"} dir={sortDir} align="right">
                 {strings.table.totalReturn}
               </ThSort>
+              <ThSort onClick={() => toggleSort("cumulativeDividends")} active={sortKey === "cumulativeDividends"} dir={sortDir} align="right">
+                {strings.table.dividends}
+              </ThSort>
               <ThSort onClick={() => toggleSort("alpha")} active={sortKey === "alpha"} dir={sortDir} align="right">
                 {strings.table.vsTasi}
               </ThSort>
@@ -146,6 +155,14 @@ export function IpoTable({
                     <span className="font-mono text-xs text-muted-foreground tnum">{r.symbol}</span>
                     <span className="font-medium text-foreground group-hover:text-primary">{r.nameEn}</span>
                     {!r.verified && <UnverifiedBadge />}
+                    {r.dataCaveat && (
+                      <span
+                        title={r.dataCaveat}
+                        className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full border border-gold/60 bg-gold/15 font-mono text-[0.6rem] text-accent-foreground"
+                      >
+                        !
+                      </span>
+                    )}
                   </Link>
                 </td>
                 <td className="max-w-[14rem] truncate px-3 py-2.5 text-xs text-muted-foreground">{r.sector ?? ""}</td>
@@ -153,6 +170,7 @@ export function IpoTable({
                 <td className="px-3 py-2.5 text-right font-mono tnum">{formatSar(r.offerPrice)}</td>
                 <td className="px-3 py-2.5 text-right"><ReturnBadge value={r.priceReturn} showArrow={false} /></td>
                 <td className="px-3 py-2.5 text-right"><ReturnBadge value={r.totalReturn} showArrow={false} /></td>
+                <td className="px-3 py-2.5 text-right font-mono text-xs tnum text-muted-foreground">{formatSar(r.cumulativeDividends)}</td>
                 <td className="px-3 py-2.5 text-right"><ReturnBadge value={r.alpha} showArrow={false} /></td>
               </tr>
             ))}

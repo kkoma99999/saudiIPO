@@ -1,24 +1,23 @@
 """Pure adjustment and return math for Saudi IPOs.
 
-This module owns no database or network access. It mirrors the TypeScript metrics
-module in src/lib/metrics.ts and is tested against the same hand-built bonus case so
-the two implementations must agree. See .claude/skills/tadawul-data/SKILL.md.
+No database or network access. Mirrors src/lib/metrics.ts and is tested against the
+same hand-built fixtures so the two implementations must agree. See
+.claude/skills/tadawul-data/SKILL.md and docs/FINANCE_AUDIT.md.
 
-Money is Decimal, never float. Dates are 'YYYY-MM-DD' strings, which compare
-correctly with normal string comparison.
+Convention (verified empirically): yfinance is fetched with auto_adjust=False, so the
+stored close is SPLIT and bonus adjusted to current-share basis and is NOT dividend
+adjusted. We do not re-apply split factors to the close. We only convert the offer
+price and the dividends to current-share basis using the verified factor F.
 
-A corporate action factor is the share multiplier: a 1-for-5 bonus is 1.20 (six
-shares for every five), a 2-for-1 split is 2.00. yfinance reports the same value for
-both, so the math treats split and bonus identically.
+  split_adjusted_offer = offer_price / F(after ipo_date)
+  price_return = split_adjusted_close / split_adjusted_offer - 1
+  total_return = price_return + cumulative_dividends_per_current_share / split_adjusted_offer
 
-The key correctness rule: yfinance dividends are raw, meaning per the share count on
-the ex-date and not split-adjusted. Each dividend is divided by the cumulative factor
-of actions strictly after its ex-date to express it in current-share terms.
+Dividends are never baked into price. Money is Decimal, never float.
 """
 
 from decimal import Decimal, getcontext
 
-# High working precision so repeating decimals like 10 / 1.2 do not lose accuracy.
 getcontext().prec = 50
 
 
@@ -40,27 +39,15 @@ def cumulative_factor_after(actions, after_date: str) -> Decimal:
 
 
 def adjusted_offer_price(raw_offer_price, ipo_date: str, actions) -> Decimal:
-    """Raw offer price expressed in current shares.
-
-    You paid raw_offer_price for what is now F shares, so per current share you paid
-    raw_offer_price / F, where F is the product of all post-IPO action factors.
-    """
+    """Offer price converted to current-share basis: offer / F(after ipo_date)."""
     return _dec(raw_offer_price) / cumulative_factor_after(actions, ipo_date)
 
 
-def adjusted_close_as_of(raw_close, as_of_date: str, actions) -> Decimal:
-    """Raw close on as_of_date expressed in current shares.
-
-    The latest close needs no adjustment. A close before some actions is multiplied
-    forward by the factor of actions after it.
-    """
-    return _dec(raw_close) * cumulative_factor_after(actions, as_of_date)
-
-
 def cumulative_adjusted_dividends(dividends, actions, as_of_date: str) -> Decimal:
-    """Sum of dividends up to as_of_date, each expressed per current share.
+    """Sum of dividends up to as_of_date, each converted to current-share basis.
 
-    dividends: iterable of mappings with 'ex_date' (YYYY-MM-DD) and 'amount'.
+    yfinance dividends are raw (per the share count on the ex-date), so each is
+    divided by the factor of actions strictly after its ex-date.
     """
     total = Decimal(0)
     for dividend in dividends:
@@ -71,23 +58,28 @@ def cumulative_adjusted_dividends(dividends, actions, as_of_date: str) -> Decima
     return total
 
 
-def price_return(raw_offer_price, ipo_date: str, raw_close, as_of_date: str, actions) -> Decimal:
-    """adjusted_close / adjusted_offer_price - 1."""
-    aop = adjusted_offer_price(raw_offer_price, ipo_date, actions)
-    ac = adjusted_close_as_of(raw_close, as_of_date, actions)
-    return ac / aop - 1
+def price_return(raw_offer_price, ipo_date: str, split_adjusted_close, actions) -> Decimal:
+    """split_adjusted_close / split_adjusted_offer - 1. The close is already split
+    adjusted by yfinance, so it is used as is."""
+    return _dec(split_adjusted_close) / adjusted_offer_price(raw_offer_price, ipo_date, actions) - 1
 
 
 def total_return(
     raw_offer_price,
     ipo_date: str,
-    raw_close,
+    split_adjusted_close,
     as_of_date: str,
     actions,
     dividends,
 ) -> Decimal:
-    """price_return + cumulative_adjusted_dividends / adjusted_offer_price."""
+    """price_return + cumulative_dividends_per_current_share / split_adjusted_offer."""
     aop = adjusted_offer_price(raw_offer_price, ipo_date, actions)
-    pr = price_return(raw_offer_price, ipo_date, raw_close, as_of_date, actions)
+    pr = price_return(raw_offer_price, ipo_date, split_adjusted_close, actions)
     cd = cumulative_adjusted_dividends(dividends, actions, as_of_date)
     return pr + cd / aop
+
+
+def pct_to_dps(pct, nominal_value) -> Decimal:
+    """A dividend quoted as a percentage is a percentage of par (nominal) value at
+    that date: dps = pct/100 * nominal. For example 10% on par 10 is 1.00 SAR."""
+    return _dec(pct) / 100 * _dec(nominal_value)

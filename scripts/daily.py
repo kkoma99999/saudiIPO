@@ -54,19 +54,23 @@ def update_symbol(conn, symbol, run_id, dry_run):
         if not dry_run:
             db.log_ingest(conn, run_id, symbol, "yahoo_prices", "empty", f"no rows from {start}", 0)
         return
-    prices, dividends, actions = parse_history(symbol, df)
-    print(f"  {symbol}: {len(prices)} prices, {len(dividends)} dividends, {len(actions)} actions from {start}")
+    prices, dividends, yf_splits = parse_history(symbol, df)
+    print(f"  {symbol}: {len(prices)} prices, {len(dividends)} dividends, {len(yf_splits)} yahoo split events from {start}")
     if dry_run:
         return
     np = db.upsert_prices(conn, prices)
     nd = db.upsert_dividends(conn, dividends)
-    na = db.upsert_actions(conn, actions)
     conn.commit()
     db.log_ingest(conn, run_id, symbol, "yahoo_prices", "success", None, np)
     if nd:
         db.log_ingest(conn, run_id, symbol, "yahoo_dividends", "success", None, nd)
-    if na:
-        db.log_ingest(conn, run_id, symbol, "yahoo_splits", "success", None, na)
+    # Corporate actions come from the verified data/corporate_actions.csv, applied by
+    # backfill.py. A new split here just flags that the verified file may need an
+    # update; we never auto-store yfinance splits.
+    if yf_splits:
+        db.log_ingest(conn, run_id, symbol, "yahoo_splits", "skipped",
+                      f"yahoo reports a split in this window; confirm and update "
+                      f"data/corporate_actions.csv if real", 0)
 
 
 def update_tasi(conn, run_id, dry_run):

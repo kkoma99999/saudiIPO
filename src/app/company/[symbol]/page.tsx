@@ -41,8 +41,23 @@ export default async function CompanyPage({
     <div className="mx-auto max-w-5xl px-5 py-12">
       <CompanyHeader m={m} sourceUrl={detail.sourceUrl} />
 
+      {m.dataCaveat && (
+        <div className="mt-4 rounded-lg border border-gold/50 bg-gold/10 px-4 py-2.5 text-sm text-accent-foreground">
+          Data note: {m.dataCaveat}
+        </div>
+      )}
+
       <section className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        <StatTile label={strings.company.offerPrice}>{formatSar(m.offerPrice)}</StatTile>
+        <StatTile
+          label={strings.company.offerPrice}
+          hint={
+            detail.nominalValue
+              ? `par ${formatSar(detail.nominalValue)}, premium ${formatSar(detail.premium)}`
+              : undefined
+          }
+        >
+          {formatSar(m.offerPrice)}
+        </StatTile>
         <StatTile label={strings.company.currentPrice}>{formatSar(m.currentPrice)}</StatTile>
         <StatTile label={strings.company.priceReturn}>
           <ReturnBadge value={m.priceReturn} size="lg" showArrow={false} />
@@ -93,6 +108,8 @@ export default async function CompanyPage({
             IPO details
           </h2>
           <dl className="divide-y divide-border/50 text-sm">
+            <Row label={strings.company.nominalValue} value={formatSar(detail.nominalValue)} />
+            <Row label={strings.company.premium} value={detail.premium ? formatSar(detail.premium) : NA} />
             <Row label="Shares offered" value={formatCount(detail.shares)} />
             <Row label="Proceeds" value={formatSar(detail.proceeds)} />
             <Row label="Oversubscription" value={detail.oversubscription ? `${detail.oversubscription}x` : NA} />
@@ -105,10 +122,17 @@ export default async function CompanyPage({
               </h3>
               <ul className="space-y-1 font-mono text-xs">
                 {detail.actions.map((a, i) => (
-                  <li key={i} className="flex justify-between border-b border-border/40 py-1.5 last:border-0">
-                    <span>{formatDate(a.actionDate)}</span>
-                    <span className="text-muted-foreground">{a.type}</span>
+                  <li key={i} className="flex items-center justify-between gap-3 border-b border-border/40 py-1.5 last:border-0">
+                    <span className="tnum">{formatDate(a.actionDate)}</span>
+                    <span className="text-muted-foreground">{a.kind}</span>
                     <span className="tnum">x{Number(a.factor).toFixed(4)}</span>
+                    {a.sourceUrl ? (
+                      <a href={a.sourceUrl} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                        src
+                      </a>
+                    ) : (
+                      <span className="w-6" />
+                    )}
                   </li>
                 ))}
               </ul>
@@ -120,7 +144,12 @@ export default async function CompanyPage({
           <h2 className="mb-3 border-b border-border/60 pb-2 font-display text-xl font-semibold tracking-tight">
             {strings.company.dividends}
           </h2>
-          <DividendHistoryTable dividends={detail.dividends} />
+          <DividendHistoryTable
+            dividends={detail.dividends}
+            total={detail.totalDividends}
+            count={m.dividendCount}
+            yieldOnOffer={detail.dividendYieldOnOffer}
+          />
         </section>
       </div>
     </div>

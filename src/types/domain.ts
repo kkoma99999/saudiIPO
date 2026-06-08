@@ -8,7 +8,9 @@ export interface IpoRow {
   sector: string | null;
   ipoDate: string;
   offerPrice: string;
+  nominalValue: string | null;
   verified: boolean;
+  dataCaveat: string | null;
 }
 
 export interface CompanyMetrics extends IpoRow {
@@ -21,6 +23,8 @@ export interface CompanyMetrics extends IpoRow {
   tasiReturn: number | null;
   alpha: number | null;
   hasActions: boolean;
+  cumulativeDividends: number | null; // adjusted to current-share basis, SAR
+  dividendCount: number;
 }
 
 export interface CohortSummary {
@@ -42,14 +46,17 @@ export interface SeriesPoint {
 
 export interface DividendRow {
   exDate: string;
-  amount: string;
+  amount: string; // SAR per share as paid
+  adjustedAmount: string; // SAR per current share
+  cumulative: string; // running cumulative of adjustedAmount
   verified: boolean;
 }
 
 export interface ActionRow {
   actionDate: string;
-  type: string;
+  kind: string;
   factor: string;
+  sourceUrl: string | null;
 }
 
 export interface CompanyDetail {
@@ -57,8 +64,12 @@ export interface CompanyDetail {
   shares: string | null;
   proceeds: string | null;
   oversubscription: string | null;
+  nominalValue: string | null;
+  premium: string | null; // offer_price - nominal_value
   sourceUrl: string;
   series: SeriesPoint[];
   dividends: DividendRow[];
+  totalDividends: string | null; // adjusted, SAR per current share
+  dividendYieldOnOffer: number | null;
   actions: ActionRow[];
 }

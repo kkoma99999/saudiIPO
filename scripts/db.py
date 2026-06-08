@@ -21,12 +21,12 @@ load_dotenv(os.path.join(_REPO_ROOT, ".env"))
 # assertion below fails loudly if the database drifts from this contract.
 EXPECTED = {
     "companies": {
-        "symbol", "name_en", "name_ar", "sector", "listing_date",
+        "symbol", "name_en", "name_ar", "sector", "data_caveat", "listing_date",
         "yahoo_ticker", "is_active", "created_at", "updated_at",
     },
     "ipos": {
-        "id", "symbol", "offer_price", "shares_offered", "proceeds_sar",
-        "oversubscription", "ipo_date", "source_url", "verified",
+        "id", "symbol", "offer_price", "nominal_value", "shares_offered",
+        "proceeds_sar", "oversubscription", "ipo_date", "source_url", "verified",
         "created_at", "updated_at",
     },
     "prices_daily": {
@@ -37,8 +37,8 @@ EXPECTED = {
         "id", "symbol", "ex_date", "amount", "source", "verified", "ingested_at",
     },
     "corporate_actions": {
-        "id", "symbol", "action_date", "type", "factor", "ratio_text",
-        "source", "verified", "ingested_at",
+        "id", "symbol", "action_date", "type", "kind", "factor", "ratio_text",
+        "source", "source_url", "verified", "ingested_at",
     },
     "index_prices": {
         "id", "index_symbol", "date", "close", "ingested_at",
@@ -206,22 +206,61 @@ def upsert_dividends(conn, rows, source="yahoo") -> int:
     return len(data)
 
 
-def upsert_actions(conn, rows, source="yahoo") -> int:
-    """rows: iterable of (symbol, action_date, type, factor)."""
-    data = [(s, ad, t, _d(f), source) for (s, ad, t, f) in rows]
+def _source_label(url):
+    if not url:
+        return "verified"
+    for k in ("argaam", "zawya", "cma", "saudiexchange", "aleqt", "maaal", "smeh",
+              "sahmcapital", "mubasher"):
+        if k in url:
+            return k
+    return "web"
+
+
+def upsert_actions(conn, rows) -> int:
+    """Verified corporate actions from data/corporate_actions.csv.
+
+    rows: iterable of (symbol, action_date, kind, factor, ratio_text, source_url,
+    verified). The type enum carries only split/bonus, so kind holds the richer
+    label (bonus, split, par_change, rights). The factor drives all return math.
+    """
+    data = []
+    for (s, ad, kind, f, ratio, url, verified) in rows:
+        typ = "bonus" if kind == "bonus" else "split"
+        v = str(verified).strip().lower() in ("true", "1") if isinstance(verified, str) else bool(verified)
+        data.append((s, ad, typ, kind, _d(f), ratio, _source_label(url), url or None, v))
     if not data:
         return 0
     with conn.cursor() as cur:
         cur.executemany(
             """
-            INSERT INTO corporate_actions (symbol, action_date, type, factor, source)
-            VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO corporate_actions
+              (symbol, action_date, type, kind, factor, ratio_text, source, source_url, verified)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
             ON CONFLICT (symbol, action_date) DO UPDATE SET
-              factor = EXCLUDED.factor, type = EXCLUDED.type, ingested_at = now()
+              type = EXCLUDED.type, kind = EXCLUDED.kind, factor = EXCLUDED.factor,
+              ratio_text = EXCLUDED.ratio_text, source = EXCLUDED.source,
+              source_url = EXCLUDED.source_url, verified = EXCLUDED.verified,
+              ingested_at = now()
             """,
             data,
         )
     return len(data)
+
+
+def set_nominal(conn, symbol, nominal_value) -> None:
+    with conn.cursor() as cur:
+        cur.execute(
+            "UPDATE ipos SET nominal_value = %s, updated_at = now() WHERE symbol = %s",
+            (_d(nominal_value), symbol),
+        )
+
+
+def set_data_caveat(conn, symbol, caveat) -> None:
+    with conn.cursor() as cur:
+        cur.execute(
+            "UPDATE companies SET data_caveat = %s, updated_at = now() WHERE symbol = %s",
+            (caveat or None, symbol),
+        )
 
 
 def upsert_index_prices(conn, rows, index_symbol="^TASI.SR") -> int:

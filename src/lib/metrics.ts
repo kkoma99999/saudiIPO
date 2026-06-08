@@ -1,11 +1,20 @@
 // Pure return and adjustment math. No database or network access. This mirrors the
 // Python module in scripts/adjustment.py and is tested against the same hand-built
-// bonus case so the two implementations must agree. See
+// fixtures so the two implementations must agree. See
 // .claude/skills/tadawul-data/SKILL.md.
 //
-// Money stays in Decimal, never JS number, until the final formatted display. Inputs
-// that come from the database arrive as numeric strings; pass them straight in.
-// Dates are 'YYYY-MM-DD' strings, which compare correctly with normal comparison.
+// Convention (verified empirically, see docs/FINANCE_AUDIT.md): yfinance is fetched
+// with auto_adjust=False, so the stored close is SPLIT and bonus adjusted to
+// current-share basis, and is NOT dividend adjusted. We therefore do not re-apply
+// split factors to the close. We only convert the offer price and the dividends to
+// current-share basis using the verified corporate-action factor F.
+//
+//   split_adjusted_offer = offer_price / F(after ipo_date)
+//   price_return = split_adjusted_close / split_adjusted_offer - 1
+//   total_return = price_return + cumulative_dividends_per_current_share / split_adjusted_offer
+//
+// Dividends are never baked into price; they are always a separate, visible term.
+// Money stays in Decimal, never JS number, until the final formatted display.
 
 import Decimal from "decimal.js";
 
@@ -15,12 +24,12 @@ export type Num = string | number;
 
 export interface CorporateAction {
   actionDate: string; // YYYY-MM-DD
-  factor: Num; // share multiplier: 1-for-5 bonus is 1.20, 2-for-1 split is 2.00
+  factor: Num; // share multiplier: 1-for-5 bonus is 1.20, par 10 to 1 is 10
 }
 
 export interface DividendEvent {
   exDate: string; // YYYY-MM-DD
-  amount: Num; // raw per-share cash dividend in SAR
+  amount: Num; // raw per-share cash dividend in SAR, as paid
 }
 
 export interface IndexComparison {
@@ -46,7 +55,7 @@ export function cumulativeFactorAfter(
   return factor;
 }
 
-// Raw offer price expressed in current shares.
+// Offer price converted to current-share basis: offer / F(after ipo_date).
 export function adjustedOfferPrice(
   rawOfferPrice: Num,
   ipoDate: string,
@@ -55,18 +64,9 @@ export function adjustedOfferPrice(
   return dec(rawOfferPrice).div(cumulativeFactorAfter(actions, ipoDate));
 }
 
-// Raw close on asOfDate expressed in current shares. The latest close needs no
-// adjustment; an earlier close is multiplied forward by the factor of later actions.
-export function adjustedCloseAsOf(
-  rawClose: Num,
-  asOfDate: string,
-  actions: CorporateAction[],
-): Decimal {
-  return dec(rawClose).mul(cumulativeFactorAfter(actions, asOfDate));
-}
-
-// Sum of dividends up to asOfDate, each expressed per current share. yfinance
-// dividends are raw, so each is divided by the cumulative factor after its ex-date.
+// Sum of dividends up to asOfDate, each converted to current-share basis. yfinance
+// dividends are raw (per the share count on the ex-date), so each is divided by the
+// factor of actions strictly after its ex-date.
 export function cumulativeAdjustedDividends(
   dividends: DividendEvent[],
   actions: CorporateAction[],
@@ -83,32 +83,38 @@ export function cumulativeAdjustedDividends(
   return total;
 }
 
-// adjusted_close / adjusted_offer_price - 1
+// split_adjusted_close / split_adjusted_offer - 1. The close is already split
+// adjusted by yfinance, so it is used as is.
 export function priceReturn(
   rawOfferPrice: Num,
   ipoDate: string,
-  rawClose: Num,
-  asOfDate: string,
+  splitAdjustedClose: Num,
   actions: CorporateAction[],
 ): Decimal {
-  const aop = adjustedOfferPrice(rawOfferPrice, ipoDate, actions);
-  const ac = adjustedCloseAsOf(rawClose, asOfDate, actions);
-  return ac.div(aop).minus(1);
+  return dec(splitAdjustedClose)
+    .div(adjustedOfferPrice(rawOfferPrice, ipoDate, actions))
+    .minus(1);
 }
 
-// price_return + cumulative_adjusted_dividends / adjusted_offer_price
+// price_return + cumulative_dividends_per_current_share / split_adjusted_offer.
 export function totalReturn(
   rawOfferPrice: Num,
   ipoDate: string,
-  rawClose: Num,
+  splitAdjustedClose: Num,
   asOfDate: string,
   actions: CorporateAction[],
   dividends: DividendEvent[],
 ): Decimal {
   const aop = adjustedOfferPrice(rawOfferPrice, ipoDate, actions);
-  const pr = priceReturn(rawOfferPrice, ipoDate, rawClose, asOfDate, actions);
+  const pr = priceReturn(rawOfferPrice, ipoDate, splitAdjustedClose, actions);
   const cd = cumulativeAdjustedDividends(dividends, actions, asOfDate);
   return pr.add(cd.div(aop));
+}
+
+// A dividend quoted as a percentage is a percentage of the par (nominal) value at
+// that date: dps = pct/100 * nominal. For example 10% on par 10 is 1.00 SAR.
+export function pctToDps(pct: Num, nominalValue: Num): Decimal {
+  return dec(pct).div(100).mul(dec(nominalValue));
 }
 
 // Annual dividends per current share divided by the adjusted offer price.

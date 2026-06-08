@@ -1,4 +1,5 @@
 import "server-only";
+import Decimal from "decimal.js";
 import { sql, eq, asc } from "drizzle-orm";
 import { db } from "./client";
 import {
@@ -12,6 +13,7 @@ import {
 import {
   adjustedOfferPrice,
   cumulativeAdjustedDividends,
+  cumulativeFactorAfter,
   priceReturn,
   totalReturn,
   yieldOnOffer,
@@ -79,14 +81,17 @@ function computeMetrics(
     tasiReturn: null,
     alpha: null,
     hasActions: actions.length > 0,
+    cumulativeDividends: null,
+    dividendCount: divs.length,
   };
   if (!latest) return base;
 
   const asOf = latest.date;
   const aop = adjustedOfferPrice(row.offerPrice, row.ipoDate, actions);
-  const pr = priceReturn(row.offerPrice, row.ipoDate, latest.close, asOf, actions).toNumber();
+  const pr = priceReturn(row.offerPrice, row.ipoDate, latest.close, actions).toNumber();
   const tr = totalReturn(row.offerPrice, row.ipoDate, latest.close, asOf, actions, divs).toNumber();
 
+  const cumDiv = cumulativeAdjustedDividends(divs, actions, asOf);
   const yearAgo = isoMinusDays(asOf, 365);
   const trailing = divs.filter((d) => d.exDate > yearAgo && d.exDate <= asOf);
   const annualAdj = cumulativeAdjustedDividends(trailing, actions, asOf);
@@ -113,6 +118,8 @@ function computeMetrics(
     cagr: cg,
     tasiReturn,
     alpha,
+    cumulativeDividends: cumDiv.toNumber(),
+    dividendCount: divs.filter((d) => d.exDate <= asOf).length,
   };
 }
 
@@ -126,7 +133,9 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
         sector: companies.sector,
         ipoDate: ipos.ipoDate,
         offerPrice: ipos.offerPrice,
+        nominalValue: ipos.nominalValue,
         verified: ipos.verified,
+        dataCaveat: companies.dataCaveat,
       })
       .from(ipos)
       .innerJoin(companies, eq(companies.symbol, ipos.symbol)),
@@ -257,7 +266,9 @@ export async function getCompanyDetail(
       sector: companies.sector,
       ipoDate: ipos.ipoDate,
       offerPrice: ipos.offerPrice,
+      nominalValue: ipos.nominalValue,
       verified: ipos.verified,
+      dataCaveat: companies.dataCaveat,
       shares: ipos.sharesOffered,
       proceeds: ipos.proceedsSar,
       oversubscription: ipos.oversubscription,
@@ -289,8 +300,9 @@ export async function getCompanyDetail(
     db
       .select({
         actionDate: corporateActions.actionDate,
-        type: corporateActions.type,
+        kind: corporateActions.kind,
         factor: corporateActions.factor,
+        sourceUrl: corporateActions.sourceUrl,
       })
       .from(corporateActions)
       .where(eq(corporateActions.symbol, sym))
@@ -325,7 +337,9 @@ export async function getCompanyDetail(
       sector: r.sector,
       ipoDate: r.ipoDate,
       offerPrice: r.offerPrice,
+      nominalValue: r.nominalValue,
       verified: r.verified,
+      dataCaveat: r.dataCaveat,
     },
     latest,
     actions,
@@ -354,14 +368,46 @@ export async function getCompanyDetail(
     });
   }
 
+  // Dividends since IPO: each amount adjusted to current-share basis, with a running
+  // cumulative. The final cumulative equals metrics.cumulativeDividends.
+  let runningCum = new Decimal(0);
+  const dividendRows = divRows.map((d) => {
+    const adj = new Decimal(d.amount).div(cumulativeFactorAfter(actions, d.exDate));
+    runningCum = runningCum.add(adj);
+    return {
+      exDate: d.exDate,
+      amount: d.amount,
+      adjustedAmount: adj.toFixed(4),
+      cumulative: runningCum.toFixed(4),
+      verified: d.verified,
+    };
+  });
+
+  const aop = adjustedOfferPrice(r.offerPrice, r.ipoDate, actions);
+  const totalDividends = dividendRows.length ? runningCum.toFixed(4) : null;
+  const dividendYieldOnOffer = dividendRows.length ? runningCum.div(aop).toNumber() : null;
+  const premium =
+    r.nominalValue !== null
+      ? new Decimal(r.offerPrice).minus(new Decimal(r.nominalValue)).toFixed(4)
+      : null;
+
   return {
     metrics,
     shares: r.shares !== null ? String(r.shares) : null,
     proceeds: r.proceeds,
     oversubscription: r.oversubscription,
+    nominalValue: r.nominalValue,
+    premium,
     sourceUrl: r.sourceUrl,
     series: downsample(series, 400),
-    dividends: divRows.map((d) => ({ exDate: d.exDate, amount: d.amount, verified: d.verified })),
-    actions: actionRows.map((a) => ({ actionDate: a.actionDate, type: a.type, factor: a.factor })),
+    dividends: dividendRows,
+    totalDividends,
+    dividendYieldOnOffer,
+    actions: actionRows.map((a) => ({
+      actionDate: a.actionDate,
+      kind: a.kind,
+      factor: a.factor,
+      sourceUrl: a.sourceUrl,
+    })),
   };
 }

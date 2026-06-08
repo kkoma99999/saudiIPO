@@ -20,6 +20,7 @@ import csv
 import os
 import sys
 import traceback
+from datetime import date
 
 import pandas as pd
 import yfinance as yf
@@ -80,19 +81,38 @@ def fetch_history(symbol, start):
     return ticker.history(start=start, auto_adjust=False, actions=True)
 
 
-def parse_history(symbol, df):
-    """Turn a yfinance history frame into (prices, dividends, actions) tuples.
+def dedupe_splits(splits, window_days=7):
+    """Collapse consecutive same-factor yfinance split events within window_days.
 
-    Shared by backfill.py and daily.py. Close is stored as the current-share-basis
-    close; Adj Close is kept as a cross-check; dividends and splits are raw.
+    yfinance .SR data often duplicates one corporate action across adjacent days.
     """
-    prices, dividends, actions = [], [], []
+    out = []
+    for d, f in sorted(splits):
+        if out:
+            prev_d, prev_f = out[-1]
+            di = date.fromisoformat(d)
+            dj = date.fromisoformat(prev_d)
+            if abs((di - dj).days) <= window_days and abs(f - prev_f) < 1e-9:
+                continue
+        out.append((d, f))
+    return out
+
+
+def parse_history(symbol, df):
+    """Return (prices, dividends, yf_splits).
+
+    Close is yfinance's split and bonus adjusted close (current-share basis), stored
+    as is. Adj Close is a cross-check. Dividends are raw. yf_splits are yfinance's
+    split events, returned only for a cross-check against the verified
+    corporate_actions; they are NOT stored, because yfinance .SR split data is
+    unreliable (duplicates and spurious events). Corporate actions come from the
+    verified data/corporate_actions.csv. Shared by backfill.py and daily.py.
+    """
+    prices, dividends, yf_splits = [], [], []
     for idx, r in df.iterrows():
         d = idx.date().isoformat()
         close = _num(r.get("Close"))
-        # Close is required. Skip rows with no close (halts, bad source rows); a row
-        # without a close is not a usable price. Dividends and splits on that date
-        # are still captured below.
+        # Close is required. Skip rows with no close (halts, bad source rows).
         if close is not None:
             prices.append((symbol, d, _num(r.get("Open")), _num(r.get("High")),
                            _num(r.get("Low")), close,
@@ -102,8 +122,8 @@ def parse_history(symbol, df):
             dividends.append((symbol, d, float(div)))
         sp = r.get("Stock Splits")
         if sp is not None and not pd.isna(sp) and float(sp) != 0.0:
-            actions.append((symbol, d, "split", float(sp)))
-    return prices, dividends, actions
+            yf_splits.append((d, float(sp)))
+    return prices, dividends, yf_splits
 
 
 def store_symbol(conn, t, run_id, dry_run):
@@ -118,22 +138,32 @@ def store_symbol(conn, t, run_id, dry_run):
                           f"no rows from {start}", 0)
         return
 
-    prices, dividends, actions = parse_history(symbol, df)
+    prices, dividends, yf_splits = parse_history(symbol, df)
 
-    print(f"  {symbol}: {len(prices)} prices, {len(dividends)} dividends, {len(actions)} actions from {start}")
+    print(f"  {symbol}: {len(prices)} prices, {len(dividends)} dividends, {len(yf_splits)} yahoo split events from {start}")
     if dry_run:
         return
 
     seed_company(conn, t)
     np = db.upsert_prices(conn, prices)
     nd = db.upsert_dividends(conn, dividends)
-    na = db.upsert_actions(conn, actions)
     conn.commit()
     db.log_ingest(conn, run_id, symbol, "yahoo_prices", "success", None, np)
     if nd:
         db.log_ingest(conn, run_id, symbol, "yahoo_dividends", "success", None, nd)
-    if na:
-        db.log_ingest(conn, run_id, symbol, "yahoo_splits", "success", None, na)
+    # Cross-check only. yfinance splits are not stored as corporate actions.
+    if yf_splits:
+        ded = dedupe_splits(yf_splits)
+        prod = 1.0
+        for _, f in ded:
+            prod *= f
+        db.log_ingest(
+            conn, run_id, symbol, "yahoo_splits", "skipped",
+            f"yahoo reports {len(yf_splits)} split events (deduped {len(ded)}, "
+            f"cumulative {round(prod, 4)}); not stored, corporate actions come from "
+            f"data/corporate_actions.csv",
+            0,
+        )
 
 
 def store_tasi(conn, run_id, start, dry_run):
@@ -151,6 +181,53 @@ def store_tasi(conn, run_id, start, dry_run):
     n = db.upsert_index_prices(conn, rows)
     conn.commit()
     db.log_ingest(conn, run_id, None, "yahoo_index", "success", None, n)
+
+
+def _read_csv(name):
+    path = os.path.join(_REPO_ROOT, "data", name)
+    if not os.path.exists(path):
+        return []
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def existing_symbols(conn):
+    with conn.cursor() as cur:
+        cur.execute("SELECT symbol FROM companies")
+        return {r[0].strip() for r in cur.fetchall()}
+
+
+def load_verified_corporate_data(conn, run_id, dry_run):
+    """Load the verified corporate actions, nominal values, and caveats from data/.
+
+    These are the authoritative, sourced facts (data/corporate_actions.csv etc.),
+    not yfinance output. Applied only to companies already seeded, so FK holds.
+    """
+    have = existing_symbols(conn)
+    actions = [
+        (r["symbol"], r["action_date"], r["kind"], r["factor"],
+         r.get("ratio_text"), r.get("source_url"), r.get("verified"))
+        for r in _read_csv("corporate_actions.csv") if r["symbol"].strip() in have
+    ]
+    nominals = [
+        (r["symbol"], r["nominal_value"])
+        for r in _read_csv("nominal_values.csv") if r["symbol"].strip() in have
+    ]
+    caveats = [
+        (r["symbol"], r["caveat"])
+        for r in _read_csv("data_caveats.csv") if r["symbol"].strip() in have
+    ]
+    print(f"  verified data: {len(actions)} actions, {len(nominals)} nominals, {len(caveats)} caveats")
+    if dry_run:
+        return
+    na = db.upsert_actions(conn, actions)
+    for sym, nom in nominals:
+        db.set_nominal(conn, sym, nom)
+    for sym, cav in caveats:
+        db.set_data_caveat(conn, sym, cav)
+    conn.commit()
+    db.log_ingest(conn, run_id, None, "verified_actions", "success",
+                  f"loaded {na} corporate actions, {len(nominals)} nominal values, {len(caveats)} caveats", na)
 
 
 def main():
@@ -194,6 +271,15 @@ def main():
             print(f"  {TASI}: ERROR\n{tb}", file=sys.stderr)
             if not args.dry_run:
                 db.log_ingest(conn, run_id, None, "yahoo_index", "error", tb, 0)
+
+    try:
+        load_verified_corporate_data(conn, run_id, args.dry_run)
+    except Exception:
+        conn.rollback()
+        tb = traceback.format_exc()
+        print(f"  verified data: ERROR\n{tb}", file=sys.stderr)
+        if not args.dry_run:
+            db.log_ingest(conn, run_id, None, "verified_actions", "error", tb, 0)
 
     if not args.dry_run:
         db.log_ingest(conn, run_id, None, "system", "success",

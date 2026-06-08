@@ -41,21 +41,34 @@ math, or anything that reads or writes market data.
 ## Return formulas
 
 Let F = the product of all corporate-action factors after a given date (the share
-multiplier; a 1-for-5 bonus is factor 1.20, a 2-for-1 split is factor 2.00).
+multiplier; a 1-for-5 bonus is factor 1.20, a par change from 10 SAR to 1 SAR is
+factor 10). F comes from the verified data/corporate_actions.csv, never from raw
+yfinance splits (those are unreliable on .SR, see below).
 
-- adjusted_offer_price = raw_offer_price / F(after ipo_date)
+- split_adjusted_offer_price = raw_offer_price / F(after ipo_date)
 - For a dividend with ex-date e and raw amount A:
   adjusted_dividend_per_current_share = A / F(after e)
-- price_return = adjusted_close / adjusted_offer_price - 1
-- total_return = price_return + sum(adjusted_dividends) / adjusted_offer_price
-- yield_on_offer = annual_dividends_per_current_share / adjusted_offer_price
+- price_return = split_adjusted_close / split_adjusted_offer_price - 1
+- total_return = price_return + sum(adjusted_dividends) / split_adjusted_offer_price
+- yield_on_offer = cumulative_adjusted_dividends / split_adjusted_offer_price
 - cagr = (1 + total_return) ^ (1 / years) - 1, years measured ACT/365.25
 - tasi_return = tasi_close(end) / tasi_close(start) - 1 over the same window
 - alpha = total_return - tasi_return
 
-The latest close needs no adjustment because it is already in current-share terms.
-For an as-of date that predates some actions, multiply that historical close
-forward by F(after that date).
+The stored close is already split adjusted by yfinance (see below), so it is used as
+is. Never multiply a stored close by F; that would double count. We only divide the
+offer and each dividend by F. Dividends are never baked into price; they are always a
+separate, visible term.
+
+## Nominal value and percentage dividends
+
+- nominal_value (القيمة الاسمية) is the par value per share. Standard TASI par is 10
+  SAR but it is verified per company and left empty when unconfirmed. A par change
+  (for example 10 SAR to 1 SAR) is a split with factor old_par / new_par.
+- The dividends table stores SAR per share as actually paid, never a percentage. If a
+  source quotes a dividend as a percentage, it is a percentage of nominal value at
+  that date: dps = pct / 100 * nominal_value. Use pct_to_dps and never compute a
+  yield against nominal value unless the label says exactly that.
 
 ## Dividends and the Yahoo gap
 
@@ -66,11 +79,20 @@ forward by F(after that date).
   saudiexchange.sa and record the source field. Missing dividend data stays empty
   plus an ingest_log row, never invented.
 
-## Bonus issues and splits
+## Bonus issues and splits (and why yfinance is not trusted for them)
 
-- Yahoo reports bonus issues as splits. Record every split or bonus in
-  corporate_actions with the share-multiplier factor and a source. The math treats
-  split and bonus identically; the type field is informational.
+- yfinance .SR split data is unreliable. It duplicates one event across adjacent days
+  (a real 10:1 par change shows as two factor-10 events, cumulative 100), reports
+  spurious events the price was never adjusted for (Naqi 2282 had a 100x event for a
+  par split the assembly rejected), and misses real bonuses. So we do NOT store
+  yfinance splits as corporate actions.
+- corporate_actions come from data/corporate_actions.csv: verified bonus issues,
+  splits, and par changes, each with kind, factor (share multiplier), and a
+  source_url, confirmed against Argaam, CMA disclosures, and saudiexchange. The math
+  treats bonus, split, and par change identically; only the factor matters.
+- backfill.py still reads yfinance splits, but only to log a cross-check discrepancy
+  in ingest_log. A new yfinance split is a prompt to confirm and update the CSV, not
+  a fact to store. See docs/FINANCE_AUDIT.md.
 
 ## yfinance price basis (important, do not get this wrong)
 

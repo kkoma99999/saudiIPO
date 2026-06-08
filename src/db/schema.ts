@@ -19,8 +19,9 @@ import {
 // as JS numbers. Parse with decimal.js in the metrics layer and round to halala
 // precision only at display time. See .claude/skills/tadawul-data/SKILL.md.
 
-// Bonus issues and splits share the same math (both multiply the share count). The
-// type is informational; the factor is what the math uses.
+// Bonus issues, splits, and par-value changes all multiply the share count, so the
+// math treats them the same; the factor is what the math uses. type stays for back
+// compatibility; kind carries the richer classification.
 export const actionType = pgEnum("action_type", ["split", "bonus"]);
 
 // companies: one row per listed company. Symbol is the bare 4-digit code.
@@ -31,6 +32,9 @@ export const companies = pgTable(
     nameEn: varchar("name_en", { length: 256 }).notNull(),
     nameAr: varchar("name_ar", { length: 256 }),
     sector: varchar("sector", { length: 128 }),
+    // Free-form caveat shown as a badge, for example a rights issue we do not model
+    // or a known yfinance series problem. Null when there is nothing to flag.
+    dataCaveat: text("data_caveat"),
     listingDate: date("listing_date"),
     // Denormalized convenience, for example 2222.SR. Avoids rebuilding the ticker.
     yahooTicker: varchar("yahoo_ticker", { length: 16 }).notNull(),
@@ -50,6 +54,9 @@ export const ipos = pgTable(
       .notNull()
       .references(() => companies.symbol),
     offerPrice: numeric("offer_price", { precision: 12, scale: 4 }).notNull(),
+    // Par value (القيمة الاسمية) in SAR per share. Standard TASI par is 10, but it
+    // is verified per company and left null when not confirmed from a source.
+    nominalValue: numeric("nominal_value", { precision: 12, scale: 4 }),
     sharesOffered: bigint("shares_offered", { mode: "bigint" }),
     proceedsSar: numeric("proceeds_sar", { precision: 20, scale: 2 }),
     oversubscription: numeric("oversubscription", { precision: 8, scale: 2 }),
@@ -66,8 +73,10 @@ export const ipos = pgTable(
   ],
 );
 
-// prices_daily: raw daily OHLC ingested with auto_adjust=False. adj_close is
-// Yahoo's adjusted close, kept only as a cross-check; our math does not trust it.
+// prices_daily: daily OHLC from yfinance with auto_adjust=False. The close is
+// SPLIT and bonus adjusted by yfinance to current-share basis (not raw, and not
+// dividend adjusted). adj_close is Yahoo's split+dividend adjusted close, kept only
+// as a cross-check; our return math does not use it. See the tadawul-data skill.
 export const pricesDaily = pgTable(
   "prices_daily",
   {
@@ -122,9 +131,12 @@ export const corporateActions = pgTable(
       .references(() => companies.symbol),
     actionDate: date("action_date").notNull(),
     type: actionType("type").notNull().default("split"),
+    // bonus | split | par_change | rights | other. Informational; factor drives math.
+    kind: varchar("kind", { length: 16 }).notNull().default("split"),
     factor: numeric("factor", { precision: 18, scale: 8 }).notNull(),
-    ratioText: varchar("ratio_text", { length: 32 }),
+    ratioText: varchar("ratio_text", { length: 64 }),
     source: varchar("source", { length: 32 }).notNull().default("yahoo"),
+    sourceUrl: text("source_url"),
     verified: boolean("verified").notNull().default(false),
     ingestedAt: timestamp("ingested_at", { withTimezone: true }).notNull().defaultNow(),
   },
