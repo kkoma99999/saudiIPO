@@ -1,23 +1,48 @@
-// All user-facing copy lives here so a second locale is a contained change later.
-// Style: plain and direct. No em dashes, no emojis, no filler words.
-export const strings = {
+// All user-facing copy lives here, English and Arabic. Style: plain and direct. No em
+// dashes, no emojis, no filler words. Templates use {n} and {m} placeholders filled by
+// the fmt helper in ./index. The Arabic dictionary must mirror the English shape exactly,
+// which TypeScript enforces through the Dict type.
+
+const en = {
   site: {
     title: "Saudi IPO Tracker",
-    tagline: "TASI Main Market listings since December 2019.",
+    tagline: "TASI Main Market listings since 2018.",
   },
   nav: {
     home: "Cohorts",
     ipos: "All IPOs",
     sources: "Data sources",
   },
+  switcher: {
+    label: "Language",
+    english: "EN",
+    arabic: "ع",
+  },
   home: {
     heading: "IPO cohorts by year",
     intro:
-      "Every Saudi Main Market IPO since December 2019, grouped by listing year. Returns are adjusted for bonus issues and splits and measured against the offer price.",
+      "Every Saudi Main Market IPO since 2018, grouped by listing year. Returns are adjusted for bonus issues and splits and measured against the offer price.",
+    cohortsByYear: "Cohorts by year",
+    totalReturnAdjusted: "total return, adjusted",
+    iposTracked: "IPOs tracked",
+    medianTotalReturn: "Median total return",
+    aboveOffer: "Above offer",
+    unverified: "Unverified",
+    withPrices: "of {n} with prices",
+    awaitingSource: "awaiting source check",
   },
   ipos: {
     heading: "All IPOs",
     intro: "Sort and filter every tracked Main Market IPO.",
+  },
+  filters: {
+    search: "Search name or symbol",
+    allYears: "All years",
+    allSectors: "All sectors",
+    allReturns: "All returns",
+    aboveOffer: "Above offer",
+    belowOffer: "Below offer",
+    count: "{n} of {m}",
   },
   table: {
     company: "Company",
@@ -33,6 +58,13 @@ export const strings = {
     vsTasi: "vs TASI",
     year: "Year",
     all: "All",
+  },
+  cohort: {
+    listings: "{n} listings",
+    medianTotalReturn: "Median total return",
+    average: "Average",
+    aboveOfferCount: "{n} of {m} above offer",
+    best: "Best",
   },
   company: {
     offerPrice: "Offer price",
@@ -62,6 +94,17 @@ export const strings = {
     factor: "Factor",
     notFound: "Company not found",
   },
+  detail: {
+    ipoDetails: "IPO details",
+    sharesOffered: "Shares offered",
+    proceeds: "Proceeds",
+    oversubscription: "Oversubscription",
+    source: "Source",
+    listed: "Listed",
+    dataNote: "Data note",
+    legendCompany: "Company",
+    legendTasi: "TASI",
+  },
   badge: {
     unverified: "Unverified",
     unverifiedHelp:
@@ -74,4 +117,133 @@ export const strings = {
   disclaimer: {
     short: "Informational only. This is not investment advice.",
   },
-} as const;
+};
+
+export type Dict = typeof en;
+
+const ar: Dict = {
+  site: {
+    title: "متتبّع الطروحات السعودية",
+    tagline: "إدراجات السوق الرئيسية (تاسي) منذ 2018.",
+  },
+  nav: {
+    home: "الدفعات",
+    ipos: "كل الطروحات",
+    sources: "مصادر البيانات",
+  },
+  switcher: {
+    label: "اللغة",
+    english: "EN",
+    arabic: "ع",
+  },
+  home: {
+    heading: "الطروحات حسب سنة الإدراج",
+    intro:
+      "كل طرح في السوق الرئيسية السعودية منذ 2018، مرتّب حسب سنة الإدراج. العوائد معدّلة لأسهم المنحة والتجزئة، ومقيسة على سعر الطرح.",
+    cohortsByYear: "الدفعات حسب السنة",
+    totalReturnAdjusted: "العائد الكلي، معدّلًا",
+    iposTracked: "طروحات متتبَّعة",
+    medianTotalReturn: "وسيط العائد الكلي",
+    aboveOffer: "فوق سعر الطرح",
+    unverified: "غير متحقَّق",
+    withPrices: "من {n} لها أسعار",
+    awaitingSource: "بانتظار التحقق من المصدر",
+  },
+  ipos: {
+    heading: "كل الطروحات",
+    intro: "رتّب وصفِّ كل طرح متتبَّع في السوق الرئيسية.",
+  },
+  filters: {
+    search: "ابحث بالاسم أو الرمز",
+    allYears: "كل السنوات",
+    allSectors: "كل القطاعات",
+    allReturns: "كل العوائد",
+    aboveOffer: "فوق الطرح",
+    belowOffer: "تحت الطرح",
+    count: "{n} من {m}",
+  },
+  table: {
+    company: "الشركة",
+    symbol: "الرمز",
+    sector: "القطاع",
+    ipoDate: "تاريخ الطرح",
+    offerPrice: "سعر الطرح",
+    price: "السعر",
+    firstDays: "أول 5 أيام",
+    priceReturn: "عائد السعر",
+    totalReturn: "العائد الكلي",
+    dividends: "التوزيعات",
+    vsTasi: "مقابل تاسي",
+    year: "السنة",
+    all: "الكل",
+  },
+  cohort: {
+    listings: "{n} طرح",
+    medianTotalReturn: "وسيط العائد الكلي",
+    average: "المتوسط",
+    aboveOfferCount: "{n} من {m} فوق الطرح",
+    best: "الأفضل",
+  },
+  company: {
+    offerPrice: "سعر الطرح",
+    currentPrice: "السعر الحالي",
+    firstDays: "أول 5 أيام",
+    priceReturn: "عائد السعر",
+    totalReturn: "العائد الكلي",
+    yieldOnOffer: "العائد على الطرح",
+    cagr: "النمو السنوي المركّب",
+    vsTasi: "العائد مقابل تاسي",
+    ipoDate: "تاريخ الطرح",
+    sector: "القطاع",
+    nominalValue: "القيمة الاسمية",
+    premium: "العلاوة على الاسمية",
+    chartTitle: "السعر مقابل تاسي، مضبوطًا على 100 عند الطرح",
+    dividends: "التوزيعات منذ الطرح",
+    exDate: "تاريخ الأحقية",
+    paid: "الموزّع للسهم",
+    adjusted: "للسهم الحالي",
+    cumulative: "التراكمي",
+    payments: "عدد التوزيعات",
+    totalDividends: "الإجمالي منذ الطرح",
+    dividendYield: "العائد على الطرح",
+    noDividends: "لا توجد توزيعات مسجّلة بعد.",
+    actions: "المنح والتجزئة وتغيّر القيمة الاسمية",
+    actionDate: "التاريخ",
+    factor: "المعامل",
+    notFound: "الشركة غير موجودة",
+  },
+  detail: {
+    ipoDetails: "تفاصيل الطرح",
+    sharesOffered: "الأسهم المطروحة",
+    proceeds: "حصيلة الطرح",
+    oversubscription: "تغطية الاكتتاب",
+    source: "المصدر",
+    listed: "أُدرج في",
+    dataNote: "ملاحظة بيانات",
+    legendCompany: "الشركة",
+    legendTasi: "تاسي",
+  },
+  badge: {
+    unverified: "غير متحقَّق",
+    unverifiedHelp:
+      "لم يُتحقَّق من هذا الصف مقابل مصدر أساسي. تعامل مع الأرقام على أنها مبدئية.",
+  },
+  empty: {
+    noData: "لا توجد بيانات بعد.",
+    noResults: "لا توجد طروحات مطابقة لهذه التصفية.",
+  },
+  disclaimer: {
+    short: "للمعلومات فقط. هذا ليس نصيحة استثمارية.",
+  },
+};
+
+import type { Locale } from "./config";
+
+export const dictionaries: Record<Locale, Dict> = { en, ar };
+
+export function getDict(locale: Locale): Dict {
+  return dictionaries[locale];
+}
+
+// Backward-compatible alias. Some modules still import the English dictionary directly.
+export const strings = en;

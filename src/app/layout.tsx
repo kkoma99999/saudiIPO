@@ -1,18 +1,29 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Fraunces } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
-import { dir, locale } from "@/lib/i18n/config";
+import { dirFor } from "@/lib/i18n/config";
+import { getI18n } from "@/lib/i18n/server";
+import { I18nProvider } from "@/lib/i18n/provider";
 import { strings } from "@/lib/i18n/strings";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
+// Terminal aesthetic: a true monospace carries the English interface, with Geist as a
+// clean sans for the few large display headings. Arabic uses Thmanyah Sans, the free
+// Thmanyah typeface (font.thmanyah.com), self-hosted from app/fonts/thmanyah.
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
-const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-const fraunces = Fraunces({
-  variable: "--font-display",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  style: ["normal", "italic"],
+const geistMono = JetBrains_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const arabic = localFont({
+  variable: "--font-arabic",
+  display: "swap",
+  src: [
+    { path: "./fonts/thmanyah/thmanyahsans-Light.woff2", weight: "300", style: "normal" },
+    { path: "./fonts/thmanyah/thmanyahsans-Regular.woff2", weight: "400", style: "normal" },
+    { path: "./fonts/thmanyah/thmanyahsans-Medium.woff2", weight: "500", style: "normal" },
+    { path: "./fonts/thmanyah/thmanyahsans-Bold.woff2", weight: "700", style: "normal" },
+    { path: "./fonts/thmanyah/thmanyahsans-Black.woff2", weight: "900", style: "normal" },
+  ],
 });
 
 export const metadata: Metadata = {
@@ -30,17 +41,22 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { locale, t } = await getI18n();
+  const direction = dirFor(locale);
+
   return (
     <html
       lang={locale}
-      dir={dir}
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} h-full antialiased`}
+      dir={direction}
+      className={`${geistSans.variable} ${geistMono.variable} ${arabic.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <SiteHeader />
-        <main className="flex-1">{children}</main>
-        <SiteFooter />
+        <I18nProvider value={{ locale, dir: direction, t }}>
+          <SiteHeader />
+          <main className="flex-1">{children}</main>
+          <SiteFooter />
+        </I18nProvider>
       </body>
     </html>
   );

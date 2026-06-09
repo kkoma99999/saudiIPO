@@ -1,20 +1,12 @@
 import { formatPercent, NA } from "@/lib/format";
 
-function Arrow({ up }: { up: boolean }) {
+function Triangle({ up }: { up: boolean }) {
+  // Small filled direction marker in terminal style. Up triangle for gains,
+  // down triangle for losses. Color is inherited from the parent.
   return (
-    <svg
-      width="8"
-      height="8"
-      viewBox="0 0 8 8"
-      aria-hidden="true"
-      className="shrink-0"
-    >
-      {up ? (
-        <path d="M4 0 L8 6 L0 6 Z" fill="currentColor" />
-      ) : (
-        <path d="M4 8 L0 2 L8 2 Z" fill="currentColor" />
-      )}
-    </svg>
+    <span aria-hidden="true" className="shrink-0 text-[0.6em] leading-none">
+      {up ? "▲" : "▼"}
+    </span>
   );
 }
 
@@ -28,15 +20,17 @@ export function ReturnBadge({
   showArrow?: boolean;
 }) {
   if (value === null) {
-    return <span className="font-mono text-muted-foreground tnum">{NA}</span>;
+    return <span className="font-mono tabular-nums tnum text-muted-foreground">{NA}</span>;
   }
-  const up = value >= 0;
+  const positive = value > 0;
+  const negative = value < 0;
+  const tone = positive ? "text-up" : negative ? "text-down" : "text-muted-foreground";
   const text = size === "lg" ? "text-2xl" : "text-sm";
   return (
     <span
-      className={`inline-flex items-center gap-1.5 font-mono ${text} tnum ${up ? "text-up" : "text-down"}`}
+      className={`inline-flex items-center gap-1.5 font-mono tabular-nums tnum ${text} ${tone}`}
     >
-      {showArrow && <Arrow up={up} />}
+      {showArrow && (positive || negative) && <Triangle up={positive} />}
       {formatPercent(value)}
     </span>
   );

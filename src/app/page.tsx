@@ -3,7 +3,8 @@ import { CohortCard } from "@/components/cohort/CohortCard";
 import { StatTile } from "@/components/shared/StatTile";
 import { ReturnBadge } from "@/components/shared/ReturnBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { strings } from "@/lib/i18n/strings";
+import { getI18n } from "@/lib/i18n/server";
+import { fmt } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +16,7 @@ function median(xs: number[]): number | null {
 }
 
 export default async function Home() {
+  const { locale, t } = await getI18n();
   const all = await getAllCompanyMetrics();
   const cohorts = summarizeCohorts(all);
 
@@ -22,29 +24,45 @@ export default async function Home() {
   const aboveOffer = returns.filter((r) => r > 0).length;
   const unverified = all.filter((c) => !c.verified).length;
 
+  const titleWords = t.site.title.split(" ");
+  const titleLead = titleWords.slice(0, -1).join(" ");
+  const titleLast = titleWords[titleWords.length - 1];
+
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
       <section className="max-w-3xl">
-        <p className="font-mono text-[0.66rem] uppercase tracking-[0.2em] text-primary">
-          {strings.site.tagline}
+        <p className="inline-flex items-center gap-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-primary">
+          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+          {t.site.tagline}
         </p>
-        <h1 className="mt-3 font-display text-5xl font-semibold leading-[1.05] tracking-tight sm:text-6xl">
-          {strings.home.heading}
+        <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl">
+          {locale === "en" ? (
+            <>
+              Saudi IPO <span className="text-primary">Terminal</span>
+            </>
+          ) : (
+            <>
+              {titleLead} <span className="text-primary">{titleLast}</span>
+            </>
+          )}
         </h1>
+        <p className="mt-2 font-mono text-[0.7rem] uppercase tracking-[0.14em] text-muted-foreground">
+          {t.home.heading}
+        </p>
         <p className="mt-5 text-base leading-relaxed text-muted-foreground">
-          {strings.home.intro}
+          {t.home.intro}
         </p>
       </section>
 
       <section className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatTile label="IPOs tracked">{all.length}</StatTile>
-        <StatTile label="Median total return">
+        <StatTile label={t.home.iposTracked}>{all.length}</StatTile>
+        <StatTile label={t.home.medianTotalReturn}>
           <ReturnBadge value={median(returns)} size="lg" showArrow={false} />
         </StatTile>
-        <StatTile label="Above offer" hint={`of ${all.length} with prices`}>
+        <StatTile label={t.home.aboveOffer} hint={fmt(t.home.withPrices, { n: all.length })}>
           {aboveOffer}
         </StatTile>
-        <StatTile label="Unverified" hint="awaiting source check">
+        <StatTile label={t.home.unverified} hint={t.home.awaitingSource}>
           {unverified}
         </StatTile>
       </section>
@@ -52,14 +70,14 @@ export default async function Home() {
       <section className="mt-14">
         <div className="mb-5 flex items-end justify-between border-b border-border/60 pb-2">
           <h2 className="font-display text-2xl font-semibold tracking-tight">
-            Cohorts by year
+            {t.home.cohortsByYear}
           </h2>
           <span className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground">
-            total return, adjusted
+            {t.home.totalReturnAdjusted}
           </span>
         </div>
         {cohorts.length === 0 ? (
-          <EmptyState message={strings.empty.noData} />
+          <EmptyState message={t.empty.noData} />
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {cohorts.map((c) => (

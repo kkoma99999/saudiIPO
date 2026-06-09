@@ -46,3 +46,7 @@ __pycache__/
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local font archive and design scratch (the app uses src/app/fonts/thmanyah)
+Thmanyah-Font-Family/
+design-mockups/

@@ -33,7 +33,7 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
-  --font-display: var(--font-display);
+  --font-display: var(--font-geist-sans);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --radius-sm: calc(var(--radius) * 0.6);
@@ -43,67 +43,36 @@
 }
 
 :root {
-  --radius: 0.5rem;
-  /* Editorial finance: warm bone paper, deep ink, emerald primary, gold accent. */
-  --background: oklch(0.981 0.008 95);
-  --foreground: oklch(0.245 0.014 165);
-  --card: oklch(0.996 0.004 95);
-  --card-foreground: oklch(0.245 0.014 165);
-  --popover: oklch(0.996 0.004 95);
-  --popover-foreground: oklch(0.245 0.014 165);
-  --primary: oklch(0.46 0.108 162);
-  --primary-foreground: oklch(0.98 0.012 95);
-  --secondary: oklch(0.95 0.012 110);
-  --secondary-foreground: oklch(0.3 0.02 165);
-  --muted: oklch(0.955 0.01 105);
-  --muted-foreground: oklch(0.52 0.018 160);
-  --accent: oklch(0.93 0.035 88);
-  --accent-foreground: oklch(0.32 0.05 80);
-  --gold: oklch(0.74 0.12 78);
-  --destructive: oklch(0.55 0.19 28);
-  --border: oklch(0.9 0.012 110);
-  --input: oklch(0.9 0.012 110);
-  --ring: oklch(0.46 0.108 162);
-  --up: oklch(0.52 0.14 152);
-  --up-foreground: oklch(0.98 0.012 95);
-  --down: oklch(0.55 0.19 28);
-  --down-foreground: oklch(0.98 0.012 95);
-  --chart-1: oklch(0.46 0.12 162);
-  --chart-2: oklch(0.67 0.09 70);
-  --chart-3: oklch(0.5 0.02 160);
-  --chart-4: oklch(0.74 0.12 78);
-  --chart-5: oklch(0.4 0.02 160);
-}
-
-.dark {
-  --background: oklch(0.19 0.012 165);
-  --foreground: oklch(0.95 0.01 95);
-  --card: oklch(0.23 0.014 165);
-  --card-foreground: oklch(0.95 0.01 95);
-  --popover: oklch(0.23 0.014 165);
-  --popover-foreground: oklch(0.95 0.01 95);
-  --primary: oklch(0.72 0.13 160);
-  --primary-foreground: oklch(0.2 0.02 165);
-  --secondary: oklch(0.28 0.015 165);
-  --secondary-foreground: oklch(0.95 0.01 95);
-  --muted: oklch(0.28 0.015 165);
-  --muted-foreground: oklch(0.72 0.02 120);
-  --accent: oklch(0.33 0.035 85);
-  --accent-foreground: oklch(0.95 0.01 95);
-  --gold: oklch(0.78 0.12 80);
-  --destructive: oklch(0.65 0.19 28);
-  --border: oklch(0.95 0.01 95 / 12%);
-  --input: oklch(0.95 0.01 95 / 14%);
-  --ring: oklch(0.72 0.13 160);
-  --up: oklch(0.72 0.15 152);
-  --up-foreground: oklch(0.18 0.02 165);
-  --down: oklch(0.68 0.18 28);
-  --down-foreground: oklch(0.18 0.02 165);
-  --chart-1: oklch(0.72 0.14 160);
-  --chart-2: oklch(0.75 0.1 72);
-  --chart-3: oklch(0.72 0.02 120);
-  --chart-4: oklch(0.78 0.12 80);
-  --chart-5: oklch(0.6 0.02 120);
+  --radius: 0.25rem;
+  /* Tadawul Terminal: near-black screen, neon up-green, red down, amber accent. */
+  --background: #0a0c10;
+  --foreground: #c7d0da;
+  --card: #11151c;
+  --card-foreground: #c7d0da;
+  --popover: #11151c;
+  --popover-foreground: #c7d0da;
+  --primary: #00e08a;
+  --primary-foreground: #04130d;
+  --secondary: #161b22;
+  --secondary-foreground: #c7d0da;
+  --muted: #11151c;
+  --muted-foreground: #5b6675;
+  --accent: #161d27;
+  --accent-foreground: #ffb020;
+  --gold: #ffb020;
+  --destructive: #ff5470;
+  --border: #1d2530;
+  --input: #1d2530;
+  --ring: #00e08a;
+  --up: #00e08a;
+  --up-foreground: #04130d;
+  --down: #ff5470;
+  --down-foreground: #1a0a0e;
+  --chart-1: #00e08a;
+  --chart-2: #ffb020;
+  --chart-3: #5b6675;
+  --chart-4: #38bdf8;
+  --chart-5: #3a4452;
 }
 
 @layer base {
@@ -112,14 +81,24 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Faint hairline grid for a broadsheet and terminal atmosphere. */
+    /* Faint hairline grid for a trading-terminal atmosphere. */
     background-image:
-      linear-gradient(to right, color-mix(in oklch, var(--foreground) 3.5%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklch, var(--foreground) 3.5%, transparent) 1px, transparent 1px);
-    background-size: 72px 72px;
+      linear-gradient(to right, color-mix(in oklch, var(--primary) 4%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--primary) 4%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px;
   }
   html {
-    @apply font-sans;
+    @apply font-mono;
+  }
+  /* Arabic uses a proportional Arabic UI face, not the Latin monospace. */
+  html[lang="ar"] {
+    font-family: var(--font-arabic), system-ui, sans-serif;
+  }
+  /* Arabic letters must stay joined, so the terminal's wide letter-spacing and the
+     uppercase transform (a no-op that only hurts) are neutralized for Arabic text. */
+  html[lang="ar"] * {
+    letter-spacing: normal !important;
+    text-transform: none !important;
   }
 }
 

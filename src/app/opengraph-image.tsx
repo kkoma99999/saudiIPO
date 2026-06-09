@@ -35,7 +35,7 @@ export default function OpengraphImage() {
             Saudi IPO Tracker
           </div>
           <div style={{ display: "flex", fontSize: 34, color: "#5b6660", marginTop: 26, maxWidth: 920 }}>
-            Every Main Market IPO since December 2019, with returns adjusted for bonus
+            Every Main Market IPO since 2018, with returns adjusted for bonus
             issues and splits.
           </div>
         </div>

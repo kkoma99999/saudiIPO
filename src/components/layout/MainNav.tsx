@@ -2,18 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { strings } from "@/lib/i18n/strings";
-
-const links = [
-  { href: "/", label: strings.nav.home },
-  { href: "/ipos", label: strings.nav.ipos },
-  { href: "/data-sources", label: strings.nav.sources },
-];
+import { useI18n } from "@/lib/i18n/provider";
 
 export function MainNav() {
   const pathname = usePathname();
+  const { t } = useI18n();
+  const links = [
+    { href: "/", label: t.nav.home },
+    { href: "/ipos", label: t.nav.ipos },
+    { href: "/data-sources", label: t.nav.sources },
+  ];
   return (
-    <nav className="flex items-center gap-1 font-mono text-[0.68rem] uppercase tracking-[0.12em]">
+    <nav className="flex items-center gap-4 font-mono text-[0.62rem] uppercase tracking-[0.12em]">
       {links.map((l) => {
         const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
         return (
@@ -22,8 +22,8 @@ export function MainNav() {
             href={l.href}
             className={
               active
-                ? "rounded-md bg-primary/10 px-3 py-1.5 text-primary"
-                : "rounded-md px-3 py-1.5 text-muted-foreground transition-colors hover:text-foreground"
+                ? "text-primary"
+                : "text-muted-foreground transition-colors hover:text-primary"
             }
           >
             {l.label}
