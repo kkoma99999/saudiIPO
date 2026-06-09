@@ -54,6 +54,15 @@ yfinance splits (those are unreliable on .SR, see below).
 - cagr = (1 + total_return) ^ (1 / years) - 1, years measured ACT/365.25
 - tasi_return = tasi_close(end) / tasi_close(start) - 1 over the same window
 - alpha = total_return - tasi_return
+- first_days_return = close_on_5th_session / split_adjusted_offer_price - 1. The
+  early "listing" return from the offer to the close after five trading sessions. It
+  is the same math as price_return on an early close: no corporate action lands inside
+  an IPO's first week, so F is the same and only the offer is divided by F. It is shown
+  only when the early window is clean: the price history must start within 5 days of
+  the IPO and the five sessions must span at most 14 days. Many .SR tickers have gapped
+  early history (4161 BinDawood's data begins about six months after its IPO), so a
+  gapped or under-five-session series has no first_days_return. It stays empty, never
+  guessed from a partial or much-later window.
 
 The stored close is already split adjusted by yfinance (see below), so it is used as
 is. Never multiply a stored close by F; that would double count. We only divide the

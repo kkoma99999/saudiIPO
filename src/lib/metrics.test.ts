@@ -6,6 +6,9 @@ import {
   compareToIndex,
   cumulativeAdjustedDividends,
   cumulativeFactorAfter,
+  earlyTradingReturn,
+  earlyWindowIsClean,
+  EARLY_RETURN_TRADING_DAYS,
   pctToDps,
   priceReturn,
   totalReturn,
@@ -77,6 +80,44 @@ describe("golden fixtures", () => {
     const aop = adjustedOfferPrice(50, IPO, actions);
     const cd = cumulativeAdjustedDividends(divs, actions, ASOF);
     expect(tr.minus(pr).toFixed(8)).toBe(cd.div(aop).toFixed(8));
+  });
+});
+
+describe("first trading-days return", () => {
+  it("offer to the early close, same basis as the price return", () => {
+    // Offer 50, close on the 5th session 57.5 -> +15%.
+    expect(f4(earlyTradingReturn(50, IPO, 57.5, []))).toBe("0.1500");
+  });
+
+  it("is invariant to a later split, just like priceReturn", () => {
+    // A 2-for-1 split after the IPO halves every stored close into current-share
+    // basis. The 5th-day close 57.5 is stored as 28.75; the offer adjusts to 25.
+    // The early return stays +15%, never doubling.
+    const split: CorporateAction[] = [{ actionDate: "2022-01-01", factor: "2" }];
+    expect(f4(earlyTradingReturn(50, IPO, 28.75, split))).toBe("0.1500");
+    expect(f4(earlyTradingReturn(50, IPO, 28.75, split))).toBe(
+      f4(priceReturn(50, IPO, 28.75, split)),
+    );
+  });
+
+  it("a flat first week is exactly zero, a loss is signed", () => {
+    expect(f4(earlyTradingReturn(50, IPO, 50, []))).toBe("0.0000");
+    expect(f4(earlyTradingReturn(50, IPO, 41, []))).toBe("-0.1800");
+  });
+
+  it("the window is five sessions", () => {
+    expect(EARLY_RETURN_TRADING_DAYS).toBe(5);
+  });
+
+  it("flags a gapped early window so a much later return is not shown as week one", () => {
+    // Naqi: data starts on the IPO day, 5th session six days later. Clean.
+    expect(earlyWindowIsClean("2022-08-15", "2022-08-17", "2022-08-23")).toBe(true);
+    // A few-day listing lag is still clean.
+    expect(earlyWindowIsClean("2019-12-11", "2019-12-11", "2019-12-17")).toBe(true);
+    // BinDawood: price history begins about six months after the IPO. Not clean.
+    expect(earlyWindowIsClean("2020-10-21", "2021-04-19", "2021-04-25")).toBe(false);
+    // Listing captured but the five sessions span three weeks (halts/gaps). Not clean.
+    expect(earlyWindowIsClean("2022-04-20", "2022-04-25", "2022-05-08")).toBe(false);
   });
 });
 

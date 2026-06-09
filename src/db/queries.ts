@@ -14,6 +14,9 @@ import {
   adjustedOfferPrice,
   cumulativeAdjustedDividends,
   cumulativeFactorAfter,
+  earlyTradingReturn,
+  earlyWindowIsClean,
+  EARLY_RETURN_TRADING_DAYS,
   priceReturn,
   totalReturn,
   yieldOnOffer,
@@ -62,20 +65,70 @@ async function latestCloseMap(): Promise<Map<string, Latest>> {
   return map;
 }
 
+type EarlyClose = { date: string; close: string; firstDate: string };
+
+// The first session and the nth session per symbol (sessions ordered from the IPO),
+// so the caller can both compute the early return and judge whether the early window
+// is clean. A symbol with fewer than n sessions has no nth row and is absent from the
+// map, so its early return stays empty rather than being invented from a partial week.
+async function earlySessionMap(n: number): Promise<Map<string, EarlyClose>> {
+  const rows = (await db.execute(sql`
+    SELECT symbol,
+           MIN(date) FILTER (WHERE rn = 1) AS first_date,
+           MIN(date) FILTER (WHERE rn = ${n}) AS nth_date,
+           MIN(close) FILTER (WHERE rn = ${n}) AS nth_close
+    FROM (
+      SELECT symbol, date::text AS date, close::text AS close,
+             ROW_NUMBER() OVER (PARTITION BY symbol ORDER BY date ASC) AS rn
+      FROM prices_daily
+    ) ranked
+    WHERE rn IN (1, ${n})
+    GROUP BY symbol
+  `)) as unknown as Array<{
+    symbol: string;
+    first_date: string | null;
+    nth_date: string | null;
+    nth_close: string | null;
+  }>;
+  const map = new Map<string, EarlyClose>();
+  for (const r of rows) {
+    if (r.first_date && r.nth_date && r.nth_close) {
+      map.set(r.symbol.trim(), {
+        date: r.nth_date,
+        close: r.nth_close,
+        firstDate: r.first_date,
+      });
+    }
+  }
+  return map;
+}
+
 function computeMetrics(
   row: IpoRow,
   latest: Latest | undefined,
+  early: EarlyClose | undefined,
   actions: CorporateAction[],
   divs: DividendEvent[],
   tasiBaseline: string | null,
   tasiLatest: string | null,
 ): CompanyMetrics {
+  // Only a clean early window (data starting at the listing, five sessions inside two
+  // weeks) yields a first-week return. A gapped .SR series leaves it empty.
+  const cleanEarly =
+    early && earlyWindowIsClean(row.ipoDate, early.firstDate, early.date) ? early : undefined;
+  const firstDaysReturn = cleanEarly
+    ? earlyTradingReturn(row.offerPrice, row.ipoDate, cleanEarly.close, actions).toNumber()
+    : null;
+  const firstDaysDate = cleanEarly ? cleanEarly.date : null;
+
   const base: CompanyMetrics = {
     ...row,
     currentPrice: null,
     currentDate: null,
     priceReturn: null,
     totalReturn: null,
+    firstDaysReturn,
+    firstDaysDate,
     yieldOnOffer: null,
     cagr: null,
     tasiReturn: null,
@@ -124,7 +177,7 @@ function computeMetrics(
 }
 
 export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
-  const [ipoRows, latest, actionRows, divRows, tasiRows] = await Promise.all([
+  const [ipoRows, latest, early, actionRows, divRows, tasiRows] = await Promise.all([
     db
       .select({
         symbol: companies.symbol,
@@ -140,6 +193,7 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
       .from(ipos)
       .innerJoin(companies, eq(companies.symbol, ipos.symbol)),
     latestCloseMap(),
+    earlySessionMap(EARLY_RETURN_TRADING_DAYS),
     db
       .select({
         symbol: corporateActions.symbol,
@@ -188,6 +242,7 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
       computeMetrics(
         row,
         latest.get(row.symbol),
+        early.get(row.symbol),
         actionsMap.get(row.symbol) ?? [],
         divsMap.get(row.symbol) ?? [],
         tasiBaseline(row.ipoDate),
@@ -320,6 +375,15 @@ export async function getCompanyDetail(
       ? { date: priceRows[priceRows.length - 1].date, close: priceRows[priceRows.length - 1].close }
       : undefined;
 
+  const early =
+    priceRows.length >= EARLY_RETURN_TRADING_DAYS
+      ? {
+          date: priceRows[EARLY_RETURN_TRADING_DAYS - 1].date,
+          close: priceRows[EARLY_RETURN_TRADING_DAYS - 1].close,
+          firstDate: priceRows[0].date,
+        }
+      : undefined;
+
   const tasiLatest = tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
   let tasiBaseline: string | null = null;
   for (const t of tasiRows) {
@@ -342,6 +406,7 @@ export async function getCompanyDetail(
       dataCaveat: r.dataCaveat,
     },
     latest,
+    early,
     actions,
     divs,
     tasiBaseline,

@@ -26,6 +26,7 @@ export const strings = {
     ipoDate: "IPO date",
     offerPrice: "Offer price",
     price: "Price",
+    firstDays: "First 5D",
     priceReturn: "Price return",
     totalReturn: "Total return",
     dividends: "Cum. div",
@@ -36,6 +37,7 @@ export const strings = {
   company: {
     offerPrice: "Offer price",
     currentPrice: "Current price",
+    firstDays: "First 5 days",
     priceReturn: "Price return",
     totalReturn: "Total return",
     yieldOnOffer: "Yield on offer",

@@ -18,6 +18,8 @@ export interface CompanyMetrics extends IpoRow {
   currentDate: string | null;
   priceReturn: number | null;
   totalReturn: number | null;
+  firstDaysReturn: number | null; // offer price to the close on the 5th trading day
+  firstDaysDate: string | null; // date of that early close
   yieldOnOffer: number | null;
   cagr: number | null;
   tasiReturn: number | null;

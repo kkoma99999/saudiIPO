@@ -96,6 +96,53 @@ export function priceReturn(
     .minus(1);
 }
 
+// Trading-day window for the early "listing" return shown next to the offer price.
+// The first sessions capture the IPO pop, which on TASI is bounded by the daily price
+// limits and settles within a week of trading.
+export const EARLY_RETURN_TRADING_DAYS = 5;
+
+// Return from the offer price to the close on an early trading day (for example the
+// 5th). The math is identical to priceReturn: the stored early close is already in
+// current-share basis, and no corporate action falls inside the first few sessions,
+// so F(after ipo) equals F(after that early day) and dividing only the offer by F is
+// exact. Were an action ever to land inside the window, this is still a faithful
+// current-share comparison of that early close to the offer.
+export function earlyTradingReturn(
+  rawOfferPrice: Num,
+  ipoDate: string,
+  earlyClose: Num,
+  actions: CorporateAction[],
+): Decimal {
+  return priceReturn(rawOfferPrice, ipoDate, earlyClose, actions);
+}
+
+// The early window is only trustworthy when the price history actually starts at the
+// listing. yfinance has gaps on some .SR tickers (for example 4161 BinDawood's data
+// begins about six months after its IPO), so the "5th session" can sit far from the
+// IPO. We require the data to start within a few days of the IPO and the five sessions
+// to span no more than two weeks. When it does not, the early return is left empty
+// rather than presenting a much later return as a first-week one.
+export const EARLY_RETURN_MAX_START_LAG_DAYS = 5;
+export const EARLY_RETURN_MAX_SPAN_DAYS = 14;
+
+function daysBetween(startDate: string, endDate: string): number {
+  return Math.round(
+    (Date.parse(endDate + "T00:00:00Z") - Date.parse(startDate + "T00:00:00Z")) /
+      86_400_000,
+  );
+}
+
+export function earlyWindowIsClean(
+  ipoDate: string,
+  firstSessionDate: string,
+  fifthSessionDate: string,
+): boolean {
+  return (
+    daysBetween(ipoDate, firstSessionDate) <= EARLY_RETURN_MAX_START_LAG_DAYS &&
+    daysBetween(ipoDate, fifthSessionDate) <= EARLY_RETURN_MAX_SPAN_DAYS
+  );
+}
+
 // price_return + cumulative_dividends_per_current_share / split_adjusted_offer.
 export function totalReturn(
   rawOfferPrice: Num,

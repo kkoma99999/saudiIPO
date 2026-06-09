@@ -59,6 +59,12 @@ export default async function CompanyPage({
           {formatSar(m.offerPrice)}
         </StatTile>
         <StatTile label={strings.company.currentPrice}>{formatSar(m.currentPrice)}</StatTile>
+        <StatTile
+          label={strings.company.firstDays}
+          hint={m.firstDaysDate ? `to ${formatDate(m.firstDaysDate)}` : undefined}
+        >
+          <ReturnBadge value={m.firstDaysReturn} size="lg" showArrow={false} />
+        </StatTile>
         <StatTile label={strings.company.priceReturn}>
           <ReturnBadge value={m.priceReturn} size="lg" showArrow={false} />
         </StatTile>

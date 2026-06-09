@@ -13,6 +13,7 @@ type SortKey =
   | "ipoDate"
   | "totalReturn"
   | "priceReturn"
+  | "firstDaysReturn"
   | "alpha"
   | "offerPrice"
   | "cumulativeDividends";
@@ -132,6 +133,9 @@ export function IpoTable({
               <ThSort onClick={() => toggleSort("offerPrice")} active={sortKey === "offerPrice"} dir={sortDir} align="right">
                 {strings.table.offerPrice}
               </ThSort>
+              <ThSort onClick={() => toggleSort("firstDaysReturn")} active={sortKey === "firstDaysReturn"} dir={sortDir} align="right">
+                {strings.table.firstDays}
+              </ThSort>
               <ThSort onClick={() => toggleSort("priceReturn")} active={sortKey === "priceReturn"} dir={sortDir} align="right">
                 {strings.table.priceReturn}
               </ThSort>
@@ -168,6 +172,16 @@ export function IpoTable({
                 <td className="max-w-[14rem] truncate px-3 py-2.5 text-xs text-muted-foreground">{r.sector ?? ""}</td>
                 <td className="px-3 py-2.5 text-right font-mono text-xs tnum">{formatDate(r.ipoDate)}</td>
                 <td className="px-3 py-2.5 text-right font-mono tnum">{formatSar(r.offerPrice)}</td>
+                <td
+                  className="px-3 py-2.5 text-right"
+                  title={
+                    r.firstDaysDate
+                      ? `Offer to the close on the 5th trading day (${formatDate(r.firstDaysDate)})`
+                      : "No clean first-week data: the early price series is gapped or under 5 sessions"
+                  }
+                >
+                  <ReturnBadge value={r.firstDaysReturn} showArrow={false} />
+                </td>
                 <td className="px-3 py-2.5 text-right"><ReturnBadge value={r.priceReturn} showArrow={false} /></td>
                 <td className="px-3 py-2.5 text-right"><ReturnBadge value={r.totalReturn} showArrow={false} /></td>
                 <td className="px-3 py-2.5 text-right font-mono text-xs tnum text-muted-foreground">{formatSar(r.cumulativeDividends)}</td>
