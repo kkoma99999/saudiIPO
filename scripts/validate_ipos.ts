@@ -4,7 +4,7 @@
 // Rules (per row):
 //   1. symbol is exactly 4 digits
 //   2. symbol is unique across the file
-//   3. ipo_date is YYYY-MM-DD, between 2019-12-01 and today
+//   3. ipo_date is YYYY-MM-DD, between 2018-01-01 and today
 //   4. offer_price > 0 when present (empty is allowed)
 //   5. source_url is present and a valid http/https URL
 //   6. verified is a boolean (true/false/1/0, empty means false)
@@ -27,7 +27,7 @@ const EXPECTED_HEADER = [
   "verified",
 ];
 
-const MIN_DATE = "2019-12-01";
+const MIN_DATE = "2018-01-01";
 
 function parseCsv(text: string): string[][] {
   // Strip a leading BOM if present.

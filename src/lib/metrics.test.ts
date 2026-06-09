@@ -9,6 +9,7 @@ import {
   earlyTradingReturn,
   earlyWindowIsClean,
   EARLY_RETURN_TRADING_DAYS,
+  indexBaselineIsClean,
   pctToDps,
   priceReturn,
   totalReturn,
@@ -107,6 +108,14 @@ describe("first trading-days return", () => {
 
   it("the window is five sessions", () => {
     expect(EARLY_RETURN_TRADING_DAYS).toBe(5);
+  });
+
+  it("vs-TASI baseline must sit near the IPO date or the comparison stays empty", () => {
+    // Same-day and weekend-gap baselines are fair.
+    expect(indexBaselineIsClean("2019-12-11", "2019-12-11")).toBe(true);
+    expect(indexBaselineIsClean("2022-08-15", "2022-08-21")).toBe(true);
+    // Index history starting two years after a 2018 IPO is not a since-IPO baseline.
+    expect(indexBaselineIsClean("2018-09-11", "2019-12-01")).toBe(false);
   });
 
   it("flags a gapped early window so a much later return is not shown as week one", () => {

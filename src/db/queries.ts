@@ -17,6 +17,7 @@ import {
   earlyTradingReturn,
   earlyWindowIsClean,
   EARLY_RETURN_TRADING_DAYS,
+  indexBaselineIsClean,
   priceReturn,
   totalReturn,
   yieldOnOffer,
@@ -231,8 +232,14 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
   }
 
   const tasiLatest = tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
+  // First index close on or after the IPO, only when it is close enough to the IPO to
+  // be a fair since-IPO baseline (see indexBaselineIsClean).
   const tasiBaseline = (ipoDate: string): string | null => {
-    for (const t of tasiRows) if (t.date >= ipoDate) return t.close;
+    for (const t of tasiRows) {
+      if (t.date >= ipoDate) {
+        return indexBaselineIsClean(ipoDate, t.date) ? t.close : null;
+      }
+    }
     return null;
   };
 
@@ -388,7 +395,7 @@ export async function getCompanyDetail(
   let tasiBaseline: string | null = null;
   for (const t of tasiRows) {
     if (t.date >= r.ipoDate) {
-      tasiBaseline = t.close;
+      tasiBaseline = indexBaselineIsClean(r.ipoDate, t.date) ? t.close : null;
       break;
     }
   }

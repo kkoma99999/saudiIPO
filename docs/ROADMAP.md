@@ -14,8 +14,16 @@ unchecked task, check off one task at a time and commit per task.
       DONE WHEN: the repo deploys to a Vercel URL.
 - [ ] Verify each IPO row in data/ipos.csv against its source_url and flip verified
       to true. Claude sets verified=false on all rows and lists them in
-      docs/VERIFICATION.md.
+      docs/VERIFICATION.md. The scope now starts at 2018-01-01; six rows were added
+      on 2026-06-10 (1830, 4291, 7200, 4321, 1831, 4292) with per-row notes, the
+      main check items being Leejam's final SAR 52 price and Ataa's 2019-07-31
+      listing day.
       DONE WHEN: human-checked rows have verified=true with initials/date in docs/VERIFICATION.md.
+- [ ] Maharah (1831) pending bonus: a 5-for-19 bonus issue (SAR 475M to 600M) was
+      approved by the CMA on 2026-05-14 and awaits an EGM. When it executes, add the
+      action to data/corporate_actions.csv with the ex-date and factor 600/475 and
+      re-run the backfill, or Maharah's returns will silently break.
+      DONE WHEN: the EGM outcome is known and the action is recorded or dismissed.
 - [ ] Sign off the Main Market inclusion rules (Nomu transfers, direct listings to
       exclude) in docs/VERIFICATION.md.
       DONE WHEN: the inclusion-rules section is signed off.
@@ -29,7 +37,8 @@ unchecked task, check off one task at a time and commit per task.
       does not model. They carry a data-caveat badge and their returns are best
       effort. Decide whether to model the rights dilution or accept the caveat.
       DONE WHEN: a human has reviewed both and confirmed the treatment.
-- [ ] Dividend gaps: 13 of 67 companies have zero dividends in the data. Some paid
+- [ ] Dividend gaps: 13 of 73 companies have zero dividends in the data (each of
+      the six 2018-2019 rows added on 2026-06-10 has dividends). Some paid
       none (recent IPOs); some are yfinance .SR gaps. Cross-check the dividend
       history against saudiexchange for the older zero-dividend names and add any
       missing payments to data (never from memory).

@@ -143,6 +143,17 @@ export function earlyWindowIsClean(
   );
 }
 
+// The vs-TASI comparison is only fair when the stored index series actually covers the
+// IPO date. The baseline is the first index close on or after the IPO; if that close is
+// more than this many days late (stored index history starting after the IPO, not a
+// normal weekend or holiday gap), the comparison window is wrong and the metric stays
+// empty instead of presenting a shorter-window TASI return as since-IPO.
+export const INDEX_BASELINE_MAX_LAG_DAYS = 10;
+
+export function indexBaselineIsClean(ipoDate: string, baselineDate: string): boolean {
+  return daysBetween(ipoDate, baselineDate) <= INDEX_BASELINE_MAX_LAG_DAYS;
+}
+
 // price_return + cumulative_dividends_per_current_share / split_adjusted_offer.
 export function totalReturn(
   rawOfferPrice: Num,

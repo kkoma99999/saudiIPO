@@ -17,7 +17,7 @@ confirmed until a person checks it and flips `verified` to true in the CSV.
 Rows in scope:
 
 - Saudi Main Market (TASI) only. Exclude Nomu, the parallel market.
-- IPO date from 2019-12-01 to today.
+- IPO date from 2018-01-01 to today.
 - New listings only. Exclude direct listings of companies that were already public,
   and exclude transfers from Nomu to the Main Market (those are not IPOs).
 - 4-digit numeric symbol. Yahoo ticker is `{symbol}.SR`.
@@ -86,16 +86,18 @@ stays empty and is flagged below for human verification.
 
 ## Row checklist
 
-67 in-scope Main Market IPOs (December 2019 to today), all verified=false. One line
+73 in-scope Main Market IPOs (January 2018 to today), all verified=false. One line
 per CSV row with its source and the per-row confidence note from collection. A human
 checks each against its source, then flips verified to true in the CSV and notes
 initials and date in the last column.
 
-Discovered but excluded from the CSV: Al Moammar Information Systems (7200, listed
-2019-04-24), Arabian Centres (4321, 2019-05-22), and Maharah Human Resources (1831,
-2019-06-18) all listed before the 2019-12-01 scope start; Ataa Educational (4292)
-had no confirmed listing date; Mutlaq Al-Ghowairi Contracting had no confirmed
-4-digit symbol. These can be revisited by a human.
+The scope start moved from 2019-12-01 to 2018-01-01 on 2026-06-10, adding six rows:
+Leejam Sports (1830), National Co. for Learning and Education (4291), Al Moammar
+Information Systems (7200), Arabian Centres (4321), Maharah Human Resources (1831),
+and Ataa Educational (4292). Their listing dates were each confirmed against a news
+or press source and corroborated by the first Yahoo Finance trading bar (Maharah's
+sourced date 2019-06-18 is one day before Yahoo's first bar, within tolerance).
+Mutlaq Al-Ghowairi Contracting remains excluded: no confirmed 4-digit symbol.
 
 | symbol | name_en | ipo_date | source_url | low-confidence fields | checked (initials/date) |
 | --- | --- | --- | --- | --- | --- |
@@ -166,6 +168,12 @@ had no confirmed listing date; Mutlaq Al-Ghowairi Contracting had no confirmed
 | 4327 | Alramz Real Estate Co. | 2025-12-18 | [src](https://www.argaam.com/ar/article/articledetail/id/1866877) | High confidence on symbol (4327), English name, Arabic name, listing date (2025-12-18), offer price (SAR 70), Main Market/TASI status, shares offered (12,857,143 / 12.86M = 30% of capital), and total proceeds (SAR 900 million) - all confirmed across multiple fetched pages (Argaam AR article 1866877, Argaam EN article 1864154, Zawya, AGBI). Sector "Real Estate Management & Development" comes from t | |
 | 1324 | Saleh Abdulaziz Al Rashed and Sons Co. | 2026-03-11 | [src](https://www.argaam.com/en/tadawul/tasi/saleh-alrashed) | offer_price=45 SAR/share is the FINAL price, confirmed verbatim on Argaam article id/1883285 ("Offer Price: SAR 45/share"); the price range SAR 43-45 was set earlier (article id/1876646). ipo_date=2026-03-11 taken from the Argaam company profile Events section labeled "listing date" (shown as 11-03-2026); no single fetched sentence pairs the price and the listing date together, so they come from t | |
 | 7205 | Dar Albalad for Business Solutions Co. | 2026-05-20 | [src](https://www.argaam.com/en/article/articledetail/id/1907407) | EMPTY/UNCERTAIN FIELDS: (1) proceeds_sar left empty - no fetched page stated total IPO proceeds as a single SAR figure; 21,000,000 shares x SAR 9.75 = SAR 204,750,000 by calculation, but this exact figure was NOT quoted on any page I fetched, so I left it blank per the iron rule against fabricating/deriving values. (2) name_ar left empty - the Arabic company name was not present on any of the Engl | |
+| 1830 | Leejam Sports Co. | 2018-09-10 | [src](https://www.argaam.com/en/article/articledetail/id/560786) | offer_price=52: top of the SAR 45-52 bookbuilding range; confirmed by Statista (Riyad Capital data) and an Investcorp listing PR summary, but NOT by a directly fetched page quoting the final price verbatim, so treat as the row's main check item. ipo_date=2018-09-10 verbatim in the Investcorp PR and matches the first Yahoo bar. shares_offered=15,715,009 from the prospectus coverage. name_ar from common usage, confirm against saudiexchange. No corporate actions found since IPO. | |
+| 4291 | National Co. for Learning and Education | 2018-11-18 | [src](https://www.argaam.com/en/article/articledetail/id/576321) | offer_price=19 and shares 13,000,000 (30.23%) verbatim on the Argaam article; oversubscription 155 = institutional tranche. ipo_date=2018-11-18 from Saudipedia, matches the first Yahoo bar. Capital was already SAR 430M at listing (the 300M to 430M step was pre-IPO), so no post-IPO actions. name_ar from common usage, confirm against saudiexchange. | |
+| 7200 | Al Moammar Information Systems Co. (MIS) | 2019-04-24 | [src](https://www.argaam.com/en/article/articledetail/id/599428) | offer_price=45 and 4.8M shares verbatim on the Argaam article; oversubscription 110 = institutional. ipo_date=2019-04-24 from the Zawya listing PR, matches the first Yahoo bar. Three bonus issues verified in data/corporate_actions.csv (160M to 300M, cumulative factor 1.875, agreeing with Yahoo for once). name_ar from common usage. | |
+| 4321 | Arabian Centres Co. (Cenomi Centers) | 2019-05-22 | [src](https://www.zawya.com/en/press-release/arabian-centres-company-listing-and-commencement-of-trading-on-tadawul-ysft8rwi) | offer_price=26 and listing 2019-05-22 verbatim in the company listing PR; 95M shares (65M existing + 30M new). proceeds left empty: the PR's "SAR 2.8 billion raised" conflicts with 95M x 26 = SAR 2.47B, so neither stored. Renamed Cenomi Centers in 2022 (Argaam id/1607208). Capital unchanged since IPO (475M shares, SAR 4.75B), no actions. | |
+| 1831 | Maharah Human Resources Co. | 2019-06-18 | [src](https://www.argaam.com/en/article/articledetail/id/614132) | offer_price=69 and debut Tuesday June 18, 2019 verbatim in the Argaam debut article (Yahoo's first bar is one day later, within tolerance). Two verified actions: June 2023 bonus 375M to 475M (factor 19/15 = 1.2667; Yahoo wrongly uses 1.20) and Feb 2024 par change 10 to 1 (factor 10). Carries a data caveat for Yahoo's misadjusted pre-2023 history. WATCH: a 5-for-19 bonus (475M to 600M) was CMA-approved 2026-05-14 and awaits an EGM; when it executes, add it to data/corporate_actions.csv. | |
+| 4292 | Ataa Educational Co. | 2019-07-31 | [src](https://www.argaam.com/en/article/articledetail/id/1300716) | offer_price=29 verbatim ("sets IPO price at SAR 29"); 12M shares (30%); oversubscription 202 = institutional. ipo_date=2019-07-31 from the first Yahoo bar plus July-2019 listing coverage; no fetched sentence states the day verbatim, so treat as the row's main check item. The May 2022 capital increase to SAR 420.87M (+5.22%) is a consideration share issue, not a pro-rata bonus, so it is correctly NOT a corporate action and prices need no adjustment. | |
 
 ## Human sign-off
 

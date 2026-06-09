@@ -1,11 +1,11 @@
 # Saudi TASI IPO Tracker
 
-A website tracking every Saudi Main Market (TASI) IPO from December 2019 to today,
+A website tracking every Saudi Main Market (TASI) IPO from January 2018 to today,
 roughly 75 to 90 companies. No Nomu. For each company it shows the offer price, the
-current price, the return since IPO adjusted for bonus issues and splits, the full
-dividend history, the dividend yield on the offer price, and performance versus the
-TASI index. The audience is Saudi retail investors. The UI is English now and is
-structured so Arabic and RTL can be added later.
+current price, the return since IPO adjusted for bonus issues and splits, the first
+five trading days return, the full dividend history, the dividend yield on the offer
+price, and performance versus the TASI index. The audience is Saudi retail investors.
+The UI ships in English and Arabic (RTL) with a per-session language switch.
 
 This is informational only. It is not investment advice.
 

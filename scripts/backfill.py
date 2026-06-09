@@ -30,7 +30,7 @@ import db
 _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 IPOS_CSV = os.path.join(_REPO_ROOT, "data", "ipos.csv")
 TASI = "^TASI.SR"
-DEFAULT_START = "2019-12-01"
+DEFAULT_START = "2018-01-01"
 
 
 def _num(x):
