@@ -13,7 +13,7 @@ export function MainNav() {
     { href: "/data-sources", label: t.nav.sources },
   ];
   return (
-    <nav className="flex items-center gap-4 font-mono text-[0.62rem] uppercase tracking-[0.12em]">
+    <nav className="flex items-center gap-5 text-[0.8rem] font-medium">
       {links.map((l) => {
         const active = l.href === "/" ? pathname === "/" : pathname.startsWith(l.href);
         return (
@@ -23,7 +23,7 @@ export function MainNav() {
             className={
               active
                 ? "text-primary"
-                : "text-muted-foreground transition-colors hover:text-primary"
+                : "text-muted-foreground transition-colors hover:text-foreground"
             }
           >
             {l.label}

@@ -17,8 +17,7 @@ export function LocaleSwitcher() {
     router.refresh();
   }
 
-  const base =
-    "px-1.5 py-0.5 font-mono text-[0.62rem] uppercase tracking-[0.12em] transition-colors";
+  const base = "px-1 py-0.5 text-xs font-medium transition-colors";
   const on = "text-primary";
   const off = "text-muted-foreground hover:text-foreground";
 

@@ -13,6 +13,9 @@ const en = {
     ipos: "All IPOs",
     sources: "Data sources",
   },
+  ticker: {
+    label: "Total return since IPO for every tracked listing",
+  },
   switcher: {
     label: "Language",
     english: "EN",
@@ -58,6 +61,7 @@ const en = {
     vsTasi: "vs TASI",
     year: "Year",
     all: "All",
+    unverifiedNote: "Every figure is provisional until each row is checked against its source.",
   },
   cohort: {
     listings: "{n} listings",
@@ -131,6 +135,9 @@ const ar: Dict = {
     ipos: "كل الطروحات",
     sources: "مصادر البيانات",
   },
+  ticker: {
+    label: "العائد الكلي منذ الطرح لكل الإدراجات المتتبَّعة",
+  },
   switcher: {
     label: "اللغة",
     english: "EN",
@@ -176,6 +183,7 @@ const ar: Dict = {
     vsTasi: "مقابل تاسي",
     year: "السنة",
     all: "الكل",
+    unverifiedNote: "كل رقم هنا مبدئي حتى يُتحقَّق من كل صف مقابل مصدره.",
   },
   cohort: {
     listings: "{n} طرح",

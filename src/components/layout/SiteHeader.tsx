@@ -4,29 +4,34 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-border/70 bg-card/40 backdrop-blur-sm">
-      <div className="mx-auto flex h-10 max-w-6xl items-center justify-between gap-6 px-5">
+    <header className="sticky top-0 z-30 border-b border-border/70 bg-background/80 backdrop-blur-sm">
+      <span
+        aria-hidden="true"
+        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
+      />
+      <div className="mx-auto flex h-12 max-w-6xl items-center justify-between gap-6 px-5">
         <Link href="/" className="flex items-center gap-3">
           <span className="flex items-center gap-2.5">
-            <span className="size-1.5 rounded-full bg-primary shadow-[0_0_8px_rgba(0,224,138,0.8)]" />
-            <span className="font-mono text-sm font-semibold tracking-tight text-foreground">
+            <span
+              aria-hidden="true"
+              className="flex h-5 w-5 items-end justify-center gap-[2px] rounded-[4px] border border-primary/40 bg-primary/10 px-[3px] pb-[3px] pt-[4px]"
+            >
+              <span className="h-[35%] w-[2px] bg-primary/60" />
+              <span className="h-[100%] w-[2px] bg-primary" />
+              <span className="h-[60%] w-[2px] bg-primary/80" />
+            </span>
+            <span className="text-sm font-semibold tracking-tight text-foreground">
               Saudi <span className="text-primary">IPO</span> Tracker
             </span>
           </span>
-          <span className="hidden font-mono text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground sm:inline">
-            TADAWUL // TASI
+          <span className="hidden text-[0.68rem] uppercase tracking-[0.1em] text-muted-foreground sm:inline">
+            TADAWUL · TASI
           </span>
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <MainNav />
-          <span aria-hidden className="text-border">
-            |
-          </span>
+          <span aria-hidden className="hidden h-4 w-px bg-border sm:inline-block" />
           <LocaleSwitcher />
-          <span
-            aria-hidden
-            className="inline-block h-3 w-[7px] bg-primary motion-safe:animate-pulse"
-          />
         </div>
       </div>
     </header>

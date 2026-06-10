@@ -50,3 +50,6 @@ next-env.d.ts
 # local font archive and design scratch (the app uses src/app/fonts/thmanyah)
 Thmanyah-Font-Family/
 design-mockups/
+
+# browser automation scratch
+.playwright-mcp/

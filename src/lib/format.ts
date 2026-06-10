@@ -10,6 +10,20 @@ const sarFmt = new Intl.NumberFormat(intlLocale, {
   maximumFractionDigits: 2,
 });
 
+// Compact SAR for large headline figures, for example SAR 446B or SAR 96M. Used for
+// proceeds and big share counts where halala precision is noise. Prices keep full 2dp.
+const sarCompactFmt = new Intl.NumberFormat(intlLocale, {
+  style: "currency",
+  currency: "SAR",
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
+
+const countCompactFmt = new Intl.NumberFormat(intlLocale, {
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
+
 const dateFmt = new Intl.DateTimeFormat(intlLocale, {
   year: "numeric",
   month: "short",
@@ -41,10 +55,22 @@ export function formatPercent(
   return `${prefix}${pct.toFixed(digits)}%`;
 }
 
+// Compact SAR for large headline figures (SAR 446B). Falls back to n/a when missing.
+export function formatSarCompact(value: number | string | null | undefined): string {
+  const n = toNum(value);
+  return n === null ? NA : sarCompactFmt.format(n);
+}
+
 // Plain number with grouping, for share counts.
 export function formatCount(value: number | string | null | undefined): string {
   const n = toNum(value);
   return n === null ? NA : new Intl.NumberFormat(intlLocale).format(n);
+}
+
+// Compact share count, for example 3B or 95M, for large headline counts.
+export function formatCountCompact(value: number | string | null | undefined): string {
+  const n = toNum(value);
+  return n === null ? NA : countCompactFmt.format(n);
 }
 
 // 'YYYY-MM-DD' to a readable date.

@@ -24,7 +24,7 @@ export async function CompanyHeader({
       <div className="flex items-start gap-4">
         <CompanyLogo symbol={m.symbol} name={m.nameEn} size={60} />
         <div className="min-w-0">
-          <div className="font-mono text-[0.66rem] uppercase tracking-[0.16em] text-primary">
+          <div className="font-mono text-xs text-primary tnum">
             {m.symbol} <span className="text-muted-foreground">/ {m.symbol}.SR</span>
           </div>
           <div className="mt-2 flex flex-wrap items-end gap-x-4 gap-y-2">
@@ -40,7 +40,7 @@ export async function CompanyHeader({
           )}
         </div>
       </div>
-      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 font-mono text-xs text-muted-foreground">
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
         <span>{m.sector ?? ""}</span>
         <span>
           {t.detail.listed} {formatDate(m.ipoDate)}

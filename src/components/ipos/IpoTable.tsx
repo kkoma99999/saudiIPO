@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { CompanyMetrics } from "@/types/domain";
 import { ReturnBadge } from "@/components/shared/ReturnBadge";
-import { UnverifiedBadge } from "@/components/shared/UnverifiedBadge";
 import { CompanyLogo } from "@/components/shared/CompanyLogo";
 import { formatSar, formatDate, ipoYear } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/provider";
@@ -91,19 +90,19 @@ export function IpoTable({
   }
 
   const selectClass =
-    "rounded-md border border-border bg-card px-2.5 py-1.5 font-mono text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40";
+    "rounded-md border border-border bg-card px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40";
 
   return (
     <div>
-      <div className="mb-4 flex flex-wrap items-center gap-2">
+      <div className="mb-4 flex flex-wrap items-center gap-2.5">
         <input
           type="search"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder={t.filters.search}
-          className={`${selectClass} w-52`}
+          className={`${selectClass} w-56`}
         />
-        <select className={selectClass} value={year} onChange={(e) => setYear(e.target.value)}>
+        <select className={`${selectClass} w-32`} value={year} onChange={(e) => setYear(e.target.value)}>
           <option value="all">{t.filters.allYears}</option>
           {years.map((y) => (
             <option key={y} value={y}>
@@ -111,7 +110,7 @@ export function IpoTable({
             </option>
           ))}
         </select>
-        <select className={selectClass} value={sector} onChange={(e) => setSector(e.target.value)}>
+        <select className={`${selectClass} w-48`} value={sector} onChange={(e) => setSector(e.target.value)}>
           <option value="all">{t.filters.allSectors}</option>
           {sectors.map((s) => (
             <option key={s} value={s}>
@@ -119,20 +118,25 @@ export function IpoTable({
             </option>
           ))}
         </select>
-        <select className={selectClass} value={bucket} onChange={(e) => setBucket(e.target.value)}>
+        <select className={`${selectClass} w-36`} value={bucket} onChange={(e) => setBucket(e.target.value)}>
           <option value="all">{t.filters.allReturns}</option>
           <option value="positive">{t.filters.aboveOffer}</option>
           <option value="negative">{t.filters.belowOffer}</option>
         </select>
-        <span className="ms-auto font-mono text-xs text-muted-foreground">
+        <span className="ms-auto text-xs text-muted-foreground tnum">
           {fmt(t.filters.count, { n: filtered.length, m: rows.length })}
         </span>
       </div>
 
-      <div className="overflow-x-auto rounded border border-border/70">
+      <p className="mb-3 flex items-center gap-2 text-xs text-muted-foreground">
+        <span aria-hidden className="inline-block h-1.5 w-1.5 shrink-0 rounded-full bg-gold" />
+        {t.table.unverifiedNote}
+      </p>
+
+      <div className="overflow-x-auto rounded-lg border border-border/70">
         <table className="w-full border-collapse text-sm">
           <thead>
-            <tr className="border-b border-border bg-secondary/50 text-start font-mono text-[0.62rem] uppercase tracking-[0.13em] text-muted-foreground">
+            <tr className="border-b border-border bg-secondary/40 text-start text-[0.7rem] font-medium text-muted-foreground">
               <Th>{t.table.company}</Th>
               <Th>{t.table.sector}</Th>
               <ThSort onClick={() => toggleSort("ipoDate")} active={sortKey === "ipoDate"} dir={sortDir} align="end">
@@ -141,7 +145,7 @@ export function IpoTable({
               <ThSort onClick={() => toggleSort("offerPrice")} active={sortKey === "offerPrice"} dir={sortDir} align="end">
                 {t.table.offerPrice}
               </ThSort>
-              <ThSort onClick={() => toggleSort("firstDaysReturn")} active={sortKey === "firstDaysReturn"} dir={sortDir} align="end" accent>
+              <ThSort onClick={() => toggleSort("firstDaysReturn")} active={sortKey === "firstDaysReturn"} dir={sortDir} align="end">
                 {t.table.firstDays}
               </ThSort>
               <ThSort onClick={() => toggleSort("priceReturn")} active={sortKey === "priceReturn"} dir={sortDir} align="end">
@@ -160,28 +164,32 @@ export function IpoTable({
           </thead>
           <tbody>
             {filtered.map((r) => (
-              <tr key={r.symbol} className="border-b border-border/50 transition-colors last:border-0 hover:bg-accent/30">
-                <td className="px-3 py-2">
-                  <Link href={`/company/${r.symbol}`} className="group flex items-center gap-2.5">
+              <tr key={r.symbol} className="border-b border-border/50 transition-colors last:border-0 hover:bg-accent/40">
+                <td className="px-3 py-3">
+                  <Link href={`/company/${r.symbol}`} className="group flex min-w-0 items-center gap-2.5">
                     <CompanyLogo symbol={r.symbol} name={r.nameEn} size={26} />
-                    <span className="font-mono text-xs text-muted-foreground tnum">{r.symbol}</span>
-                    <span className="font-medium text-foreground group-hover:text-primary">{displayName(r, locale)}</span>
-                    {!r.verified && <UnverifiedBadge />}
+                    <span className="shrink-0 text-xs text-muted-foreground tnum">{r.symbol}</span>
+                    <span
+                      title={displayName(r, locale)}
+                      className="max-w-[14rem] truncate font-medium text-foreground group-hover:text-primary"
+                    >
+                      {displayName(r, locale)}
+                    </span>
                     {r.dataCaveat && (
                       <span
                         title={r.dataCaveat}
-                        className="inline-flex h-4 w-4 cursor-help items-center justify-center rounded-full border border-gold/60 bg-gold/15 font-mono text-[0.6rem] text-accent-foreground"
+                        className="inline-flex h-4 w-4 shrink-0 cursor-help items-center justify-center rounded-full border border-gold/55 bg-gold/12 text-[0.6rem] text-accent-foreground"
                       >
                         !
                       </span>
                     )}
                   </Link>
                 </td>
-                <td className="max-w-[14rem] truncate px-3 py-2 text-xs text-muted-foreground">{r.sector ?? ""}</td>
-                <td className="px-3 py-2 text-end font-mono text-xs tnum">{formatDate(r.ipoDate)}</td>
-                <td className="px-3 py-2 text-end font-mono tnum">{formatSar(r.offerPrice)}</td>
+                <td className="max-w-[9rem] truncate px-3 py-3 text-xs text-muted-foreground">{r.sector ?? ""}</td>
+                <td className="whitespace-nowrap px-3 py-3 text-end text-xs tnum">{formatDate(r.ipoDate)}</td>
+                <td className="px-3 py-3 text-end tnum">{formatSar(r.offerPrice)}</td>
                 <td
-                  className="bg-gold/[0.03] px-3 py-2 text-end"
+                  className="px-3 py-3 text-end"
                   title={
                     r.firstDaysDate
                       ? `Offer to the close on the 5th trading day (${formatDate(r.firstDaysDate)})`
@@ -193,10 +201,10 @@ export function IpoTable({
                     {r.firstDaysReturn !== null && <FirstDaysBar value={r.firstDaysReturn} />}
                   </span>
                 </td>
-                <td className="px-3 py-2 text-end"><ReturnBadge value={r.priceReturn} showArrow={false} /></td>
-                <td className="px-3 py-2 text-end"><ReturnBadge value={r.totalReturn} showArrow={false} /></td>
-                <td className="px-3 py-2 text-end font-mono text-xs tnum text-muted-foreground">{formatSar(r.cumulativeDividends)}</td>
-                <td className="px-3 py-2 text-end"><ReturnBadge value={r.alpha} showArrow={false} /></td>
+                <td className="px-3 py-3 text-end"><ReturnBadge value={r.priceReturn} showArrow={false} /></td>
+                <td className="px-3 py-3 text-end"><ReturnBadge value={r.totalReturn} showArrow={false} /></td>
+                <td className="px-3 py-3 text-end text-xs tnum text-muted-foreground">{formatSar(r.cumulativeDividends)}</td>
+                <td className="px-3 py-3 text-end"><ReturnBadge value={r.alpha} showArrow={false} /></td>
               </tr>
             ))}
           </tbody>
@@ -210,7 +218,7 @@ export function IpoTable({
 }
 
 function Th({ children }: { children: React.ReactNode }) {
-  return <th className="px-3 py-2 font-medium">{children}</th>;
+  return <th className="whitespace-nowrap px-3 py-2.5 font-medium">{children}</th>;
 }
 
 function ThSort({
@@ -219,29 +227,25 @@ function ThSort({
   active,
   dir,
   align = "start",
-  accent = false,
 }: {
   children: React.ReactNode;
   onClick: () => void;
   active: boolean;
   dir: "asc" | "desc";
   align?: "start" | "end";
-  accent?: boolean;
 }) {
   return (
-    <th
-      className={`px-3 py-2 font-medium ${align === "end" ? "text-end" : ""} ${
-        accent ? "bg-gold/[0.045] text-gold" : ""
-      }`}
-    >
+    <th className={`whitespace-nowrap px-3 py-2.5 font-medium ${align === "end" ? "text-end" : ""}`}>
       <button
         onClick={onClick}
-        className={`inline-flex items-center gap-1 uppercase transition-colors ${
-          accent ? "hover:text-gold/80" : "hover:text-foreground"
-        } ${active ? (accent ? "text-gold" : "text-primary") : ""}`}
+        className={`inline-flex items-center gap-1 transition-colors hover:text-foreground ${
+          active ? "text-primary" : ""
+        }`}
       >
         {children}
-        <span className="text-[0.7em]">{active ? (dir === "asc" ? "^" : "v") : ""}</span>
+        <span className="text-[0.85em] leading-none">
+          {active ? (dir === "asc" ? "↑" : "↓") : ""}
+        </span>
       </button>
     </th>
   );

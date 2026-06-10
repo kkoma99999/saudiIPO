@@ -43,35 +43,36 @@
 }
 
 :root {
-  --radius: 0.25rem;
-  /* Tadawul Terminal: near-black screen, neon up-green, red down, amber accent. */
-  --background: #0a0c10;
-  --foreground: #c7d0da;
-  --card: #11151c;
-  --card-foreground: #c7d0da;
-  --popover: #11151c;
-  --popover-foreground: #c7d0da;
-  --primary: #00e08a;
-  --primary-foreground: #04130d;
-  --secondary: #161b22;
-  --secondary-foreground: #c7d0da;
-  --muted: #11151c;
-  --muted-foreground: #5b6675;
-  --accent: #161d27;
-  --accent-foreground: #ffb020;
-  --gold: #ffb020;
-  --destructive: #ff5470;
-  --border: #1d2530;
-  --input: #1d2530;
-  --ring: #00e08a;
-  --up: #00e08a;
-  --up-foreground: #04130d;
-  --down: #ff5470;
+  --radius: 0.625rem;
+  /* Refined dark (Tadawul Terminal, calmed): neutral near-black, one refined emerald
+     primary, muted gain/loss, amber reserved for caveats, neutral benchmark line. */
+  --background: #0c0d0f;
+  --foreground: #e6e9ed;
+  --card: #141619;
+  --card-foreground: #e6e9ed;
+  --popover: #141619;
+  --popover-foreground: #e6e9ed;
+  --primary: #3ecf8e;
+  --primary-foreground: #06140d;
+  --secondary: #1a1d22;
+  --secondary-foreground: #e6e9ed;
+  --muted: #141619;
+  --muted-foreground: #8b929b;
+  --accent: #1a1d22;
+  --accent-foreground: #d6a24a;
+  --gold: #d6a24a;
+  --destructive: #ef6a78;
+  --border: #23262d;
+  --input: #23262d;
+  --ring: #3ecf8e;
+  --up: #3ecf8e;
+  --up-foreground: #06140d;
+  --down: #ef6a78;
   --down-foreground: #1a0a0e;
-  --chart-1: #00e08a;
-  --chart-2: #ffb020;
-  --chart-3: #5b6675;
-  --chart-4: #38bdf8;
+  --chart-1: #3ecf8e;
+  --chart-2: #9aa3ad;
+  --chart-3: #8b929b;
+  --chart-4: #6b8cc4;
   --chart-5: #3a4452;
 }
 
@@ -81,14 +82,34 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Faint hairline grid for a trading-terminal atmosphere. */
+    /* Plotting-paper atmosphere: a faint chart grid over near-black, with a soft
+       emerald glow bleeding in from the top edge. Fixed so the page scrolls over it. */
     background-image:
-      linear-gradient(to right, color-mix(in oklch, var(--primary) 4%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklch, var(--primary) 4%, transparent) 1px, transparent 1px);
-    background-size: 64px 64px;
+      radial-gradient(
+        120% 55% at 50% -15%,
+        color-mix(in srgb, var(--primary) 6%, transparent),
+        transparent 70%
+      ),
+      linear-gradient(
+        color-mix(in srgb, var(--foreground) 4%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--foreground) 4%, transparent) 1px,
+        transparent 1px
+      );
+    background-size:
+      100% 100%,
+      56px 56px,
+      56px 56px;
+    background-attachment: fixed;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 30%, transparent);
   }
   html {
-    @apply font-mono;
+    @apply font-sans;
   }
   /* Arabic uses a proportional Arabic UI face, not the Latin monospace. */
   html[lang="ar"] {
@@ -100,12 +121,118 @@
     letter-spacing: normal !important;
     text-transform: none !important;
   }
+  /* tnum forces direction ltr, which also flips text-align start to left. Block-level
+     figures inside an RTL page snap back to the right edge where their labels sit.
+     Inline figures are unaffected; their placement comes from the surrounding layout. */
+  html[dir="rtl"] .tnum {
+    text-align: right;
+  }
 }
 
 @utility font-display {
   font-family: var(--font-display);
 }
 
+/* Figures: monospace with tabular alignment. The interface is proportional sans; only
+   numbers (prices, percentages, dates in tables) use the mono face, via this utility.
+   Figures are forced LTR and bidi-isolated so a leading minus or plus stays on the
+   left even inside Arabic text. */
 @utility tnum {
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+/* Entrance motion: one staggered rise on page load. Sections opt in with .rise and an
+   optional .rise-2 / .rise-3 delay step. Kept to the load moment only. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bars that grow from zero to their inline width on load. */
+@keyframes growx {
+  from {
+    width: 0;
+  }
+}
+
+/* The ticker tape: the track holds two copies of the strip and slides one strip
+   width, so the loop is seamless. Duration is set per instance via --tape-duration. */
+@keyframes tape {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@layer components {
+  .rise {
+    animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .rise-2 {
+    animation-delay: 120ms;
+  }
+  .rise-3 {
+    animation-delay: 240ms;
+  }
+  .growx {
+    animation: growx 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+  }
+  .tape-track {
+    animation: tape var(--tape-duration, 60s) linear infinite;
+  }
+  .tape:hover .tape-track {
+    animation-play-state: paused;
+  }
+
+  /* Registration marks: small corner ticks set just outside a tile, like crop marks
+     on a technical drawing. They brighten when the tile is hovered. */
+  .hud-corners {
+    position: relative;
+  }
+  .hud-corners::before,
+  .hud-corners::after {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border: 0 solid color-mix(in srgb, var(--primary) 65%, transparent);
+    opacity: 0.4;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+  }
+  .hud-corners::before {
+    top: -3px;
+    inset-inline-start: -3px;
+    border-top-width: 1px;
+    border-inline-start-width: 1px;
+  }
+  .hud-corners::after {
+    bottom: -3px;
+    inset-inline-end: -3px;
+    border-bottom-width: 1px;
+    border-inline-end-width: 1px;
+  }
+  .hud-corners:hover::before,
+  .hud-corners:hover::after {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rise,
+    .growx,
+    .tape-track {
+      animation: none;
+    }
+  }
 }

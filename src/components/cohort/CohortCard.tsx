@@ -10,26 +10,38 @@ export async function CohortCard({ cohort }: { cohort: CohortSummary }) {
   return (
     <Link
       href={`/ipos?year=${cohort.year}`}
-      className="group relative flex flex-col justify-between overflow-hidden rounded border border-border/70 bg-card transition-colors hover:border-primary/40"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-border/70 bg-card transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_30px_-12px_rgba(62,207,142,0.15)]"
     >
-      <div className="flex items-center justify-between border-b border-border/70 bg-secondary/40 px-4 py-2">
-        <span className="font-mono text-3xl font-semibold leading-none tracking-tight tnum">
+      <span
+        aria-hidden="true"
+        className="pointer-events-none absolute -bottom-4 -end-1 select-none text-[5.5rem] font-semibold leading-none tracking-tighter text-foreground/[0.04] tnum"
+      >
+        {cohort.year}
+      </span>
+      <div className="flex items-center justify-between border-b border-border/70 bg-secondary/40 px-4 py-2.5">
+        <span className="text-3xl font-semibold leading-none tracking-tight tnum">
           {cohort.year}
         </span>
-        <span className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="flex items-center gap-2 text-xs text-muted-foreground">
           {fmt(t.cohort.listings, { n: cohort.count })}
+          <span
+            aria-hidden="true"
+            className="-translate-x-1 text-primary opacity-0 transition-[opacity,transform] duration-200 group-hover:translate-x-0 group-hover:opacity-100 rtl:rotate-180"
+          >
+            →
+          </span>
         </span>
       </div>
 
-      <div className="space-y-2 px-4 pt-3">
+      <div className="space-y-2.5 px-4 pt-4">
         <div className="flex items-center justify-between">
-          <span className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             {t.cohort.medianTotalReturn}
           </span>
           <ReturnBadge value={cohort.medianTotalReturn} />
         </div>
         <div className="flex items-center justify-between">
-          <span className="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-muted-foreground">
+          <span className="text-xs text-muted-foreground">
             {t.cohort.average}
           </span>
           <ReturnBadge value={cohort.avgTotalReturn} />
@@ -37,25 +49,23 @@ export async function CohortCard({ cohort }: { cohort: CohortSummary }) {
       </div>
 
       <div className="px-4 pt-4">
-        <div className="flex h-1 overflow-hidden rounded-sm bg-down/20">
+        <div className="flex h-1 overflow-hidden rounded-full bg-down/20">
           <div
-            className="h-full bg-up"
+            className="growx h-full bg-up"
             style={{ width: `${Math.round(winRate * 100)}%` }}
           />
         </div>
-        <div className="mt-2 font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground">
+        <div className="mt-2 text-xs text-muted-foreground">
           {fmt(t.cohort.aboveOfferCount, { n: cohort.positiveCount, m: cohort.count })}
         </div>
       </div>
 
       {cohort.best && (
-        <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/70 px-4 py-2.5">
-          <span className="font-mono text-[0.6rem] uppercase tracking-[0.12em] text-muted-foreground">
-            {t.cohort.best}
-          </span>
+        <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/70 px-4 py-3">
+          <span className="text-xs text-muted-foreground">{t.cohort.best}</span>
           <span className="flex min-w-0 items-baseline gap-2">
             <span className="truncate text-xs text-foreground">{cohort.best.nameEn}</span>
-            <span className="font-mono text-xs text-up tnum">
+            <span className="text-xs text-up tnum">
               {cohort.best.totalReturn >= 0 ? "+" : ""}
               {(cohort.best.totalReturn * 100).toFixed(0)}%
             </span>

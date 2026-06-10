@@ -9,7 +9,7 @@ export function UnverifiedBadge() {
   return (
     <span
       title={t.badge.unverifiedHelp}
-      className="inline-flex cursor-help items-center rounded-full border border-gold/55 bg-gold/12 px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.1em] text-accent-foreground"
+      className="inline-flex cursor-help items-center rounded-full border border-gold/45 bg-gold/10 px-2 py-0.5 text-[0.65rem] font-medium text-accent-foreground"
     >
       {t.badge.unverified}
     </span>
