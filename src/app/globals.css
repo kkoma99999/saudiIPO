@@ -44,8 +44,43 @@
 
 :root {
   --radius: 0.625rem;
-  /* Refined dark (Tadawul Terminal, calmed): neutral near-black, one refined emerald
-     primary, muted gain/loss, amber reserved for caveats, neutral benchmark line. */
+  color-scheme: light;
+  /* Light theme: warm paper white, ink text, one deep emerald primary readable on
+     white, muted gain/loss, amber reserved for caveats. */
+  --background: #f8f8f7;
+  --foreground: #1c1f23;
+  --card: #ffffff;
+  --card-foreground: #1c1f23;
+  --popover: #ffffff;
+  --popover-foreground: #1c1f23;
+  --primary: #0e8a62;
+  --primary-foreground: #ffffff;
+  --secondary: #f1f1ef;
+  --secondary-foreground: #1c1f23;
+  --muted: #f1f1ef;
+  --muted-foreground: #6f7680;
+  --accent: #f1f1ef;
+  --accent-foreground: #8a6420;
+  --gold: #a87a2a;
+  --destructive: #d2434f;
+  --border: #e5e5e2;
+  --input: #e5e5e2;
+  --ring: #0e8a62;
+  --up: #0e8a62;
+  --up-foreground: #ffffff;
+  --down: #d2434f;
+  --down-foreground: #ffffff;
+  --chart-1: #0e8a62;
+  --chart-2: #767e88;
+  --chart-3: #6f7680;
+  --chart-4: #5b7fb8;
+  --chart-5: #c9ccd1;
+}
+
+.dark {
+  color-scheme: dark;
+  /* Dark theme: neutral near-black, one refined emerald primary, muted gain/loss,
+     amber reserved for caveats, neutral benchmark line. */
   --background: #0c0d0f;
   --foreground: #e6e9ed;
   --card: #141619;
@@ -82,31 +117,7 @@
   }
   body {
     @apply bg-background text-foreground;
-    /* Plotting-paper atmosphere: a faint chart grid over near-black, with a soft
-       emerald glow bleeding in from the top edge. Fixed so the page scrolls over it. */
-    background-image:
-      radial-gradient(
-        120% 55% at 50% -15%,
-        color-mix(in srgb, var(--primary) 6%, transparent),
-        transparent 70%
-      ),
-      linear-gradient(
-        color-mix(in srgb, var(--foreground) 4%, transparent) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        90deg,
-        color-mix(in srgb, var(--foreground) 4%, transparent) 1px,
-        transparent 1px
-      );
-    background-size:
-      100% 100%,
-      56px 56px,
-      56px 56px;
-    background-attachment: fixed;
-  }
-  ::selection {
-    background: color-mix(in srgb, var(--primary) 30%, transparent);
+    /* Flat surface in both themes. Depth comes from cards and borders, not texture. */
   }
   html {
     @apply font-sans;
@@ -115,8 +126,8 @@
   html[lang="ar"] {
     font-family: var(--font-arabic), system-ui, sans-serif;
   }
-  /* Arabic letters must stay joined, so the terminal's wide letter-spacing and the
-     uppercase transform (a no-op that only hurts) are neutralized for Arabic text. */
+  /* Arabic letters must stay joined, so wide letter-spacing and the uppercase
+     transform (a no-op that only hurts) are neutralized for Arabic text. */
   html[lang="ar"] * {
     letter-spacing: normal !important;
     text-transform: none !important;
@@ -126,6 +137,9 @@
      Inline figures are unaffected; their placement comes from the surrounding layout. */
   html[dir="rtl"] .tnum {
     text-align: right;
+  }
+  ::selection {
+    background: color-mix(in srgb, var(--primary) 25%, transparent);
   }
 }
 
@@ -149,7 +163,7 @@
 @keyframes rise {
   from {
     opacity: 0;
-    transform: translateY(14px);
+    transform: translateY(10px);
   }
   to {
     opacity: 1;
@@ -177,55 +191,22 @@
 
 @layer components {
   .rise {
-    animation: rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   .rise-2 {
-    animation-delay: 120ms;
+    animation-delay: 100ms;
   }
   .rise-3 {
-    animation-delay: 240ms;
+    animation-delay: 200ms;
   }
   .growx {
-    animation: growx 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s backwards;
+    animation: growx 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
   }
   .tape-track {
     animation: tape var(--tape-duration, 60s) linear infinite;
   }
   .tape:hover .tape-track {
     animation-play-state: paused;
-  }
-
-  /* Registration marks: small corner ticks set just outside a tile, like crop marks
-     on a technical drawing. They brighten when the tile is hovered. */
-  .hud-corners {
-    position: relative;
-  }
-  .hud-corners::before,
-  .hud-corners::after {
-    content: "";
-    position: absolute;
-    width: 8px;
-    height: 8px;
-    border: 0 solid color-mix(in srgb, var(--primary) 65%, transparent);
-    opacity: 0.4;
-    transition: opacity 0.2s ease;
-    pointer-events: none;
-  }
-  .hud-corners::before {
-    top: -3px;
-    inset-inline-start: -3px;
-    border-top-width: 1px;
-    border-inline-start-width: 1px;
-  }
-  .hud-corners::after {
-    bottom: -3px;
-    inset-inline-end: -3px;
-    border-bottom-width: 1px;
-    border-inline-end-width: 1px;
-  }
-  .hud-corners:hover::before,
-  .hud-corners:hover::after {
-    opacity: 1;
   }
 
   @media (prefers-reduced-motion: reduce) {

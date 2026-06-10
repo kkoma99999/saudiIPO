@@ -1,14 +1,11 @@
 import Link from "next/link";
 import { MainNav } from "./MainNav";
 import { LocaleSwitcher } from "./LocaleSwitcher";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-border/70 bg-background/80 backdrop-blur-sm">
-      <span
-        aria-hidden="true"
-        className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent"
-      />
       <div className="mx-auto flex h-12 max-w-6xl items-center justify-between gap-6 px-5">
         <Link href="/" className="flex items-center gap-3">
           <span className="flex items-center gap-2.5">
@@ -32,6 +29,7 @@ export function SiteHeader() {
           <MainNav />
           <span aria-hidden className="hidden h-4 w-px bg-border sm:inline-block" />
           <LocaleSwitcher />
+          <ThemeToggle />
         </div>
       </div>
     </header>

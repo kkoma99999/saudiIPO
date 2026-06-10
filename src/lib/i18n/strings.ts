@@ -21,6 +21,9 @@ const en = {
     english: "EN",
     arabic: "ع",
   },
+  theme: {
+    toggle: "Switch theme",
+  },
   home: {
     heading: "IPO cohorts by year",
     intro:
@@ -142,6 +145,9 @@ const ar: Dict = {
     label: "اللغة",
     english: "EN",
     arabic: "ع",
+  },
+  theme: {
+    toggle: "تبديل المظهر",
   },
   home: {
     heading: "الطروحات حسب سنة الإدراج",

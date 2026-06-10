@@ -29,16 +29,10 @@ export default async function Home() {
   const titleLast = titleWords[titleWords.length - 1];
 
   return (
-    <div className="relative mx-auto max-w-6xl px-5 py-12">
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute end-5 top-6 hidden select-none text-[9rem] font-semibold leading-none tracking-tighter text-foreground/[0.03] tnum lg:block"
-      >
-        TASI
-      </span>
+    <div className="mx-auto max-w-6xl px-5 py-12">
       <section className="rise max-w-3xl">
         <p className="inline-flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-primary">
-          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+          <span aria-hidden="true" className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
           {t.site.tagline}
         </p>
         <h1 className="mt-4 font-display text-5xl font-semibold leading-[1.02] tracking-tight sm:text-6xl">

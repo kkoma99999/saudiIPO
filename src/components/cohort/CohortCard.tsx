@@ -10,14 +10,8 @@ export async function CohortCard({ cohort }: { cohort: CohortSummary }) {
   return (
     <Link
       href={`/ipos?year=${cohort.year}`}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-border/70 bg-card transition-[border-color,transform,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-[0_8px_30px_-12px_rgba(62,207,142,0.15)]"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-lg border border-border/70 bg-card transition-[border-color,transform] duration-200 hover:-translate-y-0.5 hover:border-primary/40"
     >
-      <span
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-4 -end-1 select-none text-[5.5rem] font-semibold leading-none tracking-tighter text-foreground/[0.04] tnum"
-      >
-        {cohort.year}
-      </span>
       <div className="flex items-center justify-between border-b border-border/70 bg-secondary/40 px-4 py-2.5">
         <span className="text-3xl font-semibold leading-none tracking-tight tnum">
           {cohort.year}
