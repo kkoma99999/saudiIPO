@@ -11,6 +11,7 @@ import {
   formatSarCompact,
   formatPercent,
   formatCountCompact,
+  formatMultiple,
   formatDate,
   NA,
 } from "@/lib/format";
@@ -51,6 +52,15 @@ export default async function CompanyPage({
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
       <CompanyHeader m={m} sourceUrl={detail.sourceUrl} />
+
+      {detail.isNewlyListed && (
+        <div className="mt-4">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/10 px-2.5 py-0.5 text-xs font-medium text-primary">
+            <span aria-hidden className="inline-block h-1.5 w-1.5 rounded-full bg-primary" />
+            {t.debut.newlyListed}
+          </span>
+        </div>
+      )}
 
       {m.dataCaveat && (
         <div className="mt-5 flex items-start gap-2.5 rounded-lg border border-gold/40 bg-gold/[0.07] px-4 py-3 text-sm text-accent-foreground">
@@ -97,10 +107,42 @@ export default async function CompanyPage({
         <StatTile label={t.company.vsTasi}>
           <ReturnBadge value={m.alpha} size="lg" showArrow={false} />
         </StatTile>
+        {detail.peak && (
+          <StatTile
+            label={t.debut.fromPeak}
+            hint={`${formatSar(detail.peak.close)} · ${formatDate(detail.peak.date)}`}
+          >
+            <ReturnBadge value={detail.peak.drawdown} size="lg" showArrow={false} />
+          </StatTile>
+        )}
         <StatTile label={t.company.ipoDate}>
           <span className="text-xl">{formatDate(m.ipoDate)}</span>
         </StatTile>
       </section>
+
+      {detail.debut && (
+        <section className="mt-8">
+          <h2 className="mb-4 flex items-baseline gap-2 text-sm font-semibold tracking-tight text-foreground">
+            {t.debut.title}
+            <span className="text-xs font-normal text-muted-foreground tnum">
+              {formatDate(detail.debut.date)}
+            </span>
+          </h2>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <StatTile label={t.debut.return} hint={t.debut.returnHint}>
+              <ReturnBadge value={detail.debut.return} size="lg" showArrow={false} />
+            </StatTile>
+            <StatTile label={t.debut.range} hint={t.debut.rangeHint}>
+              {detail.debut.rangePct === null
+                ? NA
+                : formatPercent(detail.debut.rangePct, { sign: false })}
+            </StatTile>
+            <StatTile label={t.debut.turnover}>
+              {formatSarCompact(detail.debut.turnover)}
+            </StatTile>
+          </div>
+        </section>
+      )}
 
       <section className="mt-10">
         <div className="mb-4 flex items-end justify-between border-b border-border/70 pb-3">
@@ -138,6 +180,47 @@ export default async function CompanyPage({
             <Row label={t.detail.oversubscription} value={detail.oversubscription ? `${detail.oversubscription}x` : NA} />
             <Row label={t.company.sector} value={m.sector ?? NA} text />
           </dl>
+
+          {detail.valuation && (
+            <div className="mt-6 overflow-hidden rounded-lg border border-border/70 bg-card">
+              <div className="flex items-center justify-between border-b border-border/70 bg-secondary/40 px-4 py-2.5">
+                <h3 className="text-xs font-medium text-muted-foreground">{t.valuation.title}</h3>
+                {detail.valuation.sourceUrl && (
+                  <a
+                    href={detail.valuation.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary underline-offset-2 hover:underline"
+                  >
+                    {t.detail.source}
+                  </a>
+                )}
+              </div>
+              <dl className="text-sm">
+                <Row
+                  label={t.valuation.peRecurring}
+                  value={formatMultiple(detail.valuation.peRecurringTtm)}
+                  hint={
+                    detail.valuation.recurringEpsTtm
+                      ? `${t.valuation.eps} ${formatSar(detail.valuation.recurringEpsTtm)}`
+                      : undefined
+                  }
+                />
+                <Row
+                  label={t.valuation.priceToBook}
+                  value={formatMultiple(detail.valuation.priceToBook)}
+                  hint={
+                    detail.valuation.bookValuePerShare
+                      ? `${t.valuation.book} ${formatSar(detail.valuation.bookValuePerShare)}`
+                      : undefined
+                  }
+                />
+              </dl>
+              <p className="border-t border-border/50 px-4 py-2.5 text-xs text-muted-foreground">
+                {t.valuation.note}
+              </p>
+            </div>
+          )}
           {detail.actions.length > 0 && (
             <div className="mt-6 overflow-hidden rounded-lg border border-border/70 bg-card">
               <h3 className="border-b border-border/70 bg-secondary/40 px-4 py-2.5 text-xs font-medium text-muted-foreground">
@@ -179,10 +262,23 @@ export default async function CompanyPage({
   );
 }
 
-function Row({ label, value, text = false }: { label: string; value: string; text?: boolean }) {
+function Row({
+  label,
+  value,
+  text = false,
+  hint,
+}: {
+  label: string;
+  value: string;
+  text?: boolean;
+  hint?: string;
+}) {
   return (
     <div className="flex items-center justify-between gap-4 border-b border-border/50 px-4 py-3 transition-colors last:border-0 hover:bg-accent/40">
-      <dt className="text-sm text-muted-foreground">{label}</dt>
+      <dt className="text-sm text-muted-foreground">
+        {label}
+        {hint && <span className="ms-2 text-xs text-muted-foreground/70 tnum">{hint}</span>}
+      </dt>
       <dd className={text ? "text-sm text-foreground" : "tnum text-sm"}>{value}</dd>
     </div>
   );

@@ -179,7 +179,7 @@
 }
 
 /* The ticker tape: the track holds two copies of the strip and slides one strip
-   width, so the loop is seamless. Duration is set per instance via --tape-duration. */
+   width, so the loop has no visible seam. Duration is set per instance via --tape-duration. */
 @keyframes tape {
   from {
     transform: translateX(0);

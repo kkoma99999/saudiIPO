@@ -61,6 +61,31 @@ export interface ActionRow {
   sourceUrl: string | null;
 }
 
+// First trading day figures, present only when the price series starts at the listing.
+export interface DebutStats {
+  date: string; // first session date
+  return: number | null; // offer price to first-session close (the IPO pop)
+  rangePct: number | null; // (high - low) / open for the first session
+  turnover: string | null; // SAR value traded on the first session
+}
+
+// Highest close since listing and the drawdown from it.
+export interface PeakStats {
+  date: string;
+  close: string; // SAR, current-share basis
+  drawdown: number; // latest / peak - 1, <= 0
+}
+
+// Offer-price valuation. The per-share inputs come from the نشرة الإصدار (prospectus);
+// the multiples are computed against the offer price. Point in time, never adjusted.
+export interface IpoValuation {
+  recurringEpsTtm: string | null; // SAR per share, sourced
+  bookValuePerShare: string | null; // SAR per share, sourced
+  peRecurringTtm: number | null; // offer / recurring EPS, null when EPS not positive
+  priceToBook: number | null; // offer / book value per share, null when not positive
+  sourceUrl: string | null;
+}
+
 export interface CompanyDetail {
   metrics: CompanyMetrics;
   shares: string | null;
@@ -74,4 +99,9 @@ export interface CompanyDetail {
   totalDividends: string | null; // adjusted, SAR per current share
   dividendYieldOnOffer: number | null;
   actions: ActionRow[];
+  debut: DebutStats | null;
+  peak: PeakStats | null;
+  valuation: IpoValuation | null;
+  tradingSessions: number;
+  isNewlyListed: boolean;
 }

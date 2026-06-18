@@ -60,6 +60,16 @@ export const ipos = pgTable(
     sharesOffered: bigint("shares_offered", { mode: "bigint" }),
     proceedsSar: numeric("proceeds_sar", { precision: 20, scale: 2 }),
     oversubscription: numeric("oversubscription", { precision: 8, scale: 2 }),
+    // Per-share figures taken from the نشرة الإصدار (prospectus) to value the offer.
+    // recurringEpsTtm is recurring earnings per share over the trailing twelve months
+    // (or the latest audited year) before listing; bookValuePerShare is shareholders'
+    // equity per share at the latest balance sheet in the prospectus. The offer-price
+    // P/E and P/B are computed from these and the offer price in the metrics layer,
+    // never for today and never adjusted for later actions. valuation_source_url is
+    // the prospectus. All left null until sourced; nothing is invented.
+    recurringEpsTtm: numeric("recurring_eps_ttm", { precision: 14, scale: 4 }),
+    bookValuePerShare: numeric("book_value_per_share", { precision: 14, scale: 4 }),
+    valuationSourceUrl: text("valuation_source_url"),
     ipoDate: date("ipo_date").notNull(),
     sourceUrl: text("source_url").notNull(),
     // Stays false until a human verifies the row against its source.

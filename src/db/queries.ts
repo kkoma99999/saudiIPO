@@ -14,11 +14,18 @@ import {
   adjustedOfferPrice,
   cumulativeAdjustedDividends,
   cumulativeFactorAfter,
+  drawdownFromPeak,
   earlyTradingReturn,
   earlyWindowIsClean,
   EARLY_RETURN_TRADING_DAYS,
+  firstSessionIsClean,
   indexBaselineIsClean,
+  intradayRange,
+  NEWLY_LISTED_MAX_SESSIONS,
+  priceEarnings,
   priceReturn,
+  priceToBook,
+  sessionTurnover,
   totalReturn,
   yieldOnOffer,
   yearsBetween,
@@ -33,6 +40,8 @@ import type {
   CompanyMetrics,
   CohortSummary,
   CompanyDetail,
+  DebutStats,
+  PeakStats,
   SeriesPoint,
 } from "@/types/domain";
 
@@ -152,7 +161,9 @@ function computeMetrics(
   const yld = yieldOnOffer(annualAdj.toString(), aop).toNumber();
 
   const years = yearsBetween(row.ipoDate, asOf);
-  const cg = cagr(tr, years);
+  // CAGR is only meaningful over at least a year. Annualizing a few weeks of a fresh
+  // listing produces an absurd rate, so a sub-year holding has no CAGR.
+  const cg = years >= 1 ? cagr(tr, years) : null;
 
   let tasiReturn: number | null = null;
   let alpha: number | null = null;
@@ -334,6 +345,9 @@ export async function getCompanyDetail(
       shares: ipos.sharesOffered,
       proceeds: ipos.proceedsSar,
       oversubscription: ipos.oversubscription,
+      recurringEpsTtm: ipos.recurringEpsTtm,
+      bookValuePerShare: ipos.bookValuePerShare,
+      valuationSourceUrl: ipos.valuationSourceUrl,
       sourceUrl: ipos.sourceUrl,
     })
     .from(ipos)
@@ -346,7 +360,14 @@ export async function getCompanyDetail(
 
   const [priceRows, tasiRows, divRows, actionRows] = await Promise.all([
     db
-      .select({ date: pricesDaily.date, close: pricesDaily.close })
+      .select({
+        date: pricesDaily.date,
+        open: pricesDaily.open,
+        high: pricesDaily.high,
+        low: pricesDaily.low,
+        close: pricesDaily.close,
+        volume: pricesDaily.volume,
+      })
       .from(pricesDaily)
       .where(eq(pricesDaily.symbol, sym))
       .orderBy(asc(pricesDaily.date)),
@@ -463,6 +484,64 @@ export async function getCompanyDetail(
       ? new Decimal(r.offerPrice).minus(new Decimal(r.nominalValue)).toFixed(4)
       : null;
 
+  // First trading day figures, only when the series actually starts at the listing.
+  // A gapped early series (data beginning long after the IPO) leaves debut empty
+  // rather than reporting a much-later session as day one.
+  const firstRow = priceRows[0];
+  const debut: DebutStats | null =
+    firstRow && firstSessionIsClean(r.ipoDate, firstRow.date)
+      ? {
+          date: firstRow.date,
+          return: priceReturn(r.offerPrice, r.ipoDate, firstRow.close, actions).toNumber(),
+          rangePct:
+            firstRow.open && firstRow.high && firstRow.low && Number(firstRow.open) > 0
+              ? intradayRange(firstRow.open, firstRow.high, firstRow.low).toNumber()
+              : null,
+          turnover:
+            firstRow.volume !== null
+              ? sessionTurnover(firstRow.volume.toString(), firstRow.close).toFixed(2)
+              : null,
+        }
+      : null;
+
+  // Highest close since listing and the drawdown from it. Closes are in current-share
+  // basis, so the peak is a like-for-like comparison without any extra adjustment.
+  let peak: PeakStats | null = null;
+  if (latest && priceRows.length > 0) {
+    let peakRow = priceRows[0];
+    for (const p of priceRows) {
+      if (new Decimal(p.close).gt(peakRow.close)) peakRow = p;
+    }
+    peak = {
+      date: peakRow.date,
+      close: peakRow.close,
+      drawdown: drawdownFromPeak(latest.close, peakRow.close).toNumber(),
+    };
+  }
+
+  const tradingSessions = priceRows.length;
+  const isNewlyListed = tradingSessions > 0 && tradingSessions < NEWLY_LISTED_MAX_SESSIONS;
+
+  // Offer-price valuation, present only when a per-share figure was sourced from the
+  // prospectus. The multiples are computed against the offer price; a non-positive
+  // EPS or book value leaves that multiple empty rather than showing a nonsense ratio.
+  const valuation =
+    r.recurringEpsTtm !== null || r.bookValuePerShare !== null
+      ? {
+          recurringEpsTtm: r.recurringEpsTtm,
+          bookValuePerShare: r.bookValuePerShare,
+          peRecurringTtm:
+            r.recurringEpsTtm !== null && Number(r.recurringEpsTtm) > 0
+              ? priceEarnings(r.offerPrice, r.recurringEpsTtm).toNumber()
+              : null,
+          priceToBook:
+            r.bookValuePerShare !== null && Number(r.bookValuePerShare) > 0
+              ? priceToBook(r.offerPrice, r.bookValuePerShare).toNumber()
+              : null,
+          sourceUrl: r.valuationSourceUrl,
+        }
+      : null;
+
   return {
     metrics,
     shares: r.shares !== null ? String(r.shares) : null,
@@ -481,5 +560,10 @@ export async function getCompanyDetail(
       factor: a.factor,
       sourceUrl: a.sourceUrl,
     })),
+    debut,
+    peak,
+    valuation,
+    tradingSessions,
+    isNewlyListed,
   };
 }

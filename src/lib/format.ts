@@ -61,6 +61,12 @@ export function formatSarCompact(value: number | string | null | undefined): str
   return n === null ? NA : sarCompactFmt.format(n);
 }
 
+// A valuation multiple, for example 22.5x. One decimal, n/a when missing.
+export function formatMultiple(value: number | string | null | undefined): string {
+  const n = toNum(value);
+  return n === null ? NA : `${new Intl.NumberFormat(intlLocale, { maximumFractionDigits: 1 }).format(n)}x`;
+}
+
 // Plain number with grouping, for share counts.
 export function formatCount(value: number | string | null | undefined): string {
   const n = toNum(value);

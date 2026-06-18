@@ -154,6 +154,59 @@ export function indexBaselineIsClean(ipoDate: string, baselineDate: string): boo
   return daysBetween(ipoDate, baselineDate) <= INDEX_BASELINE_MAX_LAG_DAYS;
 }
 
+// Debut and early-trading figures. All derived from the stored price series, so they
+// fabricate nothing: a missing input leaves the figure empty. The first close, high,
+// low, open and volume are in the same current-share basis as every other stored
+// close, so a ratio of two of them, or a SAR turnover, is basis invariant and needs
+// no F adjustment (see the yfinance price-basis note in the tadawul-data skill).
+
+// The first session must sit at the listing for the debut figures to mean "day one".
+// Reuses the early-window start lag: a gapped .SR series whose data begins months
+// after the IPO (4161 BinDawood) is not clean, so its debut figures stay empty.
+export function firstSessionIsClean(ipoDate: string, firstSessionDate: string): boolean {
+  return daysBetween(ipoDate, firstSessionDate) <= EARLY_RETURN_MAX_START_LAG_DAYS;
+}
+
+// Intraday swing of a session as a fraction of its open: (high - low) / open. A pure
+// ratio of same-basis prices, so it is invariant to any later split.
+export function intradayRange(open: Num, high: Num, low: Num): Decimal {
+  return dec(high).minus(dec(low)).div(dec(open));
+}
+
+// Value traded in a session, in SAR: volume (shares) times close (SAR per share).
+// yfinance scales volume up and close down by the same split factor, so the SAR
+// product is the same in raw or current-share basis. A faithful turnover, not a guess.
+export function sessionTurnover(volumeShares: Num, close: Num): Decimal {
+  return dec(volumeShares).mul(dec(close));
+}
+
+// Drawdown from the highest close since listing: latest / peak - 1, always <= 0. Both
+// closes are in current-share basis, so the ratio needs no adjustment. A fresh all-time
+// high gives exactly 0.
+export function drawdownFromPeak(latestClose: Num, peakClose: Num): Decimal {
+  return dec(latestClose).div(dec(peakClose)).minus(1);
+}
+
+// A listing is "newly listed" while it has fewer than this many trading sessions on
+// record, roughly its first month, which is when the debut figures matter most.
+export const NEWLY_LISTED_MAX_SESSIONS = 20;
+
+// Offer-price valuation from sourced prospectus per-share figures. The offer price is
+// the numerator; recurring EPS (TTM) and book value per share come from the
+// نشرة الإصدار (prospectus). Point in time, never adjusted for later actions. The
+// caller leaves the multiple empty when the per-share figure is non-positive (a loss
+// makes a P/E meaningless, a negative book value makes a P/B meaningless).
+
+// Recurring P/E at the offer: offer_price / recurring_eps_ttm.
+export function priceEarnings(offerPrice: Num, recurringEps: Num): Decimal {
+  return dec(offerPrice).div(dec(recurringEps));
+}
+
+// Price to book at the offer: offer_price / book_value_per_share.
+export function priceToBook(offerPrice: Num, bookValuePerShare: Num): Decimal {
+  return dec(offerPrice).div(dec(bookValuePerShare));
+}
+
 // price_return + cumulative_dividends_per_current_share / split_adjusted_offer.
 export function totalReturn(
   rawOfferPrice: Num,

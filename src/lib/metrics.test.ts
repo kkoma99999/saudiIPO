@@ -6,12 +6,18 @@ import {
   compareToIndex,
   cumulativeAdjustedDividends,
   cumulativeFactorAfter,
+  drawdownFromPeak,
   earlyTradingReturn,
   earlyWindowIsClean,
   EARLY_RETURN_TRADING_DAYS,
+  firstSessionIsClean,
   indexBaselineIsClean,
+  intradayRange,
   pctToDps,
+  priceEarnings,
   priceReturn,
+  priceToBook,
+  sessionTurnover,
   totalReturn,
   yearsBetween,
   yieldOnOffer,
@@ -127,6 +133,59 @@ describe("first trading-days return", () => {
     expect(earlyWindowIsClean("2020-10-21", "2021-04-19", "2021-04-25")).toBe(false);
     // Listing captured but the five sessions span three weeks (halts/gaps). Not clean.
     expect(earlyWindowIsClean("2022-04-20", "2022-04-25", "2022-05-08")).toBe(false);
+  });
+});
+
+describe("debut and early-trading figures", () => {
+  it("debut return is the offer-to-first-close pop, invariant to a later split", () => {
+    // Offer 50, first-session close 65 -> +30% pop. priceReturn is the debut math.
+    expect(f4(priceReturn(50, IPO, 65, []))).toBe("0.3000");
+    // A 2-for-1 split later stores that close as 32.5 and the offer adjusts to 25.
+    // The pop stays +30%, never doubling.
+    const split: CorporateAction[] = [{ actionDate: "2022-01-01", factor: "2" }];
+    expect(f4(priceReturn(50, IPO, 32.5, split))).toBe("0.3000");
+  });
+
+  it("intraday range is (high - low) / open and basis invariant", () => {
+    // Open 100, high 130, low 95 -> 35% swing.
+    expect(f4(intradayRange(100, 130, 95))).toBe("0.3500");
+    // Halve every price (a 2-for-1 split basis): the ratio is unchanged.
+    expect(f4(intradayRange(50, 65, 47.5))).toBe("0.3500");
+  });
+
+  it("session turnover is volume times close, in SAR", () => {
+    expect(sessionTurnover(1_000_000, "12.50").toFixed(2)).toBe("12500000.00");
+    // Split basis: 2x the shares at half the price gives the same SAR turnover.
+    expect(sessionTurnover(2_000_000, "6.25").toFixed(2)).toBe("12500000.00");
+  });
+
+  it("drawdown from peak is latest/peak - 1, zero at a fresh high", () => {
+    expect(f4(drawdownFromPeak(80, 100))).toBe("-0.2000");
+    expect(f4(drawdownFromPeak(100, 100))).toBe("0.0000");
+  });
+
+  it("first session must sit at the listing to be a clean debut", () => {
+    // Listed and trading the same day, or a few days later, is clean.
+    expect(firstSessionIsClean("2022-08-15", "2022-08-15")).toBe(true);
+    expect(firstSessionIsClean("2019-12-11", "2019-12-15")).toBe(true);
+    // BinDawood: price history begins about six months after the IPO. Not clean.
+    expect(firstSessionIsClean("2020-10-21", "2021-04-19")).toBe(false);
+  });
+});
+
+describe("offer-price valuation", () => {
+  it("recurring P/E is offer price over recurring EPS", () => {
+    expect(priceEarnings(30, 1.5).toFixed(1)).toBe("20.0");
+    expect(priceEarnings("80", "4").toFixed(1)).toBe("20.0");
+  });
+
+  it("price to book is offer price over book value per share", () => {
+    expect(priceToBook(30, 10).toFixed(1)).toBe("3.0");
+    expect(priceToBook("32", "12.80").toFixed(2)).toBe("2.50");
+  });
+
+  it("no float drift in the division", () => {
+    expect(priceEarnings("10", "3").equals(new Decimal("10").div("3"))).toBe(true);
   });
 });
 
