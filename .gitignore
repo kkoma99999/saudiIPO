@@ -53,3 +53,9 @@ design-mockups/
 
 # browser automation scratch
 .playwright-mcp/
+
+# prospectus (نشرة الإصدار) PDF archive: large binaries kept locally for extraction.
+# The manifest data/prospectuses/sources.csv is tracked; the PDFs and text dumps are not.
+data/prospectuses/*.pdf
+data/prospectuses/*.txt
+data/prospectuses/extract_args.json

@@ -26,7 +26,8 @@ EXPECTED = {
     },
     "ipos": {
         "id", "symbol", "offer_price", "nominal_value", "shares_offered",
-        "proceeds_sar", "oversubscription", "ipo_date", "source_url", "verified",
+        "proceeds_sar", "oversubscription", "recurring_eps_ttm", "book_value_per_share",
+        "valuation_source_url", "ipo_date", "source_url", "verified",
         "created_at", "updated_at",
     },
     "prices_daily": {
@@ -260,6 +261,21 @@ def set_data_caveat(conn, symbol, caveat) -> None:
         cur.execute(
             "UPDATE companies SET data_caveat = %s, updated_at = now() WHERE symbol = %s",
             (caveat or None, symbol),
+        )
+
+
+def set_valuation(conn, symbol, recurring_eps_ttm, book_value_per_share, source_url) -> None:
+    """Per-share figures from the prospectus used to value the offer (recurring EPS
+    TTM and book value per share, both SAR). The P/E and P/B are computed from these
+    and the offer price in the app. Empty fields land as NULL; nothing is invented."""
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE ipos SET recurring_eps_ttm = %s, book_value_per_share = %s,
+              valuation_source_url = %s, updated_at = now()
+            WHERE symbol = %s
+            """,
+            (_d(recurring_eps_ttm), _d(book_value_per_share), source_url or None, symbol),
         )
 
 

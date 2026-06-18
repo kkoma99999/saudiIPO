@@ -217,7 +217,12 @@ def load_verified_corporate_data(conn, run_id, dry_run):
         (r["symbol"], r["caveat"])
         for r in _read_csv("data_caveats.csv") if r["symbol"].strip() in have
     ]
-    print(f"  verified data: {len(actions)} actions, {len(nominals)} nominals, {len(caveats)} caveats")
+    valuations = [
+        (r["symbol"], r.get("recurring_eps_ttm"), r.get("book_value_per_share"), r.get("source_url"))
+        for r in _read_csv("ipo_valuation.csv") if r["symbol"].strip() in have
+    ]
+    print(f"  verified data: {len(actions)} actions, {len(nominals)} nominals, "
+          f"{len(caveats)} caveats, {len(valuations)} valuations")
     if dry_run:
         return
     na = db.upsert_actions(conn, actions)
@@ -225,9 +230,12 @@ def load_verified_corporate_data(conn, run_id, dry_run):
         db.set_nominal(conn, sym, nom)
     for sym, cav in caveats:
         db.set_data_caveat(conn, sym, cav)
+    for sym, pe, pb, url in valuations:
+        db.set_valuation(conn, sym, pe, pb, url)
     conn.commit()
     db.log_ingest(conn, run_id, None, "verified_actions", "success",
-                  f"loaded {na} corporate actions, {len(nominals)} nominal values, {len(caveats)} caveats", na)
+                  f"loaded {na} corporate actions, {len(nominals)} nominal values, "
+                  f"{len(caveats)} caveats, {len(valuations)} valuations", na)
 
 
 def main():
