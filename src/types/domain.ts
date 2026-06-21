@@ -1,6 +1,8 @@
 // Shared view-model types for the UI. Money fields stay as strings from the
 // database; ratios are numbers (or null when they cannot be computed).
 
+import type { RetailOutcomeResult } from "@/lib/retail-outcome";
+
 export interface IpoRow {
   symbol: string;
   nameEn: string;
@@ -27,6 +29,9 @@ export interface CompanyMetrics extends IpoRow {
   hasActions: boolean;
   cumulativeDividends: number | null; // adjusted to current-share basis, SAR
   dividendCount: number;
+  // Total return on the minimum allocation, equal to total_return (a per-share return
+  // is allocation independent). Null when no minimum allocation is on record.
+  minAllocPnl: number | null;
 }
 
 export interface CohortSummary {
@@ -86,6 +91,33 @@ export interface IpoValuation {
   sourceUrl: string | null;
 }
 
+// A bank or advisor on the IPO. role is one of the standard mandate types.
+export interface Advisor {
+  name: string;
+  role: string;
+}
+
+// Allocation and subscription facts from the Tadawul allotment announcement. Each
+// money or count field is null when the company did not disclose it. verified is the
+// allocation_verified flag; the UI shows an unverified badge while it is false.
+export interface AllocationDetails {
+  retailTranchePct: string | null;
+  retailSharesOffered: string | null;
+  minAllocationShares: string | null;
+  allocationMethod: string | null;
+  prorataBasis: string | null;
+  individualSubscribersCount: number | null;
+  retailCoverageMultiple: string | null;
+  institutionalCoverageMultiple: string | null;
+  allocationFactor: string | null;
+  subscriptionStart: string | null;
+  subscriptionEnd: string | null;
+  subscriptionDays: number | null; // end - start + 1, inclusive
+  sourceUrl: string | null;
+  verified: boolean;
+  advisors: Advisor[];
+}
+
 export interface CompanyDetail {
   metrics: CompanyMetrics;
   shares: string | null;
@@ -102,6 +134,10 @@ export interface CompanyDetail {
   debut: DebutStats | null;
   peak: PeakStats | null;
   valuation: IpoValuation | null;
+  // What a minimum-allocation subscriber would hold today, or not computable when no
+  // minimum allocation is on record or there is no price to value it.
+  retailOutcome: RetailOutcomeResult;
+  allocation: AllocationDetails | null;
   tradingSessions: number;
   isNewlyListed: boolean;
 }

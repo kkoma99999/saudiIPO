@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { CompanyMetrics } from "@/types/domain";
 import { ReturnBadge } from "@/components/shared/ReturnBadge";
 import { CompanyLogo } from "@/components/shared/CompanyLogo";
-import { formatSar, formatDate, ipoYear } from "@/lib/format";
+import { formatSar, formatDate, ipoYear, ND } from "@/lib/format";
 import { useI18n } from "@/lib/i18n/provider";
 import { displayName, fmt } from "@/lib/i18n";
 
@@ -16,7 +16,8 @@ type SortKey =
   | "firstDaysReturn"
   | "alpha"
   | "offerPrice"
-  | "cumulativeDividends";
+  | "cumulativeDividends"
+  | "minAllocPnl";
 
 const num = (v: number | null) => (v === null ? Number.NEGATIVE_INFINITY : v);
 
@@ -160,6 +161,9 @@ export function IpoTable({
               <ThSort onClick={() => toggleSort("alpha")} active={sortKey === "alpha"} dir={sortDir} align="end">
                 {t.table.vsTasi}
               </ThSort>
+              <ThSort onClick={() => toggleSort("minAllocPnl")} active={sortKey === "minAllocPnl"} dir={sortDir} align="end">
+                {t.table.minAllocPnl}
+              </ThSort>
             </tr>
           </thead>
           <tbody>
@@ -205,6 +209,13 @@ export function IpoTable({
                 <td className="px-3 py-3 text-end"><ReturnBadge value={r.totalReturn} showArrow={false} /></td>
                 <td className="px-3 py-3 text-end text-xs tnum text-muted-foreground">{formatSar(r.cumulativeDividends)}</td>
                 <td className="px-3 py-3 text-end"><ReturnBadge value={r.alpha} showArrow={false} /></td>
+                <td className="px-3 py-3 text-end" title={r.minAllocPnl === null ? "Minimum allocation not disclosed" : "Total return on the minimum allocation"}>
+                  {r.minAllocPnl === null ? (
+                    <span className="text-xs text-muted-foreground tnum">{ND}</span>
+                  ) : (
+                    <ReturnBadge value={r.minAllocPnl} showArrow={false} />
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>

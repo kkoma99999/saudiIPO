@@ -6,17 +6,21 @@ import { PriceVsTasiChart } from "@/components/company/PriceVsTasiChart";
 import { DividendHistoryTable } from "@/components/company/DividendHistoryTable";
 import { StatTile } from "@/components/shared/StatTile";
 import { ReturnBadge } from "@/components/shared/ReturnBadge";
+import { RetailOutcomeCard } from "@/components/company/RetailOutcomeCard";
 import {
   formatSar,
   formatSarCompact,
   formatPercent,
+  formatCount,
   formatCountCompact,
   formatMultiple,
+  formatPctValue,
+  formatTimes,
   formatDate,
   NA,
 } from "@/lib/format";
 import { getI18n } from "@/lib/i18n/server";
-import { displayName } from "@/lib/i18n";
+import { displayName, fmt } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 
@@ -48,6 +52,13 @@ export default async function CompanyPage({
   if (!detail) notFound();
 
   const m = detail.metrics;
+  const alloc = detail.allocation;
+  const subscriptionText =
+    alloc && alloc.subscriptionStart && alloc.subscriptionEnd
+      ? `${formatDate(alloc.subscriptionStart)} ${t.allocation.to} ${formatDate(alloc.subscriptionEnd)}${
+          alloc.subscriptionDays ? ` (${fmt(t.allocation.days, { n: alloc.subscriptionDays })})` : ""
+        }`
+      : NA;
 
   return (
     <div className="mx-auto max-w-5xl px-5 py-12">
@@ -116,6 +127,14 @@ export default async function CompanyPage({
         <StatTile label={t.company.ipoDate}>
           <span className="text-xl">{formatDate(m.ipoDate)}</span>
         </StatTile>
+      </section>
+
+      <section className="mt-8">
+        <RetailOutcomeCard
+          outcome={detail.retailOutcome}
+          verified={alloc?.verified ?? false}
+          sourceUrl={alloc?.sourceUrl ?? null}
+        />
       </section>
 
       {detail.debut && (
@@ -217,6 +236,66 @@ export default async function CompanyPage({
               <p className="border-t border-border/50 px-4 py-2.5 text-xs text-muted-foreground">
                 {t.valuation.note}
               </p>
+            </div>
+          )}
+
+          {alloc && (
+            <div className="mt-6 overflow-hidden rounded-lg border border-border/70 bg-card">
+              <div className="flex items-center justify-between border-b border-border/70 bg-secondary/40 px-4 py-2.5">
+                <h3 className="text-xs font-medium text-muted-foreground">
+                  {t.allocation.detailsTitle}
+                </h3>
+                {alloc.sourceUrl && (
+                  <a
+                    href={alloc.sourceUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary underline-offset-2 hover:underline"
+                  >
+                    {t.detail.source}
+                  </a>
+                )}
+              </div>
+              <dl className="text-sm">
+                <Row label={t.allocation.retailTranche} value={formatPctValue(alloc.retailTranchePct)} />
+                <Row label={t.allocation.retailShares} value={formatCountCompact(alloc.retailSharesOffered)} />
+                <Row
+                  label={t.allocation.minAllocation}
+                  value={
+                    alloc.minAllocationShares
+                      ? `${formatCount(alloc.minAllocationShares)} ${t.allocation.shares}`
+                      : NA
+                  }
+                />
+                <Row label={t.allocation.retailCoverage} value={formatTimes(alloc.retailCoverageMultiple)} />
+                <Row label={t.allocation.institutionalCoverage} value={formatTimes(alloc.institutionalCoverageMultiple)} />
+                <Row label={t.allocation.factor} value={formatPctValue(alloc.allocationFactor, 3)} />
+                <Row label={t.allocation.subscribers} value={formatCount(alloc.individualSubscribersCount)} />
+                <Row label={t.allocation.period} value={subscriptionText} text />
+                {alloc.allocationMethod && (
+                  <Row label={t.allocation.method} value={alloc.allocationMethod} text />
+                )}
+                {alloc.prorataBasis && (
+                  <Row label={t.allocation.prorata} value={alloc.prorataBasis} text />
+                )}
+              </dl>
+              {alloc.advisors.length > 0 && (
+                <div className="border-t border-border/50">
+                  <h4 className="px-4 pt-3 text-xs font-medium text-muted-foreground">
+                    {t.allocation.advisors}
+                  </h4>
+                  <ul className="px-4 pb-3 pt-2 text-xs">
+                    {alloc.advisors.map((a, i) => (
+                      <li key={i} className="flex items-center justify-between gap-3 py-1">
+                        <span className="text-foreground">{a.name}</span>
+                        <span className="text-muted-foreground">
+                          {t.role[a.role as keyof typeof t.role] ?? a.role}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
           {detail.actions.length > 0 && (

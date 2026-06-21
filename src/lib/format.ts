@@ -3,6 +3,10 @@ import { intlLocale } from "./i18n/config";
 // Placeholder for a missing value. Plain text, no em dash.
 export const NA = "n/a";
 
+// Placeholder for a value that is not disclosed, distinct from not applicable. Used
+// where a company did not publish a figure (for example a minimum allocation).
+export const ND = "n/d";
+
 const sarFmt = new Intl.NumberFormat(intlLocale, {
   style: "currency",
   currency: "SAR",
@@ -67,6 +71,30 @@ export function formatSarCompact(value: number | string | null | undefined): str
 export function formatMultiple(value: number | string | null | undefined): string {
   const n = toNum(value);
   return n === null ? NA : `${multipleFmt.format(n)}x`;
+}
+
+// A value already expressed as a percent (for example 12.3 means 12.3 percent), shown
+// with a percent sign. Distinct from formatPercent, which takes a ratio (0.123) and
+// multiplies by 100. Used for stored allocation percentages.
+export function formatPctValue(
+  value: number | string | null | undefined,
+  digits = 1,
+): string {
+  const n = toNum(value);
+  return n === null
+    ? NA
+    : `${new Intl.NumberFormat(intlLocale, { maximumFractionDigits: digits }).format(n)}%`;
+}
+
+// A coverage or subscription multiple, for example 13x or 2.5x. n/a when missing.
+export function formatTimes(
+  value: number | string | null | undefined,
+  digits = 1,
+): string {
+  const n = toNum(value);
+  return n === null
+    ? NA
+    : `${new Intl.NumberFormat(intlLocale, { maximumFractionDigits: digits }).format(n)}x`;
 }
 
 // Plain number with grouping, for share counts.

@@ -5,6 +5,7 @@ import { db } from "./client";
 import {
   companies,
   ipos,
+  ipoAdvisors,
   pricesDaily,
   dividends,
   corporateActions,
@@ -33,12 +34,15 @@ import {
   type CorporateAction,
   type DividendEvent,
 } from "@/lib/metrics";
+import { retailOutcome } from "@/lib/retail-outcome";
 import { ipoYear } from "@/lib/format";
 import type {
   IpoRow,
   CompanyMetrics,
   CohortSummary,
   CompanyDetail,
+  AllocationDetails,
+  Advisor,
   DebutStats,
   IpoValuation,
   PeakStats,
@@ -49,6 +53,14 @@ function isoMinusDays(iso: string, days: number): string {
   const d = new Date(iso + "T00:00:00Z");
   d.setUTCDate(d.getUTCDate() - days);
   return d.toISOString().slice(0, 10);
+}
+
+// Inclusive day count between two ISO dates, so a one-day subscription reads as 1 day
+// and a Sunday-to-Thursday window reads as 5.
+function daysInclusive(startIso: string, endIso: string): number {
+  const start = Date.parse(startIso + "T00:00:00Z");
+  const end = Date.parse(endIso + "T00:00:00Z");
+  return Math.round((end - start) / 86_400_000) + 1;
 }
 
 function mean(xs: number[]): number | null {
@@ -121,6 +133,7 @@ function computeMetrics(
   divs: DividendEvent[],
   tasiBaseline: string | null,
   tasiLatest: string | null,
+  minAllocationShares: string | null,
 ): CompanyMetrics {
   // Only a clean early window (data starting at the listing, five sessions inside two
   // weeks) yields a first-week return. A gapped .SR series leaves it empty.
@@ -146,6 +159,7 @@ function computeMetrics(
     hasActions: actions.length > 0,
     cumulativeDividends: null,
     dividendCount: divs.length,
+    minAllocPnl: null,
   };
   if (!latest) return base;
 
@@ -185,6 +199,9 @@ function computeMetrics(
     alpha,
     cumulativeDividends: cumDiv.toNumber(),
     dividendCount: divs.filter((d) => d.exDate <= asOf).length,
+    // The minimum-allocation P&L percent is the same number as total_return, shown only
+    // when a minimum allocation is on record. The SAR figures live on the detail page.
+    minAllocPnl: minAllocationShares !== null ? tr : null,
   };
 }
 
@@ -201,6 +218,7 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
         nominalValue: ipos.nominalValue,
         verified: ipos.verified,
         dataCaveat: companies.dataCaveat,
+        minAllocationShares: ipos.minAllocationShares,
       })
       .from(ipos)
       .innerJoin(companies, eq(companies.symbol, ipos.symbol)),
@@ -265,6 +283,7 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
         divsMap.get(row.symbol) ?? [],
         tasiBaseline(row.ipoDate),
         tasiLatest,
+        row.minAllocationShares,
       ),
     )
     .sort((a, b) => (a.ipoDate < b.ipoDate ? 1 : -1));
@@ -348,6 +367,19 @@ export async function getCompanyDetail(
       recurringEpsTtm: ipos.recurringEpsTtm,
       bookValuePerShare: ipos.bookValuePerShare,
       valuationSourceUrl: ipos.valuationSourceUrl,
+      retailTranchePct: ipos.retailTranchePct,
+      retailSharesOffered: ipos.retailSharesOffered,
+      minAllocationShares: ipos.minAllocationShares,
+      allocationMethod: ipos.allocationMethod,
+      prorataBasis: ipos.prorataBasis,
+      individualSubscribersCount: ipos.individualSubscribersCount,
+      retailCoverageMultiple: ipos.retailCoverageMultiple,
+      institutionalCoverageMultiple: ipos.institutionalCoverageMultiple,
+      allocationFactor: ipos.allocationFactor,
+      retailSubscriptionStart: ipos.retailSubscriptionStart,
+      retailSubscriptionEnd: ipos.retailSubscriptionEnd,
+      allocationSourceUrl: ipos.allocationSourceUrl,
+      allocationVerified: ipos.allocationVerified,
       sourceUrl: ipos.sourceUrl,
     })
     .from(ipos)
@@ -358,7 +390,7 @@ export async function getCompanyDetail(
   const r = ipoRows[0];
   const sym = r.symbol.trim();
 
-  const [priceRows, tasiRows, divRows, actionRows] = await Promise.all([
+  const [priceRows, tasiRows, divRows, actionRows, advisorRows] = await Promise.all([
     db
       .select({
         date: pricesDaily.date,
@@ -390,6 +422,11 @@ export async function getCompanyDetail(
       .from(corporateActions)
       .where(eq(corporateActions.symbol, sym))
       .orderBy(asc(corporateActions.actionDate)),
+    db
+      .select({ name: ipoAdvisors.name, role: ipoAdvisors.role })
+      .from(ipoAdvisors)
+      .where(eq(ipoAdvisors.symbol, sym))
+      .orderBy(asc(ipoAdvisors.id)),
   ]);
 
   const actions: CorporateAction[] = actionRows.map((a) => ({
@@ -439,6 +476,7 @@ export async function getCompanyDetail(
     divs,
     tasiBaseline,
     tasiLatest,
+    r.minAllocationShares,
   );
 
   // One pass over the price series builds the indexed-to-100 chart series and finds the
@@ -526,6 +564,59 @@ export async function getCompanyDetail(
   const tradingSessions = priceRows.length;
   const isNewlyListed = tradingSessions > 0 && tradingSessions < NEWLY_LISTED_MAX_SESSIONS;
 
+  // What a minimum-allocation subscriber would hold today. Computable only when a
+  // minimum allocation is on record and there is a price to value it; the calculator
+  // composes the tested return engine, so a bonus or dividend is handled once.
+  const retail = retailOutcome({
+    offerPrice: r.offerPrice,
+    minAllocationShares: r.minAllocationShares,
+    ipoDate: r.ipoDate,
+    latestClose: latest ? latest.close : null,
+    asOfDate: latest ? latest.date : null,
+    actions,
+    dividends: divs,
+  });
+
+  // Allocation and subscription facts, present when the company disclosed any of them or
+  // any advisor is on record. Each field stays null when not sourced; nothing is guessed.
+  const advisors: Advisor[] = advisorRows.map((a) => ({ name: a.name, role: a.role }));
+  const subscriptionDays =
+    r.retailSubscriptionStart && r.retailSubscriptionEnd
+      ? daysInclusive(r.retailSubscriptionStart, r.retailSubscriptionEnd)
+      : null;
+  const hasAllocation =
+    advisors.length > 0 ||
+    r.retailTranchePct !== null ||
+    r.retailSharesOffered !== null ||
+    r.minAllocationShares !== null ||
+    r.allocationMethod !== null ||
+    r.prorataBasis !== null ||
+    r.individualSubscribersCount !== null ||
+    r.retailCoverageMultiple !== null ||
+    r.institutionalCoverageMultiple !== null ||
+    r.allocationFactor !== null ||
+    r.retailSubscriptionStart !== null ||
+    r.retailSubscriptionEnd !== null;
+  const allocation: AllocationDetails | null = hasAllocation
+    ? {
+        retailTranchePct: r.retailTranchePct,
+        retailSharesOffered: r.retailSharesOffered,
+        minAllocationShares: r.minAllocationShares,
+        allocationMethod: r.allocationMethod,
+        prorataBasis: r.prorataBasis,
+        individualSubscribersCount: r.individualSubscribersCount,
+        retailCoverageMultiple: r.retailCoverageMultiple,
+        institutionalCoverageMultiple: r.institutionalCoverageMultiple,
+        allocationFactor: r.allocationFactor,
+        subscriptionStart: r.retailSubscriptionStart,
+        subscriptionEnd: r.retailSubscriptionEnd,
+        subscriptionDays,
+        sourceUrl: r.allocationSourceUrl,
+        verified: r.allocationVerified,
+        advisors,
+      }
+    : null;
+
   // Offer-price valuation, present only when a per-share figure was sourced from the
   // prospectus. The multiples are computed against the offer price; a non-positive
   // EPS or book value leaves that multiple empty rather than showing a nonsense ratio.
@@ -567,6 +658,8 @@ export async function getCompanyDetail(
     debut,
     peak,
     valuation,
+    retailOutcome: retail,
+    allocation,
     tradingSessions,
     isNewlyListed,
   };
