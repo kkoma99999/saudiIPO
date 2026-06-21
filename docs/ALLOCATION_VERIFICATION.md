@@ -29,8 +29,8 @@ the source did not state was left empty.
 - Coverage multiples derived by dividing a stated subscribed amount by the tranche size
   are flagged low confidence where the source's native wording was percent-oversubscribed.
 - Some 2021 and earlier IPOs guaranteed a minimum only when subscribers stayed under a
-  threshold; where subscribers exceeded it the minimum did not apply (noted in
-  `prorata_basis`). The retail outcome still uses the stated minimum allocation.
+  threshold; where subscribers exceeded it the minimum did not apply. The retail outcome
+  still uses the stated minimum allocation, so check it against the source for those names.
 - `min_allocation_shares` is the guaranteed minimum shares ALLOTTED per individual
   subscriber, not the minimum subscription size (the smallest application allowed). The
   two differ (Nahdi allotted a minimum of 3 while the minimum application was 10). This

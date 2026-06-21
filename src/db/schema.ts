@@ -91,8 +91,6 @@ export const ipos = pgTable(
     retailTranchePct: numeric("retail_tranche_pct", { precision: 7, scale: 4 }),
     retailSharesOffered: numeric("retail_shares_offered", { precision: 20, scale: 4 }),
     minAllocationShares: numeric("min_allocation_shares", { precision: 20, scale: 4 }),
-    allocationMethod: text("allocation_method"),
-    prorataBasis: text("prorata_basis"),
     individualSubscribersCount: integer("individual_subscribers_count"),
     retailCoverageMultiple: numeric("retail_coverage_multiple", { precision: 12, scale: 4 }),
     institutionalCoverageMultiple: numeric("institutional_coverage_multiple", {

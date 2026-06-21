@@ -370,8 +370,6 @@ export async function getCompanyDetail(
       retailTranchePct: ipos.retailTranchePct,
       retailSharesOffered: ipos.retailSharesOffered,
       minAllocationShares: ipos.minAllocationShares,
-      allocationMethod: ipos.allocationMethod,
-      prorataBasis: ipos.prorataBasis,
       individualSubscribersCount: ipos.individualSubscribersCount,
       retailCoverageMultiple: ipos.retailCoverageMultiple,
       institutionalCoverageMultiple: ipos.institutionalCoverageMultiple,
@@ -589,8 +587,6 @@ export async function getCompanyDetail(
     r.retailTranchePct !== null ||
     r.retailSharesOffered !== null ||
     r.minAllocationShares !== null ||
-    r.allocationMethod !== null ||
-    r.prorataBasis !== null ||
     r.individualSubscribersCount !== null ||
     r.retailCoverageMultiple !== null ||
     r.institutionalCoverageMultiple !== null ||
@@ -602,8 +598,6 @@ export async function getCompanyDetail(
         retailTranchePct: r.retailTranchePct,
         retailSharesOffered: r.retailSharesOffered,
         minAllocationShares: r.minAllocationShares,
-        allocationMethod: r.allocationMethod,
-        prorataBasis: r.prorataBasis,
         individualSubscribersCount: r.individualSubscribersCount,
         retailCoverageMultiple: r.retailCoverageMultiple,
         institutionalCoverageMultiple: r.institutionalCoverageMultiple,

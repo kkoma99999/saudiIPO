@@ -104,8 +104,6 @@ export interface AllocationDetails {
   retailTranchePct: string | null;
   retailSharesOffered: string | null;
   minAllocationShares: string | null;
-  allocationMethod: string | null;
-  prorataBasis: string | null;
   individualSubscribersCount: number | null;
   retailCoverageMultiple: string | null;
   institutionalCoverageMultiple: string | null;

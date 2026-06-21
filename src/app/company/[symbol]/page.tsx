@@ -272,12 +272,6 @@ export default async function CompanyPage({
                 <Row label={t.allocation.factor} value={formatPctValue(alloc.allocationFactor, 3)} />
                 <Row label={t.allocation.subscribers} value={formatCount(alloc.individualSubscribersCount)} />
                 <Row label={t.allocation.period} value={subscriptionText} text />
-                {alloc.allocationMethod && (
-                  <Row label={t.allocation.method} value={alloc.allocationMethod} text />
-                )}
-                {alloc.prorataBasis && (
-                  <Row label={t.allocation.prorata} value={alloc.prorataBasis} text />
-                )}
               </dl>
               {alloc.advisors.length > 0 && (
                 <div className="border-t border-border/50">
