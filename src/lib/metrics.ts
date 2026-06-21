@@ -37,7 +37,10 @@ export interface IndexComparison {
   alpha: Decimal;
 }
 
-function dec(value: Num): Decimal {
+// Build a Decimal without ever passing a raw JS float: numbers are stringified first
+// so 0.1 + 0.2 style drift never enters the money math. Exported so the retail outcome
+// module constructs Decimals through the same guard.
+export function dec(value: Num): Decimal {
   return new Decimal(typeof value === "number" ? value.toString() : value);
 }
 
