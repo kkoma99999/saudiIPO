@@ -24,6 +24,16 @@ import {
 // compatibility; kind carries the richer classification.
 export const actionType = pgEnum("action_type", ["split", "bonus"]);
 
+// The standard mandate types on a Saudi IPO. role is informational; one IPO can carry
+// the same firm in more than one role (for example lead manager and receiving agent).
+export const advisorRole = pgEnum("advisor_role", [
+  "underwriter",
+  "financial_advisor",
+  "lead_manager",
+  "bookrunner",
+  "receiving_agent",
+]);
+
 // companies: one row per listed company. Symbol is the bare 4-digit code.
 export const companies = pgTable(
   "companies",
@@ -70,6 +80,30 @@ export const ipos = pgTable(
     recurringEpsTtm: numeric("recurring_eps_ttm", { precision: 14, scale: 4 }),
     bookValuePerShare: numeric("book_value_per_share", { precision: 14, scale: 4 }),
     valuationSourceUrl: text("valuation_source_url"),
+    // Allocation and subscription facts from the Tadawul allotment announcement (the
+    // announcement of subscription and allotment results) and Argaam. Static, set once
+    // at the IPO, and not in yfinance. All nullable: a company that does not disclose a
+    // field leaves it null, never guessed. min_allocation_shares is the guaranteed
+    // minimum shares per individual subscriber and drives the retail outcome calculator.
+    // allocation_factor is shares allocated per share requested for individuals.
+    // allocation_verified stays false until a human checks the row against
+    // allocation_source_url.
+    retailTranchePct: numeric("retail_tranche_pct", { precision: 7, scale: 4 }),
+    retailSharesOffered: numeric("retail_shares_offered", { precision: 20, scale: 4 }),
+    minAllocationShares: numeric("min_allocation_shares", { precision: 20, scale: 4 }),
+    allocationMethod: text("allocation_method"),
+    prorataBasis: text("prorata_basis"),
+    individualSubscribersCount: integer("individual_subscribers_count"),
+    retailCoverageMultiple: numeric("retail_coverage_multiple", { precision: 12, scale: 4 }),
+    institutionalCoverageMultiple: numeric("institutional_coverage_multiple", {
+      precision: 12,
+      scale: 4,
+    }),
+    allocationFactor: numeric("allocation_factor", { precision: 12, scale: 8 }),
+    retailSubscriptionStart: date("retail_subscription_start"),
+    retailSubscriptionEnd: date("retail_subscription_end"),
+    allocationSourceUrl: text("allocation_source_url"),
+    allocationVerified: boolean("allocation_verified").notNull().default(false),
     ipoDate: date("ipo_date").notNull(),
     sourceUrl: text("source_url").notNull(),
     // Stays false until a human verifies the row against its source.
@@ -80,6 +114,27 @@ export const ipos = pgTable(
   (t) => [
     uniqueIndex("ipos_symbol_uq").on(t.symbol),
     index("ipos_ipo_date_idx").on(t.ipoDate),
+  ],
+);
+
+// ipo_advisors: the banks and advisors on an IPO. One IPO has many, so this is a
+// separate table keyed on symbol like the other per-company tables. Sourced from the
+// allotment announcement and the نشرة الإصدار (prospectus); source_url is required.
+export const ipoAdvisors = pgTable(
+  "ipo_advisors",
+  {
+    id: serial("id").primaryKey(),
+    symbol: char("symbol", { length: 4 })
+      .notNull()
+      .references(() => companies.symbol),
+    name: text("name").notNull(),
+    role: advisorRole("role").notNull(),
+    sourceUrl: text("source_url").notNull(),
+    ingestedAt: timestamp("ingested_at", { withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [
+    uniqueIndex("ipo_advisors_symbol_name_role_uq").on(t.symbol, t.name, t.role),
+    index("ipo_advisors_symbol_idx").on(t.symbol),
   ],
 );
 
@@ -195,6 +250,8 @@ export type Company = typeof companies.$inferSelect;
 export type NewCompany = typeof companies.$inferInsert;
 export type Ipo = typeof ipos.$inferSelect;
 export type NewIpo = typeof ipos.$inferInsert;
+export type IpoAdvisor = typeof ipoAdvisors.$inferSelect;
+export type NewIpoAdvisor = typeof ipoAdvisors.$inferInsert;
 export type PriceDaily = typeof pricesDaily.$inferSelect;
 export type Dividend = typeof dividends.$inferSelect;
 export type CorporateAction = typeof corporateActions.$inferSelect;

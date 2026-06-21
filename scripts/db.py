@@ -28,8 +28,17 @@ EXPECTED = {
     "ipos": {
         "id", "symbol", "offer_price", "nominal_value", "shares_offered",
         "proceeds_sar", "oversubscription", "recurring_eps_ttm", "book_value_per_share",
-        "valuation_source_url", "ipo_date", "source_url", "verified",
+        "valuation_source_url",
+        "retail_tranche_pct", "retail_shares_offered", "min_allocation_shares",
+        "allocation_method", "prorata_basis", "individual_subscribers_count",
+        "retail_coverage_multiple", "institutional_coverage_multiple", "allocation_factor",
+        "retail_subscription_start", "retail_subscription_end", "allocation_source_url",
+        "allocation_verified",
+        "ipo_date", "source_url", "verified",
         "created_at", "updated_at",
+    },
+    "ipo_advisors": {
+        "id", "symbol", "name", "role", "source_url", "ingested_at",
     },
     "prices_daily": {
         "id", "symbol", "date", "open", "high", "low", "close",
