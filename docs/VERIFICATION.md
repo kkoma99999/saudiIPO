@@ -12,6 +12,43 @@ confirmed until a person checks it and flips `verified` to true in the CSV.
   guessed. A missing value stays empty.
 - Every row has a `source_url` that points at the page the data was read from.
 
+## Verification log
+
+### 2026-06-19 — offer prices, share counts, and dates cross-checked against prospectuses
+
+Each IPO's prospectus (نشرة الإصدار) in `data/prospectuses/` was used as the primary
+source. Method and outcome:
+
+- Offer price: all 73 were found in their prospectus. 71 appear in the prospectus offer
+  price text directly; Lumi (4262) as SAR 66 in its Argaam-hosted copy; Ataa and NCLE,
+  which have no prospectus PDF, are corroborated by Argaam IPO articles. Zero discrepancies.
+- IPO date: corroborated against the first trading session in `prices_daily` where the
+  price series starts at the listing. Where the yfinance series is gapped (for example
+  4161 BinDawood), the date is taken from the source and the gap does not disconfirm it.
+- Shares offered: cross-checked against each prospectus. Eight rows stored a rounded count
+  and were corrected to the exact prospectus figure: 6014 Alamar 10,633,392; 2083 Marafiq
+  73,094,500; 6019 Almasar 30,720,400; 6015 Americana 2,527,089,930; 2284 Modern Mills
+  24,549,600; 2084 Miahona 48,277,663; 4325 Umm Al Qura 130,786,142; 2382 ADES 338,718,754.
+
+Result: all 73 rows are now `verified=true`.
+
+Resolutions (same day):
+
+- 2082 ACWA Power: the CMA `Acwa_Power_EN.pdf` is the 2025 rights-issue prospectus. The
+  genuine 2021 IPO prospectus was obtained from the lead manager (JPMorgan) and confirms
+  SAR 56 and 81,199,299 offer shares (11.1%). Shares offered corrected from the rounded
+  81,200,000 to 81,199,299 and the row set to verified.
+- 4292 Ataa Educational and 4291 National Co for Learning and Education: the Arabic CMA
+  prospectuses (`ATAA_Prospectus.pdf`, `NCLE-IPO-Arabic-Prospectus.pdf`) were supplied and
+  download cleanly. Ataa confirms SAR 29, 12,000,000 offer shares, 40,000,000 total, capital
+  SAR 400,000,000. NCLE confirms SAR 19, 13.000.000 offer shares (dot-grouped), 43,000,000
+  total, capital SAR 430,000,000, 30.23% offered. Both set to verified; no share correction
+  needed.
+
+These rows were cross-checked programmatically against the prospectus text per the project
+owner's instruction, not signed off field by field by hand. The three unverified rows need
+their correct primary prospectus before they can be flipped.
+
 ## Inclusion rules
 
 Rows in scope:

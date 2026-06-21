@@ -6,6 +6,7 @@ ingest_log, and provides idempotent upserts. Money flows as decimal.Decimal so i
 lands in numeric columns without float contamination.
 """
 
+import csv
 import os
 import uuid
 from decimal import Decimal
@@ -277,6 +278,31 @@ def set_valuation(conn, symbol, recurring_eps_ttm, book_value_per_share, source_
             """,
             (_d(recurring_eps_ttm), _d(book_value_per_share), source_url or None, symbol),
         )
+
+
+def load_valuations(conn, have) -> int:
+    """Apply data/ipo_valuation.csv to ipos for every seeded symbol via set_valuation.
+
+    The single place the valuation CSV is read and written, shared by backfill.py and
+    the standalone load_valuations.py. Empty cells become NULL; nothing is invented.
+    Returns the number of rows that carried a value. The caller commits.
+    """
+    path = os.path.join(_REPO_ROOT, "data", "ipo_valuation.csv")
+    if not os.path.exists(path):
+        return 0
+    filled = 0
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            sym = (r.get("symbol") or "").strip()
+            if sym not in have:
+                continue
+            eps = (r.get("recurring_eps_ttm") or "").strip()
+            bvps = (r.get("book_value_per_share") or "").strip()
+            url = (r.get("source_url") or "").strip()
+            set_valuation(conn, sym, eps or None, bvps or None, url or None)
+            if eps or bvps:
+                filled += 1
+    return filled
 
 
 def upsert_index_prices(conn, rows, index_symbol="^TASI.SR") -> int:
