@@ -178,17 +178,6 @@
   }
 }
 
-/* The ticker tape: the track holds two copies of the strip and slides one strip
-   width, so the loop has no visible seam. Duration is set per instance via --tape-duration. */
-@keyframes tape {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
 @layer components {
   .rise {
     animation: rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -202,17 +191,10 @@
   .growx {
     animation: growx 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s backwards;
   }
-  .tape-track {
-    animation: tape var(--tape-duration, 60s) linear infinite;
-  }
-  .tape:hover .tape-track {
-    animation-play-state: paused;
-  }
 
   @media (prefers-reduced-motion: reduce) {
     .rise,
-    .growx,
-    .tape-track {
+    .growx {
       animation: none;
     }
   }

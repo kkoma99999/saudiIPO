@@ -9,7 +9,6 @@ import { getI18n } from "@/lib/i18n/server";
 import { I18nProvider } from "@/lib/i18n/provider";
 import { strings } from "@/lib/i18n/strings";
 import { SiteHeader } from "@/components/layout/SiteHeader";
-import { TickerTape } from "@/components/layout/TickerTape";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
 // Terminal aesthetic: a true monospace carries the English interface, with Geist as a
@@ -65,7 +64,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <I18nProvider value={{ locale, dir: direction, t }}>
           <SiteHeader />
-          <TickerTape />
           <main className="flex-1">{children}</main>
           <SiteFooter />
         </I18nProvider>

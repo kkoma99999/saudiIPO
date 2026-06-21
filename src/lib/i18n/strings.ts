@@ -13,9 +13,6 @@ const en = {
     ipos: "All IPOs",
     sources: "Data sources",
   },
-  ticker: {
-    label: "Total return since IPO for every tracked listing",
-  },
   switcher: {
     label: "Language",
     english: "EN",
@@ -155,9 +152,6 @@ const ar: Dict = {
     home: "الدفعات",
     ipos: "كل الطروحات",
     sources: "مصادر البيانات",
-  },
-  ticker: {
-    label: "العائد الكلي منذ الطرح لكل الإدراجات المتتبَّعة",
   },
   switcher: {
     label: "اللغة",
