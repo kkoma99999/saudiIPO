@@ -582,17 +582,18 @@ export async function getCompanyDetail(
     r.retailSubscriptionStart && r.retailSubscriptionEnd
       ? daysInclusive(r.retailSubscriptionStart, r.retailSubscriptionEnd)
       : null;
-  const hasAllocation =
-    advisors.length > 0 ||
-    r.retailTranchePct !== null ||
-    r.retailSharesOffered !== null ||
-    r.minAllocationShares !== null ||
-    r.individualSubscribersCount !== null ||
-    r.retailCoverageMultiple !== null ||
-    r.institutionalCoverageMultiple !== null ||
-    r.allocationFactor !== null ||
-    r.retailSubscriptionStart !== null ||
-    r.retailSubscriptionEnd !== null;
+  const allocationFields = [
+    r.retailTranchePct,
+    r.retailSharesOffered,
+    r.minAllocationShares,
+    r.individualSubscribersCount,
+    r.retailCoverageMultiple,
+    r.institutionalCoverageMultiple,
+    r.allocationFactor,
+    r.retailSubscriptionStart,
+    r.retailSubscriptionEnd,
+  ];
+  const hasAllocation = advisors.length > 0 || allocationFields.some((v) => v !== null);
   const allocation: AllocationDetails | null = hasAllocation
     ? {
         retailTranchePct: r.retailTranchePct,

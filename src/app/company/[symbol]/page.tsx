@@ -15,7 +15,6 @@ import {
   formatCountCompact,
   formatMultiple,
   formatPctValue,
-  formatTimes,
   formatDate,
   NA,
 } from "@/lib/format";
@@ -267,8 +266,8 @@ export default async function CompanyPage({
                       : NA
                   }
                 />
-                <Row label={t.allocation.retailCoverage} value={formatTimes(alloc.retailCoverageMultiple)} />
-                <Row label={t.allocation.institutionalCoverage} value={formatTimes(alloc.institutionalCoverageMultiple)} />
+                <Row label={t.allocation.retailCoverage} value={formatMultiple(alloc.retailCoverageMultiple)} />
+                <Row label={t.allocation.institutionalCoverage} value={formatMultiple(alloc.institutionalCoverageMultiple)} />
                 <Row label={t.allocation.factor} value={formatPctValue(alloc.allocationFactor, 3)} />
                 <Row label={t.allocation.subscribers} value={formatCount(alloc.individualSubscribersCount)} />
                 <Row label={t.allocation.period} value={subscriptionText} text />

@@ -210,11 +210,7 @@ export function IpoTable({
                 <td className="px-3 py-3 text-end text-xs tnum text-muted-foreground">{formatSar(r.cumulativeDividends)}</td>
                 <td className="px-3 py-3 text-end"><ReturnBadge value={r.alpha} showArrow={false} /></td>
                 <td className="px-3 py-3 text-end" title={r.minAllocPnl === null ? "Minimum allocation not disclosed" : "Total return on the minimum allocation"}>
-                  {r.minAllocPnl === null ? (
-                    <span className="text-xs text-muted-foreground tnum">{ND}</span>
-                  ) : (
-                    <ReturnBadge value={r.minAllocPnl} showArrow={false} />
-                  )}
+                  <ReturnBadge value={r.minAllocPnl} showArrow={false} nullLabel={ND} />
                 </td>
               </tr>
             ))}

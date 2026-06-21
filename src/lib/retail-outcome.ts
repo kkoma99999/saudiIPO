@@ -60,7 +60,7 @@ export interface RetailOutcomeInput {
 
 export type RetailOutcomeResult =
   | { computable: false }
-  | { computable: true; basis: OutcomeBasis; base: RetailOutcome };
+  | { computable: true; basis: OutcomeBasis };
 
 // Value a given number of allocated shares against the basis. Linear in shares, so the
 // client uses it to recompute for a user-entered allocation. Returns Decimal-exact math
@@ -111,5 +111,5 @@ export function retailOutcome(input: RetailOutcomeInput): RetailOutcomeResult {
     minAllocationShares: minShares.toString(),
   };
 
-  return { computable: true, basis, base: outcomeForShares(basis, basis.minAllocationShares) };
+  return { computable: true, basis };
 }

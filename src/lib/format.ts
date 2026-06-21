@@ -30,6 +30,18 @@ const countCompactFmt = new Intl.NumberFormat(intlLocale, {
 
 const multipleFmt = new Intl.NumberFormat(intlLocale, { maximumFractionDigits: 1 });
 
+// Cache a number formatter per fraction-digit count so repeated calls reuse it rather
+// than rebuilding an Intl.NumberFormat each time.
+const fixedFmtByDigits = new Map<number, Intl.NumberFormat>();
+function fixedFmt(digits: number): Intl.NumberFormat {
+  let f = fixedFmtByDigits.get(digits);
+  if (!f) {
+    f = new Intl.NumberFormat(intlLocale, { maximumFractionDigits: digits });
+    fixedFmtByDigits.set(digits, f);
+  }
+  return f;
+}
+
 const dateFmt = new Intl.DateTimeFormat(intlLocale, {
   year: "numeric",
   month: "short",
@@ -81,20 +93,7 @@ export function formatPctValue(
   digits = 1,
 ): string {
   const n = toNum(value);
-  return n === null
-    ? NA
-    : `${new Intl.NumberFormat(intlLocale, { maximumFractionDigits: digits }).format(n)}%`;
-}
-
-// A coverage or subscription multiple, for example 13x or 2.5x. n/a when missing.
-export function formatTimes(
-  value: number | string | null | undefined,
-  digits = 1,
-): string {
-  const n = toNum(value);
-  return n === null
-    ? NA
-    : `${new Intl.NumberFormat(intlLocale, { maximumFractionDigits: digits }).format(n)}x`;
+  return n === null ? NA : `${fixedFmt(digits).format(n)}%`;
 }
 
 // Plain number with grouping, for share counts.

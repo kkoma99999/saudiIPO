@@ -237,8 +237,7 @@ def upsert_actions(conn, rows) -> int:
     data = []
     for (s, ad, kind, f, ratio, url, verified) in rows:
         typ = "bonus" if kind == "bonus" else "split"
-        v = str(verified).strip().lower() in ("true", "1") if isinstance(verified, str) else bool(verified)
-        data.append((s, ad, typ, kind, _d(f), ratio, _source_label(url), url or None, v))
+        data.append((s, ad, typ, kind, _d(f), ratio, _source_label(url), url or None, _bool(verified)))
     if not data:
         return 0
     with conn.cursor() as cur:

@@ -14,13 +14,16 @@ export function ReturnBadge({
   value,
   size = "sm",
   showArrow = true,
+  nullLabel = NA,
 }: {
   value: number | null;
   size?: "sm" | "lg";
   showArrow?: boolean;
+  // Marker shown when value is null. Defaults to "n/a"; pass "n/d" for not-disclosed.
+  nullLabel?: string;
 }) {
   if (value === null) {
-    return <span className="font-mono tabular-nums tnum text-muted-foreground">{NA}</span>;
+    return <span className="font-mono tabular-nums tnum text-muted-foreground">{nullLabel}</span>;
   }
   const positive = value > 0;
   const negative = value < 0;

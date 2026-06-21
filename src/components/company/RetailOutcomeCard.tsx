@@ -19,8 +19,14 @@ export function RetailOutcomeCard({
   sourceUrl: string | null;
 }) {
   const { t } = useI18n();
+  const basis = outcome.computable ? outcome.basis : null;
+  const minShares = basis ? Number(basis.minAllocationShares) : 0;
+  const [sharesInput, setSharesInput] = useState<string>(basis?.minAllocationShares ?? "");
+  const typed = Number(sharesInput);
+  const shares = typed > 0 ? typed : minShares;
+  const o = useMemo(() => (basis ? outcomeForShares(basis, shares) : null), [basis, shares]);
 
-  if (!outcome.computable) {
+  if (!basis || !o) {
     return (
       <div className="overflow-hidden rounded-lg border border-border/70 bg-card">
         <h3 className="border-b border-border/70 bg-secondary/40 px-4 py-2.5 text-xs font-medium text-muted-foreground">
@@ -33,27 +39,6 @@ export function RetailOutcomeCard({
       </div>
     );
   }
-
-  return (
-    <Body basis={outcome.basis} verified={verified} sourceUrl={sourceUrl} t={t} />
-  );
-}
-
-function Body({
-  basis,
-  verified,
-  sourceUrl,
-  t,
-}: {
-  basis: Extract<RetailOutcomeResult, { computable: true }>["basis"];
-  verified: boolean;
-  sourceUrl: string | null;
-  t: ReturnType<typeof useI18n>["t"];
-}) {
-  const [sharesInput, setSharesInput] = useState<string>(basis.minAllocationShares);
-  const typed = Number(sharesInput);
-  const shares = Number.isFinite(typed) && typed > 0 ? typed : Number(basis.minAllocationShares);
-  const o = useMemo(() => outcomeForShares(basis, shares), [basis, shares]);
 
   const netClass = o.netSar >= 0 ? "text-up" : "text-down";
   const sign = o.netSar > 0 ? "+" : "";
@@ -126,7 +111,7 @@ function Body({
           className="w-28 rounded-md border border-border bg-background px-2.5 py-1.5 text-sm tnum text-foreground focus:outline-none focus:ring-2 focus:ring-ring/40"
         />
         <span className="text-xs text-muted-foreground">
-          {t.allocation.minShares} {formatCount(basis.minAllocationShares)}
+          {t.allocation.minShares} {formatCount(minShares)}
         </span>
       </div>
     </div>
