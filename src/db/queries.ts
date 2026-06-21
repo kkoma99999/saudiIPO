@@ -22,9 +22,8 @@ import {
   indexBaselineIsClean,
   intradayRange,
   NEWLY_LISTED_MAX_SESSIONS,
-  priceEarnings,
+  offerMultiple,
   priceReturn,
-  priceToBook,
   sessionTurnover,
   totalReturn,
   yieldOnOffer,
@@ -41,6 +40,7 @@ import type {
   CohortSummary,
   CompanyDetail,
   DebutStats,
+  IpoValuation,
   PeakStats,
   SeriesPoint,
 } from "@/types/domain";
@@ -441,18 +441,27 @@ export async function getCompanyDetail(
     tasiLatest,
   );
 
-  // Indexed-to-100 series. Both lines start at 100 on the first company price date.
+  // One pass over the price series builds the indexed-to-100 chart series and finds the
+  // highest close (for the drawdown). Both chart lines start at 100 on the first company
+  // price date. Closes are in current-share basis, so the max is found by a plain numeric
+  // compare and the peak row carries forward for the drawdown.
   const tasiByDate = new Map(tasiRows.map((t) => [t.date, Number(t.close)]));
   const series: SeriesPoint[] = [];
   let companyBase: number | null = null;
   let tasiBase: number | null = null;
   let lastTasi: number | null = null;
+  let peakRow: { date: string; close: string } | null = null;
+  let peakCloseNum = -Infinity;
   for (const p of priceRows) {
     const c = Number(p.close);
     if (tasiByDate.has(p.date)) lastTasi = tasiByDate.get(p.date)!;
     if (companyBase === null) {
       companyBase = c;
       tasiBase = lastTasi;
+    }
+    if (c > peakCloseNum) {
+      peakCloseNum = c;
+      peakRow = p;
     }
     series.push({
       date: p.date,
@@ -504,20 +513,15 @@ export async function getCompanyDetail(
         }
       : null;
 
-  // Highest close since listing and the drawdown from it. Closes are in current-share
-  // basis, so the peak is a like-for-like comparison without any extra adjustment.
-  let peak: PeakStats | null = null;
-  if (latest && priceRows.length > 0) {
-    let peakRow = priceRows[0];
-    for (const p of priceRows) {
-      if (new Decimal(p.close).gt(peakRow.close)) peakRow = p;
-    }
-    peak = {
-      date: peakRow.date,
-      close: peakRow.close,
-      drawdown: drawdownFromPeak(latest.close, peakRow.close).toNumber(),
-    };
-  }
+  // Drawdown from the highest close (found in the series pass above).
+  const peak: PeakStats | null =
+    latest && peakRow
+      ? {
+          date: peakRow.date,
+          close: peakRow.close,
+          drawdown: drawdownFromPeak(latest.close, peakRow.close).toNumber(),
+        }
+      : null;
 
   const tradingSessions = priceRows.length;
   const isNewlyListed = tradingSessions > 0 && tradingSessions < NEWLY_LISTED_MAX_SESSIONS;
@@ -525,18 +529,18 @@ export async function getCompanyDetail(
   // Offer-price valuation, present only when a per-share figure was sourced from the
   // prospectus. The multiples are computed against the offer price; a non-positive
   // EPS or book value leaves that multiple empty rather than showing a nonsense ratio.
-  const valuation =
+  const valuation: IpoValuation | null =
     r.recurringEpsTtm !== null || r.bookValuePerShare !== null
       ? {
           recurringEpsTtm: r.recurringEpsTtm,
           bookValuePerShare: r.bookValuePerShare,
           peRecurringTtm:
             r.recurringEpsTtm !== null && Number(r.recurringEpsTtm) > 0
-              ? priceEarnings(r.offerPrice, r.recurringEpsTtm).toNumber()
+              ? offerMultiple(r.offerPrice, r.recurringEpsTtm).toNumber()
               : null,
           priceToBook:
             r.bookValuePerShare !== null && Number(r.bookValuePerShare) > 0
-              ? priceToBook(r.offerPrice, r.bookValuePerShare).toNumber()
+              ? offerMultiple(r.offerPrice, r.bookValuePerShare).toNumber()
               : null,
           sourceUrl: r.valuationSourceUrl,
         }

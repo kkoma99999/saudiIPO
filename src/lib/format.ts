@@ -24,6 +24,8 @@ const countCompactFmt = new Intl.NumberFormat(intlLocale, {
   maximumFractionDigits: 1,
 });
 
+const multipleFmt = new Intl.NumberFormat(intlLocale, { maximumFractionDigits: 1 });
+
 const dateFmt = new Intl.DateTimeFormat(intlLocale, {
   year: "numeric",
   month: "short",
@@ -64,7 +66,7 @@ export function formatSarCompact(value: number | string | null | undefined): str
 // A valuation multiple, for example 22.5x. One decimal, n/a when missing.
 export function formatMultiple(value: number | string | null | undefined): string {
   const n = toNum(value);
-  return n === null ? NA : `${new Intl.NumberFormat(intlLocale, { maximumFractionDigits: 1 }).format(n)}x`;
+  return n === null ? NA : `${multipleFmt.format(n)}x`;
 }
 
 // Plain number with grouping, for share counts.

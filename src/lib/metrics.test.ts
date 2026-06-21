@@ -13,10 +13,9 @@ import {
   firstSessionIsClean,
   indexBaselineIsClean,
   intradayRange,
+  offerMultiple,
   pctToDps,
-  priceEarnings,
   priceReturn,
-  priceToBook,
   sessionTurnover,
   totalReturn,
   yearsBetween,
@@ -174,18 +173,15 @@ describe("debut and early-trading figures", () => {
 });
 
 describe("offer-price valuation", () => {
-  it("recurring P/E is offer price over recurring EPS", () => {
-    expect(priceEarnings(30, 1.5).toFixed(1)).toBe("20.0");
-    expect(priceEarnings("80", "4").toFixed(1)).toBe("20.0");
-  });
-
-  it("price to book is offer price over book value per share", () => {
-    expect(priceToBook(30, 10).toFixed(1)).toBe("3.0");
-    expect(priceToBook("32", "12.80").toFixed(2)).toBe("2.50");
+  it("an offer multiple is the offer price over the per-share value", () => {
+    expect(offerMultiple(30, 1.5).toFixed(1)).toBe("20.0"); // P/E on EPS 1.5
+    expect(offerMultiple("80", "4").toFixed(1)).toBe("20.0");
+    expect(offerMultiple(30, 10).toFixed(1)).toBe("3.0"); // P/B on book value 10
+    expect(offerMultiple("32", "12.80").toFixed(2)).toBe("2.50");
   });
 
   it("no float drift in the division", () => {
-    expect(priceEarnings("10", "3").equals(new Decimal("10").div("3"))).toBe(true);
+    expect(offerMultiple("10", "3").equals(new Decimal("10").div("3"))).toBe(true);
   });
 });
 

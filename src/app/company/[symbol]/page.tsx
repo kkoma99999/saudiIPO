@@ -83,15 +83,13 @@ export default async function CompanyPage({
           {formatSar(m.offerPrice)}
         </StatTile>
         <StatTile label={t.company.currentPrice}>{formatSar(m.currentPrice)}</StatTile>
-        <div className="rounded-lg border border-border/70 bg-card px-5 py-4 shadow-[inset_3px_0_0_0_var(--color-gold)]">
-          <div className="text-xs font-medium text-gold">{t.company.firstDays}</div>
-          <div className="mt-3 text-2xl leading-none tnum">
-            <ReturnBadge value={m.firstDaysReturn} size="lg" showArrow={false} />
-          </div>
-          {m.firstDaysDate && (
-            <div className="mt-2 text-xs text-muted-foreground">to {formatDate(m.firstDaysDate)}</div>
-          )}
-        </div>
+        <StatTile
+          label={t.company.firstDays}
+          accent
+          hint={m.firstDaysDate ? `to ${formatDate(m.firstDaysDate)}` : undefined}
+        >
+          <ReturnBadge value={m.firstDaysReturn} size="lg" showArrow={false} />
+        </StatTile>
         <StatTile label={t.company.priceReturn}>
           <ReturnBadge value={m.priceReturn} size="lg" showArrow={false} />
         </StatTile>

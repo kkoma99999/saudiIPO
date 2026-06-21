@@ -191,20 +191,14 @@ export function drawdownFromPeak(latestClose: Num, peakClose: Num): Decimal {
 // record, roughly its first month, which is when the debut figures matter most.
 export const NEWLY_LISTED_MAX_SESSIONS = 20;
 
-// Offer-price valuation from sourced prospectus per-share figures. The offer price is
-// the numerator; recurring EPS (TTM) and book value per share come from the
-// نشرة الإصدار (prospectus). Point in time, never adjusted for later actions. The
-// caller leaves the multiple empty when the per-share figure is non-positive (a loss
-// makes a P/E meaningless, a negative book value makes a P/B meaningless).
-
-// Recurring P/E at the offer: offer_price / recurring_eps_ttm.
-export function priceEarnings(offerPrice: Num, recurringEps: Num): Decimal {
-  return dec(offerPrice).div(dec(recurringEps));
-}
-
-// Price to book at the offer: offer_price / book_value_per_share.
-export function priceToBook(offerPrice: Num, bookValuePerShare: Num): Decimal {
-  return dec(offerPrice).div(dec(bookValuePerShare));
+// An offer-price valuation multiple: offer_price / per_share_value. Used for both the
+// recurring P/E (per-share value is recurring EPS TTM) and the P/B (per-share value is
+// book value per share), each sourced from the نشرة الإصدار (prospectus). Point in
+// time, never adjusted for later actions. The caller leaves the multiple empty when
+// the per-share value is non-positive (a loss makes a P/E meaningless, a negative book
+// value makes a P/B meaningless).
+export function offerMultiple(offerPrice: Num, perShareValue: Num): Decimal {
+  return dec(offerPrice).div(dec(perShareValue));
 }
 
 // price_return + cumulative_dividends_per_current_share / split_adjusted_offer.
