@@ -314,6 +314,140 @@ def load_valuations(conn, have) -> int:
     return filled
 
 
+def _bool(value) -> bool:
+    if isinstance(value, str):
+        return value.strip().lower() in ("true", "1", "yes")
+    return bool(value)
+
+
+def set_allocation(conn, symbol, r) -> None:
+    """Apply one allocation row (a dict of CSV cells) to ipos. Numeric fields go through
+    _d (Decimal or NULL); the subscriber count is an int or NULL; dates and text pass
+    through; allocation_verified is a bool. Nothing is invented: an empty cell is NULL."""
+    def g(key):
+        v = (r.get(key) or "").strip()
+        return v or None
+
+    subs = g("individual_subscribers_count")
+    with conn.cursor() as cur:
+        cur.execute(
+            """
+            UPDATE ipos SET
+              retail_tranche_pct = %s,
+              retail_shares_offered = %s,
+              min_allocation_shares = %s,
+              allocation_method = %s,
+              prorata_basis = %s,
+              individual_subscribers_count = %s,
+              retail_coverage_multiple = %s,
+              institutional_coverage_multiple = %s,
+              allocation_factor = %s,
+              retail_subscription_start = %s,
+              retail_subscription_end = %s,
+              allocation_source_url = %s,
+              allocation_verified = %s,
+              updated_at = now()
+            WHERE symbol = %s
+            """,
+            (
+                _d(g("retail_tranche_pct")),
+                _d(g("retail_shares_offered")),
+                _d(g("min_allocation_shares")),
+                g("allocation_method"),
+                g("prorata_basis"),
+                int(subs) if subs is not None else None,
+                _d(g("retail_coverage_multiple")),
+                _d(g("institutional_coverage_multiple")),
+                _d(g("allocation_factor")),
+                g("retail_subscription_start"),
+                g("retail_subscription_end"),
+                g("allocation_source_url"),
+                _bool(g("allocation_verified")),
+                symbol,
+            ),
+        )
+
+
+def load_allocations(conn, have) -> int:
+    """Apply data/allocations.csv to ipos via set_allocation, for every seeded symbol.
+
+    The single place the allocation CSV is read and written, shared by backfill.py and
+    the standalone load_allocations.py. Empty cells become NULL; nothing is invented.
+    Returns the number of rows that carried a minimum allocation. The caller commits.
+    """
+    path = os.path.join(_REPO_ROOT, "data", "allocations.csv")
+    if not os.path.exists(path):
+        return 0
+    filled = 0
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            sym = (r.get("symbol") or "").strip()
+            if sym not in have:
+                continue
+            set_allocation(conn, sym, r)
+            if (r.get("min_allocation_shares") or "").strip():
+                filled += 1
+    return filled
+
+
+_ADVISOR_ROLES = {
+    "underwriter", "financial_advisor", "lead_manager", "bookrunner", "receiving_agent",
+}
+
+
+def upsert_advisors(conn, rows) -> int:
+    """rows: iterable of (symbol, name, role, source_url). role must be one of the
+    advisor_role enum values and source_url is required, so an incomplete or
+    unknown-role row is skipped rather than guessed."""
+    data = []
+    for (s, name, role, url) in rows:
+        s = (s or "").strip()
+        name = (name or "").strip()
+        role = (role or "").strip()
+        url = (url or "").strip()
+        if not (s and name and role and url) or role not in _ADVISOR_ROLES:
+            continue
+        data.append((s, name, role, url))
+    if not data:
+        return 0
+    with conn.cursor() as cur:
+        cur.executemany(
+            """
+            INSERT INTO ipo_advisors (symbol, name, role, source_url)
+            VALUES (%s, %s, %s, %s)
+            ON CONFLICT (symbol, name, role) DO UPDATE SET
+              source_url = EXCLUDED.source_url, ingested_at = now()
+            """,
+            data,
+        )
+    return len(data)
+
+
+def load_advisors(conn, have) -> int:
+    """Apply data/ipo_advisors.csv to ipo_advisors for every seeded symbol. A company
+    present in the CSV has its roster replaced, so a corrected file leaves no stale rows.
+    Returns the number of advisor rows written. The caller commits.
+    """
+    path = os.path.join(_REPO_ROOT, "data", "ipo_advisors.csv")
+    if not os.path.exists(path):
+        return 0
+    by_symbol = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            sym = (r.get("symbol") or "").strip()
+            if sym not in have:
+                continue
+            by_symbol.setdefault(sym, []).append(
+                (sym, r.get("name"), r.get("role"), r.get("source_url"))
+            )
+    if not by_symbol:
+        return 0
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM ipo_advisors WHERE symbol = ANY(%s)", (list(by_symbol),))
+    all_rows = [row for rows in by_symbol.values() for row in rows]
+    return upsert_advisors(conn, all_rows)
+
+
 def upsert_index_prices(conn, rows, index_symbol="^TASI.SR") -> int:
     """rows: iterable of (date, close)."""
     data = [(index_symbol, d, _d(c)) for (d, c) in rows]

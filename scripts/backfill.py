@@ -226,10 +226,13 @@ def load_verified_corporate_data(conn, run_id, dry_run):
     for sym, cav in caveats:
         db.set_data_caveat(conn, sym, cav)
     nv = db.load_valuations(conn, have)
+    nal = db.load_allocations(conn, have)
+    nadv = db.load_advisors(conn, have)
     conn.commit()
     db.log_ingest(conn, run_id, None, "verified_actions", "success",
                   f"loaded {na} corporate actions, {len(nominals)} nominal values, "
-                  f"{len(caveats)} caveats, {nv} valuations", na)
+                  f"{len(caveats)} caveats, {nv} valuations, {nal} allocations, "
+                  f"{nadv} advisors", na)
 
 
 def main():
