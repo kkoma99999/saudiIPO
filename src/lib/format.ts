@@ -48,6 +48,17 @@ const dateFmt = new Intl.DateTimeFormat(intlLocale, {
   day: "numeric",
 });
 
+// Date and time in Riyadh time (AST, UTC+3), the market clock. Used for the live quote
+// "as of" label so a delayed price shows when it was last updated.
+const dateTimeFmt = new Intl.DateTimeFormat(intlLocale, {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
+  timeZone: "Asia/Riyadh",
+});
+
 function toNum(value: number | string | null | undefined): number | null {
   if (value === null || value === undefined || value === "") return null;
   const n = typeof value === "number" ? value : Number(value);
@@ -112,6 +123,14 @@ export function formatCountCompact(value: number | string | null | undefined): s
 export function formatDate(iso: string | null | undefined): string {
   if (!iso) return NA;
   return dateFmt.format(new Date(iso + "T00:00:00Z"));
+}
+
+// An ISO datetime (for example a live quote's update time) to a readable date and time
+// in Riyadh time. Returns n/a when missing or unparseable; never guesses a time.
+export function formatDateTime(iso: string | null | undefined): string {
+  if (!iso) return NA;
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? NA : dateTimeFmt.format(d);
 }
 
 export function ipoYear(iso: string): number {

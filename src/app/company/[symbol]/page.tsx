@@ -16,6 +16,7 @@ import {
   formatMultiple,
   formatPctValue,
   formatDate,
+  formatDateTime,
   NA,
 } from "@/lib/format";
 import { getI18n } from "@/lib/i18n/server";
@@ -52,6 +53,15 @@ export default async function CompanyPage({
 
   const m = detail.metrics;
   const alloc = detail.allocation;
+  // Freshness label for the current price: the live Sahmk quote time (with a delayed
+  // note) when the price came from a live quote, else the end-of-day close date.
+  const priceAsOf = m.quoteTime
+    ? `${t.company.priceAsOf} ${formatDateTime(m.quoteTime)}${
+        m.priceIsDelayed ? ` (${t.company.delayed})` : ""
+      }`
+    : m.currentDate
+      ? `${t.company.priceAsOf} ${formatDate(m.currentDate)}`
+      : undefined;
   const subscriptionText =
     alloc && alloc.subscriptionStart && alloc.subscriptionEnd
       ? `${formatDate(alloc.subscriptionStart)} ${t.allocation.to} ${formatDate(alloc.subscriptionEnd)}${
@@ -92,7 +102,9 @@ export default async function CompanyPage({
         >
           {formatSar(m.offerPrice)}
         </StatTile>
-        <StatTile label={t.company.currentPrice}>{formatSar(m.currentPrice)}</StatTile>
+        <StatTile label={t.company.currentPrice} hint={priceAsOf}>
+          {formatSar(m.currentPrice)}
+        </StatTile>
         <StatTile
           label={t.company.firstDays}
           accent

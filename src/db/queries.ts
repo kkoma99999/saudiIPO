@@ -35,6 +35,7 @@ import {
   type DividendEvent,
 } from "@/lib/metrics";
 import { retailOutcome } from "@/lib/retail-outcome";
+import { chooseLatest, type EodClose, type LiveQuote, type ChosenPrice } from "@/lib/quote-select";
 import { ipoYear } from "@/lib/format";
 import type {
   IpoRow,
@@ -87,6 +88,63 @@ async function latestCloseMap(): Promise<Map<string, Latest>> {
   return map;
 }
 
+// The latest live (delayed) quote per symbol from live_quotes, plus the TASI index
+// level (stored under symbol 'TASI'). quote_time is emitted as a UTC ISO string for
+// display; quote_date is the quote's Riyadh (market) calendar date, used for the
+// freshness comparison so a UTC time is never compared against a Riyadh trading date.
+// Pass symbols to read only the rows a single company page needs (an indexed lookup on
+// the primary key) instead of the whole table. Empty when the sweep has not run.
+async function liveQuotesAll(symbols?: string[]): Promise<{
+  quotes: Map<string, LiveQuote>;
+  tasi: LiveQuote | undefined;
+}> {
+  // Drizzle renders a JS array as a parenthesized placeholder list "($1, $2)", which is
+  // exactly the form an IN clause needs.
+  const filter = symbols && symbols.length ? sql`WHERE symbol IN ${symbols}` : sql``;
+  const rows = (await db.execute(sql`
+    SELECT symbol,
+           price::text AS price,
+           to_char(quote_time AT TIME ZONE 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') AS quote_time,
+           to_char(quote_time AT TIME ZONE 'Asia/Riyadh', 'YYYY-MM-DD') AS quote_date,
+           is_delayed
+    FROM live_quotes
+    ${filter}
+  `)) as unknown as Array<{
+    symbol: string;
+    price: string;
+    quote_time: string;
+    quote_date: string;
+    is_delayed: boolean;
+  }>;
+  const quotes = new Map<string, LiveQuote>();
+  let tasi: LiveQuote | undefined;
+  for (const r of rows) {
+    const lq: LiveQuote = {
+      price: r.price,
+      quoteTime: r.quote_time,
+      quoteDate: r.quote_date,
+      isDelayed: r.is_delayed,
+    };
+    if (r.symbol.trim() === "TASI") tasi = lq;
+    else quotes.set(r.symbol.trim(), lq);
+  }
+  return { quotes, tasi };
+}
+
+// The TASI level the return math compares against: the live index quote when it is at
+// least as fresh as the last stored index close, else the stored close. Keeps vs-TASI
+// consistent with a live company price instead of mixing today's price with a stale
+// index. Returns the close string (or null when there is no index data at all).
+function resolveTasiLatest(
+  tasiRows: Array<{ date: string; close: string }>,
+  liveTasi: LiveQuote | undefined,
+): string | null {
+  const eod: EodClose | undefined = tasiRows.length
+    ? { date: tasiRows[tasiRows.length - 1].date, close: tasiRows[tasiRows.length - 1].close }
+    : undefined;
+  return chooseLatest(eod, liveTasi)?.close ?? null;
+}
+
 type EarlyClose = { date: string; close: string; firstDate: string };
 
 // The first session and the nth session per symbol (sessions ordered from the IPO),
@@ -127,7 +185,9 @@ async function earlySessionMap(n: number): Promise<Map<string, EarlyClose>> {
 
 function computeMetrics(
   row: IpoRow,
-  latest: Latest | undefined,
+  // The price the returns run on: the live Sahmk quote when fresh, else the latest
+  // stored end-of-day close, or null when there is neither (chooseLatest decides).
+  chosen: ChosenPrice | null,
   early: EarlyClose | undefined,
   actions: CorporateAction[],
   divs: DividendEvent[],
@@ -148,6 +208,8 @@ function computeMetrics(
     ...row,
     currentPrice: null,
     currentDate: null,
+    quoteTime: null,
+    priceIsDelayed: false,
     priceReturn: null,
     totalReturn: null,
     firstDaysReturn,
@@ -161,12 +223,12 @@ function computeMetrics(
     dividendCount: divs.length,
     minAllocPnl: null,
   };
-  if (!latest) return base;
+  if (!chosen) return base;
 
-  const asOf = latest.date;
+  const asOf = chosen.date;
   const aop = adjustedOfferPrice(row.offerPrice, row.ipoDate, actions);
-  const pr = priceReturn(row.offerPrice, row.ipoDate, latest.close, actions).toNumber();
-  const tr = totalReturn(row.offerPrice, row.ipoDate, latest.close, asOf, actions, divs).toNumber();
+  const pr = priceReturn(row.offerPrice, row.ipoDate, chosen.close, actions).toNumber();
+  const tr = totalReturn(row.offerPrice, row.ipoDate, chosen.close, asOf, actions, divs).toNumber();
 
   const cumDiv = cumulativeAdjustedDividends(divs, actions, asOf);
   const yearAgo = isoMinusDays(asOf, 365);
@@ -189,8 +251,10 @@ function computeMetrics(
 
   return {
     ...base,
-    currentPrice: latest.close,
+    currentPrice: chosen.close,
     currentDate: asOf,
+    quoteTime: chosen.quoteTime,
+    priceIsDelayed: chosen.isDelayed,
     priceReturn: pr,
     totalReturn: tr,
     yieldOnOffer: yld,
@@ -206,7 +270,7 @@ function computeMetrics(
 }
 
 export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
-  const [ipoRows, latest, early, actionRows, divRows, tasiRows] = await Promise.all([
+  const [ipoRows, latest, live, early, actionRows, divRows, tasiRows] = await Promise.all([
     db
       .select({
         symbol: companies.symbol,
@@ -223,6 +287,7 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
       .from(ipos)
       .innerJoin(companies, eq(companies.symbol, ipos.symbol)),
     latestCloseMap(),
+    liveQuotesAll(),
     earlySessionMap(EARLY_RETURN_TRADING_DAYS),
     db
       .select({
@@ -243,6 +308,7 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
       .from(indexPrices)
       .orderBy(asc(indexPrices.date)),
   ]);
+  const { quotes: liveMap, tasi: liveTasi } = live;
 
   const actionsMap = new Map<string, CorporateAction[]>();
   for (const a of actionRows) {
@@ -260,7 +326,14 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
     divsMap.set(key, list);
   }
 
-  const tasiLatest = tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
+  // The TASI end value paired with each company, matched to that company's price basis:
+  // a company on its live price uses the live-preferred index level, a company that fell
+  // back to its end-of-day close uses the end-of-day index close, so alpha never compares
+  // a live company return against a stale index (or the reverse).
+  const tasiLiveLatest = resolveTasiLatest(tasiRows, liveTasi);
+  const tasiEodLatest = tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
+  const tasiFor = (chosen: ChosenPrice | null): string | null =>
+    chosen?.quoteTime != null ? tasiLiveLatest : tasiEodLatest;
   // First index close on or after the IPO, only when it is close enough to the IPO to
   // be a fair since-IPO baseline (see indexBaselineIsClean).
   const tasiBaseline = (ipoDate: string): string | null => {
@@ -274,18 +347,19 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
 
   return ipoRows
     .map((r) => ({ ...r, symbol: r.symbol.trim() }))
-    .map((row) =>
-      computeMetrics(
+    .map((row) => {
+      const chosen = chooseLatest(latest.get(row.symbol), liveMap.get(row.symbol));
+      return computeMetrics(
         row,
-        latest.get(row.symbol),
+        chosen,
         early.get(row.symbol),
         actionsMap.get(row.symbol) ?? [],
         divsMap.get(row.symbol) ?? [],
         tasiBaseline(row.ipoDate),
-        tasiLatest,
+        tasiFor(chosen),
         row.minAllocationShares,
-      ),
-    )
+      );
+    })
     .sort((a, b) => (a.ipoDate < b.ipoDate ? 1 : -1));
 }
 
@@ -388,7 +462,7 @@ export async function getCompanyDetail(
   const r = ipoRows[0];
   const sym = r.symbol.trim();
 
-  const [priceRows, tasiRows, divRows, actionRows, advisorRows] = await Promise.all([
+  const [priceRows, tasiRows, divRows, actionRows, advisorRows, live] = await Promise.all([
     db
       .select({
         date: pricesDaily.date,
@@ -425,6 +499,7 @@ export async function getCompanyDetail(
       .from(ipoAdvisors)
       .where(eq(ipoAdvisors.symbol, sym))
       .orderBy(asc(ipoAdvisors.id)),
+    liveQuotesAll([sym, "TASI"]),
   ]);
 
   const actions: CorporateAction[] = actionRows.map((a) => ({
@@ -433,10 +508,13 @@ export async function getCompanyDetail(
   }));
   const divs: DividendEvent[] = divRows.map((d) => ({ exDate: d.exDate, amount: d.amount }));
 
-  const latest =
+  // The latest stored close (yfinance end-of-day), then the price the headline and the
+  // returns actually run on: the live Sahmk quote when fresh, else that close.
+  const eodLatest: EodClose | undefined =
     priceRows.length > 0
       ? { date: priceRows[priceRows.length - 1].date, close: priceRows[priceRows.length - 1].close }
       : undefined;
+  const chosen = chooseLatest(eodLatest, live.quotes.get(sym));
 
   const early =
     priceRows.length >= EARLY_RETURN_TRADING_DAYS
@@ -447,7 +525,11 @@ export async function getCompanyDetail(
         }
       : undefined;
 
-  const tasiLatest = tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
+  // Match the TASI end value to the company's price basis (live-with-live, eod-with-eod)
+  // so alpha is measured to the same point in time. See getAllCompanyMetrics.
+  const tasiEodLatest = tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
+  const tasiLatest =
+    chosen?.quoteTime != null ? resolveTasiLatest(tasiRows, live.tasi) : tasiEodLatest;
   let tasiBaseline: string | null = null;
   for (const t of tasiRows) {
     if (t.date >= r.ipoDate) {
@@ -468,7 +550,7 @@ export async function getCompanyDetail(
       verified: r.verified,
       dataCaveat: r.dataCaveat,
     },
-    latest,
+    chosen,
     early,
     actions,
     divs,
@@ -503,6 +585,25 @@ export async function getCompanyDetail(
       date: p.date,
       company: companyBase ? (c / companyBase) * 100 : null,
       tasi: lastTasi !== null && tasiBase ? (lastTasi / tasiBase) * 100 : null,
+    });
+  }
+
+  // Extend both chart lines to the live current price so the chart's final point matches
+  // the headline current price and the vs-TASI alpha, which run on the chosen (live)
+  // quote. Only when a live quote won and its date is past the last stored session, and
+  // the TASI end uses the same level the alpha used.
+  const lastSeriesDate = series.length ? series[series.length - 1].date : null;
+  if (
+    chosen &&
+    chosen.quoteTime !== null &&
+    companyBase &&
+    (lastSeriesDate === null || chosen.date > lastSeriesDate)
+  ) {
+    const tasiNum = tasiLatest !== null ? Number(tasiLatest) : lastTasi;
+    series.push({
+      date: chosen.date,
+      company: (Number(chosen.close) / companyBase) * 100,
+      tasi: tasiNum !== null && tasiBase ? (tasiNum / tasiBase) * 100 : null,
     });
   }
 
@@ -549,13 +650,20 @@ export async function getCompanyDetail(
         }
       : null;
 
-  // Drawdown from the highest close (found in the series pass above).
+  // Drawdown from the highest close (found in the series pass above). The chosen current
+  // price (the live quote when fresh) is also a peak candidate, so a fresh new high above
+  // every stored close reads as a flat drawdown rather than a positive one. Requires a
+  // real stored history (peakRow) so a lone live quote with no price series shows no peak.
+  const peakRowEff =
+    peakRow && chosen && Number(chosen.close) > peakCloseNum
+      ? { date: chosen.date, close: chosen.close }
+      : peakRow;
   const peak: PeakStats | null =
-    latest && peakRow
+    chosen && peakRowEff
       ? {
-          date: peakRow.date,
-          close: peakRow.close,
-          drawdown: drawdownFromPeak(latest.close, peakRow.close).toNumber(),
+          date: peakRowEff.date,
+          close: peakRowEff.close,
+          drawdown: drawdownFromPeak(chosen.close, peakRowEff.close).toNumber(),
         }
       : null;
 
@@ -569,8 +677,8 @@ export async function getCompanyDetail(
     offerPrice: r.offerPrice,
     minAllocationShares: r.minAllocationShares,
     ipoDate: r.ipoDate,
-    latestClose: latest ? latest.close : null,
-    asOfDate: latest ? latest.date : null,
+    latestClose: chosen ? chosen.close : null,
+    asOfDate: chosen ? chosen.date : null,
     actions,
     dividends: divs,
   });

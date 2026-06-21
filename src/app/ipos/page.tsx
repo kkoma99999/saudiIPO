@@ -3,6 +3,7 @@ import { getAllCompanyMetrics } from "@/db/queries";
 import { IpoTable } from "@/components/ipos/IpoTable";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { getI18n } from "@/lib/i18n/server";
+import { formatDateTime } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,13 @@ export default async function IposPage({
   const rows = await getAllCompanyMetrics();
   const initialYear = sp.year && /^\d{4}$/.test(sp.year) ? Number(sp.year) : undefined;
 
+  // Latest live quote time across all rows, shown as a single freshness line. Null when
+  // no live quote has been swept yet (the table then runs on the end-of-day closes).
+  const pricesAsOf = rows.reduce<string | null>(
+    (max, r) => (r.quoteTime && (max === null || r.quoteTime > max) ? r.quoteTime : max),
+    null,
+  );
+
   return (
     <div className="mx-auto max-w-6xl px-5 py-12">
       <header className="mb-8 max-w-2xl">
@@ -31,6 +39,12 @@ export default async function IposPage({
           {t.ipos.heading}
         </h1>
         <p className="mt-3 text-muted-foreground">{t.ipos.intro}</p>
+        {pricesAsOf && (
+          <p className="mt-2 text-xs text-muted-foreground tnum">
+            {t.ipos.pricesAsOf} {formatDateTime(pricesAsOf)} · {t.company.priceSource} ·{" "}
+            {t.company.delayed}
+          </p>
+        )}
       </header>
       {rows.length === 0 ? (
         <EmptyState message={t.empty.noData} />

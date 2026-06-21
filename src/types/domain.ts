@@ -18,6 +18,11 @@ export interface IpoRow {
 export interface CompanyMetrics extends IpoRow {
   currentPrice: string | null;
   currentDate: string | null;
+  // When the current price comes from a live Sahmk quote, the source's update time
+  // (ISO 8601) and whether it is delayed; both null/false for an end-of-day close.
+  // currentDate carries the date in both cases. Drives the "as of" freshness label.
+  quoteTime: string | null;
+  priceIsDelayed: boolean;
   priceReturn: number | null;
   totalReturn: number | null;
   firstDaysReturn: number | null; // offer price to the close on the 5th trading day

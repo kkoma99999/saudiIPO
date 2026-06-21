@@ -35,9 +35,10 @@ the source did not state was left empty.
   subscriber, not the minimum subscription size (the smallest application allowed). The
   two differ (Nahdi allotted a minimum of 3 while the minimum application was 10). This
   is the field the calculator uses, so it is the one most worth checking per row.
-- Advisor roles were mapped to underwriter, financial_advisor, lead_manager, bookrunner,
-  receiving_agent. Bookrunner and underwriter rosters come from prospectuses and are the
-  most likely to need trimming.
+- Advisor roles were mapped to underwriter, financial_advisor, lead_manager, bookrunner.
+  Receiving agents (جهة الاستلام) were removed, since they collect subscriptions rather
+  than advise the deal. Bookrunner and underwriter rosters come from prospectuses and are
+  the most likely to need trimming.
 
 ## Rows (73 sourced, 0 not found)
 
@@ -85,7 +86,7 @@ the source did not state was left empty.
 | 2284 | Modern Mills Co. (Modern Mills for Food Products Co.) | 11/12 | 8 | [link](https://www.zawya.com/en/press-release/companies-news/modern-mills-company-announcement-of-completion-of-offering-period-for-individual-investors-and-final-allotment-of-shares-gt745i4w) | individualSubscribersCount, retailCoverageMultiple |
 | 4017 | Dr. Soliman Abdel Kader Fakeeh Hospital Co. (Fakeeh Care Group) | 11/12 | 11 | [link](https://www.argaam.com/en/article/articledetail/id/1730953) | minAllocationShares |
 | 2084 | Miahona Co. | 10/12 | 9 | [link](https://www.argaam.com/en/article/articledetail/id/1730940) | institutionalCoverageMultiple, individualSubscribersCount, retailSharesOffered |
-| 1834 | Saudi Manpower Solutions Co. (SMASCO) | 11/12 | 7 | [link](https://ipo.smasco.com/wp-content/uploads/2024/05/SMASCO-Final-Allotment-Announcement-for-IPO_EN_V3.pdf) | advisors.receiving_agent |
+| 1834 | Saudi Manpower Solutions Co. (SMASCO) | 11/12 | 7 | [link](https://ipo.smasco.com/wp-content/uploads/2024/05/SMASCO-Final-Allotment-Announcement-for-IPO_EN_V3.pdf) | none |
 | 8313 | Rasan Information Technology Co. | 9/12 | 9 | [link](https://www.argaam.com/en/article/articledetail/id/1732229) | individualSubscribersCount, allocationFactor |
 | 4143 | Al Taiseer Group Talco Industrial Co. | 10/12 | 7 | [link](https://www.argaam.com/en/article/articledetail/id/1734730) | minAllocationShares, individualSubscribersCount |
 | 4165 | Almajed Oud Co. | 9/12 | 6 | [link](https://www.argaam.com/en/article/articledetail/id/1755313) | institutionalCoverageMultiple, individualSubscribersCount |

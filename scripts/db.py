@@ -54,6 +54,10 @@ EXPECTED = {
     "index_prices": {
         "id", "index_symbol", "date", "close", "ingested_at",
     },
+    "live_quotes": {
+        "symbol", "price", "change", "change_percent", "previous_close",
+        "quote_time", "is_delayed", "source", "source_url", "fetched_at",
+    },
     "ingest_log": {
         "id", "run_at", "run_id", "symbol", "source", "status",
         "message", "rows_written",
@@ -75,6 +79,14 @@ def database_url() -> str:
 def connect() -> psycopg.Connection:
     """Open a connection. The caller manages the transaction lifecycle."""
     return psycopg.connect(database_url())
+
+
+def active_symbols(conn):
+    """Active company symbols, trimmed and ordered. Shared by the daily price ingest and
+    the live-quote sweep so both cover exactly the same set of companies."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT symbol FROM companies WHERE is_active = true ORDER BY symbol")
+        return [r[0].strip() for r in cur.fetchall()]
 
 
 def new_run_id() -> str:
@@ -385,8 +397,10 @@ def load_allocations(conn, have) -> int:
     return filled
 
 
+# Receiving agents (جهة الاستلام) are intentionally not ingested: they are the banks
+# that collect subscriptions, not deal advisors, so a row with that role is skipped.
 _ADVISOR_ROLES = {
-    "underwriter", "financial_advisor", "lead_manager", "bookrunner", "receiving_agent",
+    "underwriter", "financial_advisor", "lead_manager", "bookrunner",
 }
 
 
@@ -441,6 +455,44 @@ def load_advisors(conn, have) -> int:
         cur.execute("DELETE FROM ipo_advisors WHERE symbol = ANY(%s)", (list(by_symbol),))
     all_rows = [row for rows in by_symbol.values() for row in rows]
     return upsert_advisors(conn, all_rows)
+
+
+def upsert_live_quotes(conn, rows) -> int:
+    """Upsert the latest live (delayed) quote per symbol into live_quotes.
+
+    rows: iterable of (symbol, price, change, change_percent, previous_close,
+    quote_time, is_delayed, source, source_url). price and quote_time are required; a
+    row missing either is skipped, never invented. Money is Decimal via _d. One row per
+    symbol (ON CONFLICT replaces it), so a re-run just refreshes. The caller commits.
+    """
+    data = []
+    for (sym, price, chg, chgpct, prev, qtime, delayed, source, url) in rows:
+        sym = (sym or "").strip()
+        if not sym or price is None or qtime is None:
+            continue
+        data.append(
+            (sym, _d(price), _d(chg), _d(chgpct), _d(prev), qtime,
+             _bool(delayed), (source or "sahmk"), url or None)
+        )
+    if not data:
+        return 0
+    with conn.cursor() as cur:
+        cur.executemany(
+            """
+            INSERT INTO live_quotes
+              (symbol, price, change, change_percent, previous_close, quote_time,
+               is_delayed, source, source_url)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            ON CONFLICT (symbol) DO UPDATE SET
+              price = EXCLUDED.price, change = EXCLUDED.change,
+              change_percent = EXCLUDED.change_percent,
+              previous_close = EXCLUDED.previous_close, quote_time = EXCLUDED.quote_time,
+              is_delayed = EXCLUDED.is_delayed, source = EXCLUDED.source,
+              source_url = EXCLUDED.source_url, fetched_at = now()
+            """,
+            data,
+        )
+    return len(data)
 
 
 def upsert_index_prices(conn, rows, index_symbol="^TASI.SR") -> int:

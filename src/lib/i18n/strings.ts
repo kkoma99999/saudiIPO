@@ -27,16 +27,11 @@ const en = {
       "Every Saudi Main Market IPO since 2018, grouped by listing year. Returns are adjusted for bonus issues and splits and measured against the offer price.",
     cohortsByYear: "Cohorts by year",
     totalReturnAdjusted: "total return, adjusted",
-    iposTracked: "IPOs tracked",
-    medianTotalReturn: "Median total return",
-    aboveOffer: "Above offer",
-    unverified: "Unverified",
-    withPrices: "of {n} with prices",
-    awaitingSource: "awaiting source check",
   },
   ipos: {
     heading: "All IPOs",
     intro: "Sort and filter every tracked Main Market IPO.",
+    pricesAsOf: "Prices as of",
   },
   filters: {
     search: "Search name or symbol",
@@ -74,6 +69,9 @@ const en = {
   company: {
     offerPrice: "Offer price",
     currentPrice: "Current price",
+    priceAsOf: "as of",
+    delayed: "delayed",
+    priceSource: "Sahmk",
     firstDays: "First 5 days",
     priceReturn: "Price return",
     totalReturn: "Total return",
@@ -161,7 +159,6 @@ const en = {
     financial_advisor: "Financial advisor",
     lead_manager: "Lead manager",
     bookrunner: "Bookrunner",
-    receiving_agent: "Receiving agent",
   },
   badge: {
     unverified: "Unverified",
@@ -203,16 +200,11 @@ const ar: Dict = {
       "كل طرح في السوق الرئيسية السعودية منذ 2018، مرتّب حسب سنة الإدراج. العوائد معدّلة لأسهم المنحة والتجزئة، ومقيسة على سعر الطرح.",
     cohortsByYear: "الدفعات حسب السنة",
     totalReturnAdjusted: "العائد الكلي، معدّلًا",
-    iposTracked: "طروحات متتبَّعة",
-    medianTotalReturn: "وسيط العائد الكلي",
-    aboveOffer: "فوق سعر الطرح",
-    unverified: "غير متحقَّق",
-    withPrices: "من {n} لها أسعار",
-    awaitingSource: "بانتظار التحقق من المصدر",
   },
   ipos: {
     heading: "كل الطروحات",
     intro: "رتّب وصفِّ كل طرح متتبَّع في السوق الرئيسية.",
+    pricesAsOf: "الأسعار حتى",
   },
   filters: {
     search: "ابحث بالاسم أو الرمز",
@@ -250,6 +242,9 @@ const ar: Dict = {
   company: {
     offerPrice: "سعر الطرح",
     currentPrice: "السعر الحالي",
+    priceAsOf: "حتى",
+    delayed: "مؤجّل",
+    priceSource: "سهمك",
     firstDays: "أول 5 أيام",
     priceReturn: "عائد السعر",
     totalReturn: "العائد الكلي",
@@ -337,7 +332,6 @@ const ar: Dict = {
     financial_advisor: "المستشار المالي",
     lead_manager: "مدير الاكتتاب",
     bookrunner: "مدير سجل الاكتتاب",
-    receiving_agent: "جهة الاستلام",
   },
   badge: {
     unverified: "غير متحقَّق",

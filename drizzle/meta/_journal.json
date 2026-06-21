@@ -64,6 +64,13 @@
       "when": 1782038628851,
       "tag": "0008_useful_weapon_omega",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1782054400032,
+      "tag": "0009_wide_vision",
+      "breakpoints": true
     }
   ]
 }

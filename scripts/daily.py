@@ -40,12 +40,6 @@ def start_for(conn, symbol):
     return ipo.isoformat() if ipo else DEFAULT_START
 
 
-def companies(conn):
-    with conn.cursor() as cur:
-        cur.execute("SELECT symbol FROM companies WHERE is_active = true ORDER BY symbol")
-        return [r[0] for r in cur.fetchall()]
-
-
 def update_symbol(conn, symbol, run_id, dry_run):
     start = start_for(conn, symbol)
     df = yf.Ticker(symbol + ".SR").history(start=start, auto_adjust=False, actions=True)
@@ -101,7 +95,7 @@ def main():
     conn = db.connect()
     db.assert_schema(conn)
     run_id = db.new_run_id()
-    syms = companies(conn)
+    syms = db.active_symbols(conn)
     print(f"Daily run {run_id}: {len(syms)} companies, dry_run={args.dry_run}")
 
     ok, failed = 0, 0

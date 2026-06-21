@@ -1,28 +1,14 @@
 import { getAllCompanyMetrics, summarizeCohorts } from "@/db/queries";
 import { CohortCard } from "@/components/cohort/CohortCard";
-import { StatTile } from "@/components/shared/StatTile";
-import { ReturnBadge } from "@/components/shared/ReturnBadge";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { getI18n } from "@/lib/i18n/server";
-import { fmt } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
-
-function median(xs: number[]): number | null {
-  if (!xs.length) return null;
-  const s = [...xs].sort((a, b) => a - b);
-  const m = Math.floor(s.length / 2);
-  return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
-}
 
 export default async function Home() {
   const { locale, t } = await getI18n();
   const all = await getAllCompanyMetrics();
   const cohorts = summarizeCohorts(all);
-
-  const returns = all.map((c) => c.totalReturn).filter((x): x is number => x !== null);
-  const aboveOffer = returns.filter((r) => r > 0).length;
-  const unverified = all.filter((c) => !c.verified).length;
 
   const titleWords = t.site.title.split(" ");
   const titleLead = titleWords.slice(0, -1).join(" ");
@@ -51,20 +37,7 @@ export default async function Home() {
         </p>
       </section>
 
-      <section className="rise rise-2 mt-10 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        <StatTile label={t.home.iposTracked}>{all.length}</StatTile>
-        <StatTile label={t.home.medianTotalReturn}>
-          <ReturnBadge value={median(returns)} size="lg" showArrow={false} />
-        </StatTile>
-        <StatTile label={t.home.aboveOffer} hint={fmt(t.home.withPrices, { n: all.length })}>
-          {aboveOffer}
-        </StatTile>
-        <StatTile label={t.home.unverified} hint={t.home.awaitingSource}>
-          {unverified}
-        </StatTile>
-      </section>
-
-      <section className="rise rise-3 mt-14">
+      <section className="rise rise-2 mt-14">
         <div className="mb-5 flex items-end justify-between border-b border-border/60 pb-3">
           <h2 className="font-display text-2xl font-semibold tracking-tight">
             {t.home.cohortsByYear}

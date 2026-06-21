@@ -12,6 +12,12 @@ unchecked task, check off one task at a time and commit per task.
       DONE WHEN: the repo exists on GitHub with this code pushed.
 - [ ] Create a Vercel project linked to the repo and set DATABASE_URL.
       DONE WHEN: the repo deploys to a Vercel URL.
+- [ ] Set the GitHub Actions secret SAHMK_API_KEY so the daily live-price sweep
+      (scripts/live_prices.py, wired into .github/workflows/daily.yml) runs in CI.
+      The key is in .env locally; the workflow step is skipped until the secret exists.
+      Free tier is 100 requests/day and 10/min, so the sweep refreshes once daily. The
+      key shown in chat on 2026-06-21 should be rotated since it was shared in plaintext.
+      DONE WHEN: the secret is set and a manual workflow_dispatch run populates live_quotes.
 - [ ] Verify each IPO row in data/ipos.csv against its source_url and flip verified
       to true. Claude sets verified=false on all rows and lists them in
       docs/VERIFICATION.md. The scope now starts at 2018-01-01; six rows were added
@@ -45,7 +51,7 @@ unchecked task, check off one task at a time and commit per task.
       DONE WHEN: each zero-dividend company older than 2 years is confirmed correct
       or has its missing dividends added with a source.
 - [ ] Verify allocation data and flip allocation_verified. All 73 rows in
-      data/allocations.csv and the 840 advisor rows in data/ipo_advisors.csv were
+      data/allocations.csv and the 411 advisor rows in data/ipo_advisors.csv were
       sourced by automated research (Argaam English, Sahm Capital, Arab News, the
       prospectuses) and carry allocation_verified=false. Check each row against its
       allocation_source_url per docs/ALLOCATION_VERIFICATION.md, especially
@@ -153,5 +159,28 @@ unchecked task, check off one task at a time and commit per task.
       sortable Min-allocation P&L column that reads n/d when no minimum is on record.
 - [x] Python loaders (set_allocation/load_allocations, upsert_advisors/load_advisors)
       and the data/allocations.csv and data/ipo_advisors.csv files.
-- [x] Populated all 73 companies (70 with a minimum allocation, 840 advisor rows),
-      allocation_verified=false. See the NEEDS HUMAN item and docs/ALLOCATION_VERIFICATION.md.
+- [x] Populated all 73 companies (70 with a minimum allocation, 411 advisor rows after
+      the receiving agents were dropped), allocation_verified=false. See the NEEDS HUMAN
+      item and docs/ALLOCATION_VERIFICATION.md.
+
+## Feature: Live current price from Sahmk (2026-06-21)
+
+- [x] Schema: a live_quotes table (migration 0009) holding the latest delayed quote per
+      symbol plus the TASI index level (symbol 'TASI'), with quote_time, is_delayed, and
+      source. Kept separate from prices_daily so the yfinance end-of-day history that
+      drives the chart stays clean. Registered in the Python schema contract.
+- [x] src/lib/quote-select.ts: a pure, tested chooseLatest that picks the live quote when
+      it is at least as fresh as the latest stored close, else the close (six tests). The
+      company queries feed the chosen price to the existing metrics engine unchanged, so
+      the current price and every return (price, total, vs-TASI, retail outcome, drawdown)
+      recompute from the live price. vs-TASI uses the live TASI level for consistency.
+- [x] scripts/live_prices.py: a throttled daily sweep (under the free tier's 100/day,
+      10/min) that pulls every company quote and TASI, parses money as Decimal, upserts
+      live_quotes, logs to ingest_log, and stops on a 429 or near the budget. A failed or
+      empty fetch leaves the row untouched; nothing is invented. db.upsert_live_quotes
+      added. SAHMK_API_KEY read from .env, never reaching the Next app or the browser.
+- [x] UI: the company page Current price tile shows an "as of <date time> (delayed)"
+      label from the quote time, and /ipos shows a single "Prices as of" freshness line.
+- [x] CI: .github/workflows/daily.yml runs the sweep after the end-of-day ingest, gated
+      on the SAHMK_API_KEY secret (see the NEEDS HUMAN item), continue-on-error so a quote
+      hiccup never fails the price job.

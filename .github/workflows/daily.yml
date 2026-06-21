@@ -10,7 +10,10 @@ on:
 jobs:
   ingest:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
+    env:
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      SAHMK_API_KEY: ${{ secrets.SAHMK_API_KEY }}
     steps:
       - uses: actions/checkout@v4
 
@@ -25,6 +28,14 @@ jobs:
         run: pip install -r scripts/requirements.txt
 
       - name: Run daily ingest
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
         run: python scripts/daily.py
+
+      # Refresh the live current-price quotes from Sahmk once a day. Throttled to stay
+      # under the free-tier limit (100/day, 10/min) and idempotent, so it just refreshes
+      # live_quotes. continue-on-error so a quote-API hiccup never fails the price job;
+      # the app falls back to the end-of-day close when a symbol has no live quote. The
+      # step is skipped until the SAHMK_API_KEY secret is set.
+      - name: Refresh live prices (Sahmk)
+        if: ${{ env.SAHMK_API_KEY != '' }}
+        continue-on-error: true
+        run: python scripts/live_prices.py

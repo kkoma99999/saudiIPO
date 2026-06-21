@@ -223,6 +223,29 @@ export const indexPrices = pgTable(
   (t) => [uniqueIndex("index_prices_symbol_date_uq").on(t.indexSymbol, t.date)],
 );
 
+// live_quotes: the latest delayed (or real-time) quote per symbol from the Sahmk API
+// (sahmk.sa), refreshed once daily by scripts/live_prices.py. This is the dynamic
+// current-price source. It is deliberately separate from prices_daily (the yfinance
+// end-of-day history that drives the chart): the app prefers this price for the
+// headline current price and the returns, and falls back to the latest prices_daily
+// close when a symbol has no live quote. symbol is varchar(16), not a company foreign
+// key, so the TASI index level (symbol 'TASI') lives here too. quote_time is the
+// source's own updated_at; nothing here is invented. See the tadawul-data skill.
+// change, change_percent, and previous_close are stored for provenance and are not read
+// by the app yet; the return math uses only price, quote_time, and is_delayed.
+export const liveQuotes = pgTable("live_quotes", {
+  symbol: varchar("symbol", { length: 16 }).primaryKey(),
+  price: numeric("price", { precision: 14, scale: 4 }).notNull(),
+  change: numeric("change", { precision: 14, scale: 4 }),
+  changePercent: numeric("change_percent", { precision: 8, scale: 4 }),
+  previousClose: numeric("previous_close", { precision: 14, scale: 4 }),
+  quoteTime: timestamp("quote_time", { withTimezone: true }).notNull(),
+  isDelayed: boolean("is_delayed").notNull().default(true),
+  source: varchar("source", { length: 16 }).notNull().default("sahmk"),
+  sourceUrl: text("source_url"),
+  fetchedAt: timestamp("fetched_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 // ingest_log: every run outcome, success and failure. No foreign key on symbol so
 // failures for unknown symbols still log.
 export const ingestLog = pgTable(
@@ -254,4 +277,5 @@ export type PriceDaily = typeof pricesDaily.$inferSelect;
 export type Dividend = typeof dividends.$inferSelect;
 export type CorporateAction = typeof corporateActions.$inferSelect;
 export type IndexPrice = typeof indexPrices.$inferSelect;
+export type LiveQuote = typeof liveQuotes.$inferSelect;
 export type IngestLogRow = typeof ingestLog.$inferSelect;
