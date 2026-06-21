@@ -44,6 +44,17 @@ unchecked task, check off one task at a time and commit per task.
       missing payments to data (never from memory).
       DONE WHEN: each zero-dividend company older than 2 years is confirmed correct
       or has its missing dividends added with a source.
+- [ ] Verify allocation data and flip allocation_verified. All 73 rows in
+      data/allocations.csv and the 840 advisor rows in data/ipo_advisors.csv were
+      sourced by automated research (Argaam English, Sahm Capital, Arab News, the
+      prospectuses) and carry allocation_verified=false. Check each row against its
+      allocation_source_url per docs/ALLOCATION_VERIFICATION.md, especially
+      min_allocation_shares (the field the calculator uses, distinct from the minimum
+      subscription) and the coverage multiples flagged low confidence. Three companies
+      (4147, 4327, 7204) have no minimum allocation on record; Aramco's
+      retail_tranche_pct basis (of capital vs of offering) needs a decision.
+      DONE WHEN: human-checked rows have allocation_verified=true with initials and
+      date in docs/ALLOCATION_VERIFICATION.md.
 
 ## Phase 1 - Foundation
 
@@ -126,3 +137,21 @@ unchecked task, check off one task at a time and commit per task.
 - [x] Open Graph tags + default OG image. ACCEPTANCE: og:title/description/image exposed. (root openGraph + opengraph-image.tsx generated.)
 - [x] /data-sources disclaimer page (Argaam + saudiexchange.sa, badge meaning, not investment advice). ACCEPTANCE: page present, linked from footer.
 - [x] Final pass: grep for em dashes/emojis/filler in src; typecheck + tests + build green. ACCEPTANCE: clean checkout passes all checks. (no em dashes/emojis/filler outside the rule definition; all checks pass.)
+
+## Feature: Allocation and retail outcome calculator (2026-06-21)
+
+- [x] Schema: 13 nullable allocation columns on ipos and an ipo_advisors table with an
+      advisor_role enum, migration 0007, registered in the Python schema contract.
+- [x] src/lib/retail-outcome.ts: a pure calculator that composes the metrics engine
+      (cumulativeFactorAfter, cumulativeAdjustedDividends, totalReturn), never
+      reimplementing split, bonus, or dividend math. Six golden tests; returnPct equals
+      total_return, the SAR figures scale with the allocation.
+- [x] queries + UI: getCompanyDetail builds the outcome and the allocation details; the
+      company page shows a card titled "If you received the minimum allocation and held
+      to today" with a shares override and an unverified badge, plus the coverage
+      multiples, allocation factor, subscription period, and advisors. /ipos has a
+      sortable Min-allocation P&L column that reads n/d when no minimum is on record.
+- [x] Python loaders (set_allocation/load_allocations, upsert_advisors/load_advisors)
+      and the data/allocations.csv and data/ipo_advisors.csv files.
+- [x] Populated all 73 companies (70 with a minimum allocation, 840 advisor rows),
+      allocation_verified=false. See the NEEDS HUMAN item and docs/ALLOCATION_VERIFICATION.md.
