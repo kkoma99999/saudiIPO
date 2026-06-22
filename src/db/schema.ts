@@ -277,5 +277,7 @@ export type PriceDaily = typeof pricesDaily.$inferSelect;
 export type Dividend = typeof dividends.$inferSelect;
 export type CorporateAction = typeof corporateActions.$inferSelect;
 export type IndexPrice = typeof indexPrices.$inferSelect;
-export type LiveQuote = typeof liveQuotes.$inferSelect;
+// The raw live_quotes row. Named LiveQuoteRow so it does not collide with the LiveQuote
+// DTO in src/lib/quote-select.ts, which carries only the fields the return math reads.
+export type LiveQuoteRow = typeof liveQuotes.$inferSelect;
 export type IngestLogRow = typeof ingestLog.$inferSelect;

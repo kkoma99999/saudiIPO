@@ -145,6 +145,34 @@ function resolveTasiLatest(
   return chooseLatest(eod, liveTasi)?.close ?? null;
 }
 
+// The TASI end value matched to a chosen price's time basis: the live index level when the
+// chosen price is the live quote, else the latest stored index close. Keeps alpha measured
+// to the same point in time as the price, never a live company return against a stale index
+// (or the reverse). Null when there is no index data.
+function tasiLatestFor(
+  chosen: ChosenPrice | null,
+  tasiRows: Array<{ date: string; close: string }>,
+  liveTasi: LiveQuote | undefined,
+): string | null {
+  if (chosen?.quoteTime != null) return resolveTasiLatest(tasiRows, liveTasi);
+  return tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
+}
+
+// The first index close on or after the IPO, only when it is close enough to the IPO to be
+// a fair since-IPO baseline (see indexBaselineIsClean). Null when there is no such close or
+// the gap is too wide to compare fairly.
+function tasiBaselineFor(
+  ipoDate: string,
+  tasiRows: Array<{ date: string; close: string }>,
+): string | null {
+  for (const t of tasiRows) {
+    if (t.date >= ipoDate) {
+      return indexBaselineIsClean(ipoDate, t.date) ? t.close : null;
+    }
+  }
+  return null;
+}
+
 type EarlyClose = { date: string; close: string; firstDate: string };
 
 // The first session and the nth session per symbol (sessions ordered from the IPO),
@@ -326,25 +354,9 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
     divsMap.set(key, list);
   }
 
-  // The TASI end value paired with each company, matched to that company's price basis:
-  // a company on its live price uses the live-preferred index level, a company that fell
-  // back to its end-of-day close uses the end-of-day index close, so alpha never compares
-  // a live company return against a stale index (or the reverse).
-  const tasiLiveLatest = resolveTasiLatest(tasiRows, liveTasi);
-  const tasiEodLatest = tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
-  const tasiFor = (chosen: ChosenPrice | null): string | null =>
-    chosen?.quoteTime != null ? tasiLiveLatest : tasiEodLatest;
-  // First index close on or after the IPO, only when it is close enough to the IPO to
-  // be a fair since-IPO baseline (see indexBaselineIsClean).
-  const tasiBaseline = (ipoDate: string): string | null => {
-    for (const t of tasiRows) {
-      if (t.date >= ipoDate) {
-        return indexBaselineIsClean(ipoDate, t.date) ? t.close : null;
-      }
-    }
-    return null;
-  };
-
+  // Each company's TASI end value and baseline are matched to that company's price basis
+  // (tasiLatestFor, tasiBaselineFor) so alpha never compares a live company return against
+  // a stale index, or the reverse.
   return ipoRows
     .map((r) => ({ ...r, symbol: r.symbol.trim() }))
     .map((row) => {
@@ -355,8 +367,8 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
         early.get(row.symbol),
         actionsMap.get(row.symbol) ?? [],
         divsMap.get(row.symbol) ?? [],
-        tasiBaseline(row.ipoDate),
-        tasiFor(chosen),
+        tasiBaselineFor(row.ipoDate, tasiRows),
+        tasiLatestFor(chosen, tasiRows, liveTasi),
         row.minAllocationShares,
       );
     })
@@ -525,18 +537,10 @@ export async function getCompanyDetail(
         }
       : undefined;
 
-  // Match the TASI end value to the company's price basis (live-with-live, eod-with-eod)
-  // so alpha is measured to the same point in time. See getAllCompanyMetrics.
-  const tasiEodLatest = tasiRows.length ? tasiRows[tasiRows.length - 1].close : null;
-  const tasiLatest =
-    chosen?.quoteTime != null ? resolveTasiLatest(tasiRows, live.tasi) : tasiEodLatest;
-  let tasiBaseline: string | null = null;
-  for (const t of tasiRows) {
-    if (t.date >= r.ipoDate) {
-      tasiBaseline = indexBaselineIsClean(r.ipoDate, t.date) ? t.close : null;
-      break;
-    }
-  }
+  // Match the TASI end value and baseline to the company's price basis (live-with-live,
+  // eod-with-eod) so alpha is measured to the same point in time. See getAllCompanyMetrics.
+  const tasiLatest = tasiLatestFor(chosen, tasiRows, live.tasi);
+  const tasiBaseline = tasiBaselineFor(r.ipoDate, tasiRows);
 
   const metrics = computeMetrics(
     {
@@ -588,23 +592,24 @@ export async function getCompanyDetail(
     });
   }
 
-  // Extend both chart lines to the live current price so the chart's final point matches
-  // the headline current price and the vs-TASI alpha, which run on the chosen (live)
-  // quote. Only when a live quote won and its date is past the last stored session, and
-  // the TASI end uses the same level the alpha used.
+  // Reconcile the chart's final point with the headline current price and the vs-TASI
+  // alpha, which all run on the chosen (live) quote. When a live quote won, its indexed
+  // point either extends the series (a newer date) or replaces the last stored session
+  // (the same date, which chooseLatest breaks toward the live price), so the chart endpoint
+  // and the headline never disagree. The TASI end uses the same level the alpha used.
   const lastSeriesDate = series.length ? series[series.length - 1].date : null;
-  if (
-    chosen &&
-    chosen.quoteTime !== null &&
-    companyBase &&
-    (lastSeriesDate === null || chosen.date > lastSeriesDate)
-  ) {
+  if (chosen && chosen.quoteTime !== null && companyBase) {
     const tasiNum = tasiLatest !== null ? Number(tasiLatest) : lastTasi;
-    series.push({
+    const livePoint: SeriesPoint = {
       date: chosen.date,
       company: (Number(chosen.close) / companyBase) * 100,
       tasi: tasiNum !== null && tasiBase ? (tasiNum / tasiBase) * 100 : null,
-    });
+    };
+    if (lastSeriesDate === null || chosen.date > lastSeriesDate) {
+      series.push(livePoint);
+    } else if (chosen.date === lastSeriesDate) {
+      series[series.length - 1] = livePoint;
+    }
   }
 
   // Dividends since IPO: each amount adjusted to current-share basis, with a running
@@ -685,7 +690,13 @@ export async function getCompanyDetail(
 
   // Allocation and subscription facts, present when the company disclosed any of them or
   // any advisor is on record. Each field stays null when not sourced; nothing is guessed.
-  const advisors: Advisor[] = advisorRows.map((a) => ({ name: a.name, role: a.role }));
+  // receiving_agent advisors are not shown. The role is dropped from the dataset and the
+  // ingest, and kept out of the role label map, so this guards a stale pre-removal row from
+  // rendering as a bare, untranslated "receiving_agent". The enum value is retained in the
+  // schema because dropping a Postgres enum value is a fragile migration.
+  const advisors: Advisor[] = advisorRows
+    .filter((a) => a.role !== "receiving_agent")
+    .map((a) => ({ name: a.name, role: a.role }));
   const subscriptionDays =
     r.retailSubscriptionStart && r.retailSubscriptionEnd
       ? daysInclusive(r.retailSubscriptionStart, r.retailSubscriptionEnd)
