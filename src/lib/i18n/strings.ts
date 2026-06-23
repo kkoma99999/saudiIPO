@@ -11,6 +11,7 @@ const en = {
   nav: {
     home: "Cohorts",
     ipos: "All IPOs",
+    invested: "Invest 10k",
     sources: "Data sources",
   },
   switcher: {
@@ -27,6 +28,19 @@ const en = {
       "Every Saudi Main Market IPO since 2018, grouped by listing year. Returns are adjusted for bonus issues and splits and measured against the offer price.",
     cohortsByYear: "Cohorts by year",
     totalReturnAdjusted: "total return, adjusted",
+  },
+  invested: {
+    kicker: "Allocation reality",
+    heading: "10,000 SAR into each IPO",
+    intro:
+      "Subscribe with 10,000 SAR and an oversubscribed IPO does not hand you 10,000 SAR of shares. Everyone gets the minimum allocation, the shares you requested above it are filled at the allocation factor, and the rest is refunded. This ranks every IPO by what the shares you would actually have been allotted are worth today, adjusted for bonus issues, splits, and dividends.",
+    nowWorth: "worth today",
+    allotment: "{shares} shares · {deployed} deployed",
+    listedIn: "Listed {year}",
+    unranked: "{n} not ranked, no sourced allocation factor yet",
+    method:
+      "Allotted shares = the minimum allocation plus the requested shares above it times the allocation factor, capped at what 10,000 SAR could request. Return is on the capital actually deployed; refunded cash is not counted.",
+    illustration: "An illustration from tracked allotment data and returns, not investment advice.",
   },
   ipos: {
     heading: "All IPOs",
@@ -184,6 +198,7 @@ const ar: Dict = {
   nav: {
     home: "الدفعات",
     ipos: "كل الطروحات",
+    invested: "استثمر 10 آلاف",
     sources: "مصادر البيانات",
   },
   switcher: {
@@ -200,6 +215,19 @@ const ar: Dict = {
       "كل طرح في السوق الرئيسية السعودية منذ 2018، مرتّب حسب سنة الإدراج. العوائد معدّلة لأسهم المنحة والتجزئة، ومقيسة على سعر الطرح.",
     cohortsByYear: "الدفعات حسب السنة",
     totalReturnAdjusted: "العائد الكلي، معدّلًا",
+  },
+  invested: {
+    kicker: "واقع التخصيص",
+    heading: "10,000 ريال في كل طرح",
+    intro:
+      "حين تكتتب بـ10,000 ريال في طرح مغطّى بأضعاف، لا تحصل على أسهم بقيمة 10,000 ريال. يأخذ كل مكتتب الحد الأدنى للتخصيص، ويُخصَّص ما طلبته فوقه بنسبة التخصيص التناسبية، ويُعاد الباقي. هذا ترتيب لكل طرح حسب قيمة الأسهم التي كنت ستحصل عليها فعلًا اليوم، معدّلةً لأسهم المنحة والتجزئة والتوزيعات.",
+    nowWorth: "تساوي اليوم",
+    allotment: "{shares} سهم · {deployed} مستثمَرة",
+    listedIn: "أُدرجت سنة {year}",
+    unranked: "{n} غير مرتّبة، لا تتوفّر نسبة تخصيص موثّقة بعد",
+    method:
+      "الأسهم المخصَّصة = الحد الأدنى للتخصيص زائد الأسهم المطلوبة فوقه مضروبةً في نسبة التخصيص، بحدّ أقصى ما تطلبه 10,000 ريال. العائد يُقاس على رأس المال المستثمَر فعلًا، والمبلغ المعاد لا يُحتسب.",
+    illustration: "توضيح مبني على بيانات التخصيص والعوائد المتتبَّعة، وليس نصيحة استثمارية.",
   },
   ipos: {
     heading: "كل الطروحات",

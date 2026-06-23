@@ -62,6 +62,33 @@ export type RetailOutcomeResult =
   | { computable: false }
   | { computable: true; basis: OutcomeBasis };
 
+// How many shares a subscription of amountSar would actually be allotted. Saudi retail
+// allotment gives every subscriber the guaranteed minimum allocation first, then fills the
+// shares requested ABOVE the minimum at the allocation factor (the published pro-rata rate
+// on the remaining shares). So allotted = min(requested, minimum + (requested - minimum) *
+// factor), where requested = floor(amountSar / offerPrice) and allocationFactorPercent is a
+// percent (0.022 means 0.022 percent of the remainder was filled, 100 means it was filled in
+// full). Returns null when it cannot be known: no allocation factor on record, a non-positive
+// offer price, or a subscription too small to clear one whole share.
+export function allocatedShares(input: {
+  amountSar: Num;
+  offerPrice: Num;
+  allocationFactorPercent: Num | null;
+  minAllocationShares: Num | null;
+}): Decimal | null {
+  if (input.allocationFactorPercent === null) return null;
+  const offer = dec(input.offerPrice);
+  if (offer.lte(0)) return null;
+  const requested = dec(input.amountSar).div(offer).floor();
+  if (requested.lte(0)) return null;
+  const min = input.minAllocationShares === null ? new Decimal(0) : dec(input.minAllocationShares);
+  const base = Decimal.min(min, requested); // the guaranteed minimum, never more than requested
+  const extra = Decimal.max(0, requested.minus(min)); // shares requested above the minimum
+  const prorata = extra.mul(dec(input.allocationFactorPercent)).div(100);
+  const allotted = Decimal.min(requested, base.plus(prorata)).floor();
+  return allotted.lte(0) ? null : allotted;
+}
+
 // Value a given number of allocated shares against the basis. Linear in shares, so the
 // client uses it to recompute for a user-entered allocation. Returns Decimal-exact math
 // reduced to numbers only at the leaves.

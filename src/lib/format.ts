@@ -14,6 +14,15 @@ const sarFmt = new Intl.NumberFormat(intlLocale, {
   maximumFractionDigits: 2,
 });
 
+// SAR with no halalas, for large rounded figures like the 10,000 SAR investment example
+// grown to tens of thousands, where 2 decimals are noise.
+const sarWholeFmt = new Intl.NumberFormat(intlLocale, {
+  style: "currency",
+  currency: "SAR",
+  minimumFractionDigits: 0,
+  maximumFractionDigits: 0,
+});
+
 // Compact SAR for large headline figures, for example SAR 446B or SAR 96M. Used for
 // proceeds and big share counts where halala precision is noise. Prices keep full 2dp.
 const sarCompactFmt = new Intl.NumberFormat(intlLocale, {
@@ -69,6 +78,12 @@ function toNum(value: number | string | null | undefined): number | null {
 export function formatSar(value: number | string | null | undefined): string {
   const n = toNum(value);
   return n === null ? NA : sarFmt.format(n);
+}
+
+// SAR with no halalas, for large rounded figures like the 10,000 SAR investment example.
+export function formatSarWhole(value: number | string | null | undefined): string {
+  const n = toNum(value);
+  return n === null ? NA : sarWholeFmt.format(n);
 }
 
 // A ratio like 0.352 shown as +35.2%. Set sign:false to drop the leading plus.

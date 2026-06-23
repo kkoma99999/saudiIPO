@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { totalReturn } from "./metrics";
-import { outcomeForShares, retailOutcome } from "./retail-outcome";
+import { allocatedShares, outcomeForShares, retailOutcome } from "./retail-outcome";
 
 // Hand-built fixtures with exact expected numbers. The calculator must reuse the
 // adjustment engine, so a 1-for-1 bonus doubles the share count and a dividend is
@@ -95,5 +95,63 @@ describe("retail outcome calculator", () => {
     expect(bigger.currentValue).toBe(3000); // 250 * 12
     expect(bigger.netSar).toBe(500);
     expect(bigger.returnPct).toBeCloseTo(min.returnPct, 12);
+  });
+});
+
+describe("allotted shares from a fixed subscription", () => {
+  const base = { amountSar: 10000, offerPrice: 50 }; // requests floor(10000/50) = 200 shares
+
+  it("a heavily oversubscribed IPO is dominated by the minimum allocation", () => {
+    // minimum 6 + (200 - 6) * 0.02% = 6 + 0.0388 = 6.04, floored to 6.
+    const a = allocatedShares({ ...base, allocationFactorPercent: 0.02, minAllocationShares: 6 });
+    expect(a?.toNumber()).toBe(6);
+  });
+
+  it("fills the shares requested above the minimum at the pro-rata factor", () => {
+    // minimum 10 + (200 - 10) * 60% = 10 + 114 = 124.
+    const a = allocatedShares({ ...base, allocationFactorPercent: 60, minAllocationShares: 10 });
+    expect(a?.toNumber()).toBe(124);
+  });
+
+  it("an undersubscribed IPO (factor 100) fills the full request", () => {
+    // minimum 0 + (200 - 0) * 100% = 200.
+    const a = allocatedShares({ ...base, allocationFactorPercent: 100, minAllocationShares: null });
+    expect(a?.toNumber()).toBe(200);
+  });
+
+  it("never allots more shares than were requested", () => {
+    // 1,000 SAR requests 20 shares, below the 100 minimum, so there is no remainder to
+    // pro-rate and you simply get the 20 you asked for.
+    const a = allocatedShares({
+      amountSar: 1000,
+      offerPrice: 50,
+      allocationFactorPercent: 0.01,
+      minAllocationShares: 100,
+    });
+    expect(a?.toNumber()).toBe(20);
+  });
+
+  it("is not computable without an allocation factor on record", () => {
+    expect(
+      allocatedShares({ ...base, allocationFactorPercent: null, minAllocationShares: 10 }),
+    ).toBeNull();
+  });
+
+  it("is not computable for a non-positive offer price or a sub-one-share subscription", () => {
+    expect(
+      allocatedShares({ amountSar: 10000, offerPrice: 0, allocationFactorPercent: 50, minAllocationShares: 5 }),
+    ).toBeNull();
+    expect(
+      allocatedShares({ amountSar: 10, offerPrice: 50, allocationFactorPercent: 50, minAllocationShares: 5 }),
+    ).toBeNull();
+  });
+
+  it("feeds the valuation engine so the deployed capital matches the allotment", () => {
+    const r = compute({ offerPrice: 50, minAllocationShares: 10 });
+    expect(r.computable).toBe(true);
+    if (!r.computable) return;
+    const a = allocatedShares({ ...base, allocationFactorPercent: 60, minAllocationShares: 10 });
+    const o = outcomeForShares(r.basis, a!.toString());
+    expect(o.capitalDeployed).toBe(124 * 50); // 124 allotted shares * SAR 50 offer
   });
 });

@@ -1,0 +1,1501 @@
+{
+ "2222": {
+  "name_ar": {
+   "value": "أرامكو السعودية",
+   "source_url": "https://www.aa.com.tr/ar/اقتصاد/تغطية-اكتتاب-أرامكو-السعودية-بنسبة-465-بالمائة/1665374",
+   "quote": "أرامكو السعودية (the official listed/trade name used throughout the article; full legal name is شركة الزيت العربية السعودية)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "institutional_coverage_multiple": {
+   "value": "6.2",
+   "source_url": "https://www.aa.com.tr/ar/اقتصاد/تغطية-اكتتاب-أرامكو-السعودية-بنسبة-465-بالمائة/1665374",
+   "quote": "تغطية حصة 'المؤسسات' البالغة ملياري سهم بنسبة 620 بالمائة (institutional tranche of 2 billion shares covered at 620%, i.e. 6.2 times)",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "4013": {
+  "oversubscription": {
+   "value": "83",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1355097",
+   "quote": "The IPO was 8270% oversubscribed (83 times) with funds exceeding SAR 217 billion",
+   "confidence": "high",
+   "type": "total"
+  },
+  "retail_coverage_multiple": {
+   "value": "7.1",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1355097",
+   "quote": "The retail offering was 710% oversubscribed.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Dr. Sulaiman Al-Habib.pdf",
+   "quote": "fifty-two million five hundred thousand (52,500,000) ordinary shares (collectively, the \"Offer Shares\" and each an \"Offer Share\") with a fully paid-up nominal value of ten Saudi Riyals (SAR 10) per share. The value of the Offering will be SAR (50) per Share (the \"Offer Price\")",
+   "confidence": "high"
+  }
+ },
+ "1182": {
+  "proceeds_sar": {
+   "value": "434880000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1389356",
+   "quote": "A total of 266,820 subscribers injected SAR 1.2 billion to buy shares at SAR 16 each. (Offering value = SAR 16 x 27,180,000 shares = SAR 434,880,000; the SAR 1.2 billion figure is the total amount subscribers injected, i.e. total demand, not the offering value.)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "26.9",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1389356",
+   "quote": "Amlak International for Real Estate Finance's initial public offering (IPO) was 2,690%, 26.9x oversubscribed",
+   "confidence": "high",
+   "type": "total"
+  }
+ },
+ "4161": {
+  "proceeds_sar": {
+   "value": "2194560000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1415110",
+   "quote": "The company offered 22.86 million shares, or 20% of capital, for public subscription at SAR 96 per share (offering value approximately SAR 2.19 billion). Multiple sources confirm BinDawood Holding 'aiming to raise SAR 2.19 billion' / 'aims to raise up to SR 2.2 bn'.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "institutional_coverage_multiple": {
+   "value": "48.7",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1414039",
+   "quote": "The institutional offering was 4,870% oversubscribed.",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "2081": {
+  "proceeds_sar": {
+   "value": "540000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1446314",
+   "quote": "7.5 million shares at SAR 72 per share, representing a 30% stake; Total IPO Offering Value SAR 540 million.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "63.2",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1442835",
+   "quote": "تغطية اكتتاب المؤسسات لشركة \"الخريِّف لتقنية المياه والطاقة\" بنسبة 6320 % .. وتحديد سعر السهم عند 72 ريالاً (the institutional offering was 6,320% oversubscribed). No separate overall/total coverage figure is reported; this institutional book coverage is the headline figure.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "retail_coverage_multiple": {
+   "value": "15.1152",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1447069",
+   "quote": "The retail offering was 1,511.52% oversubscribed (1511.52% = 15.1152x), with a total of 136,988 individual investors.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "institutional_coverage_multiple": {
+   "value": "63.2",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1447069",
+   "quote": "the institutional offering was 6,320% oversubscribed (6320% = 63.2x).",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "4261": {
+  "name_ar": {
+   "value": "شركة ذيب لتأجير السيارات",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/5122",
+   "quote": "شركة ذيب لتأجير السيارات (رمز تداول 4261)، قطاع النقل",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "516000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1451389",
+   "quote": "final offer price set at SAR 40 per share; 12.9 million ordinary shares were allocated to them, representing 100% of the total shares offered for subscription (90% institutional = 11,610,000 + 10% retail = 1,290,000 = 12,900,000 shares x SAR 40 = SAR 516,000,000).",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "2281": {
+  "name_ar": {
+   "value": "شركة التنمية الغذائية",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/13515",
+   "quote": "شركة التنمية الغذائية (Tanmiah Food Company) — official Arabic legal name as shown on the Argaam company overview page header and confirmed across the Arabic allocation articles (id/1485348, id/1485349).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "402000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1486171",
+   "quote": "The company floated six million shares, representing 30% of its capital, at SAR 67 per share. Total Offering Value: SAR 402 million (67 x 6,000,000 = 402,000,000).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "95.34",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1486171",
+   "quote": "90% of offered shares for institutional investors, with a coverage ratio of 9,534% (= 95.34x). No single combined/total oversubscription figure is reported; the institutional book coverage of 9,534% is the headline institutional figure, and the retail tranche separately was 1,170.48%.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Tanmiah_EN.pdf",
+   "quote": "The Company's current capital is two hundred million (200,000,000) Saudi Arabian Riyals, divided into twenty million (20,000,000) ordinary Shares with a fully paid nominal value of ten (10) Saudi Arabian Riyals per Share. ... at an Offer Price of SAR (67) per Offer Share, with each Offer Share carry",
+   "confidence": "high"
+  }
+ },
+ "7202": {
+  "name_ar": {
+   "value": "الشركة العربية لخدمات الإنترنت والاتصالات",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1496594",
+   "quote": "اكتتاب الشركة العربية لخدمات الإنترنت والاتصالات (solutions by stc): 13003 % نسبة تغطية المؤسسات .. وتحديد سعر الطرح عند 151 ريالاً",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "130.04",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1498943",
+   "quote": "The company's institutional offering was 13,004% oversubscribed, raising SAR 471 billion",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/solutions_by stc_en.pdf",
+   "quote": "Nominal Value per Share: Ten Saudi riyals (SAR 10) per share. (offering summary); also on cover page: \"(SAR 151) per share, with a nominal value of ten Saudi riyals (SAR 10) per share\"",
+   "confidence": "high"
+  }
+ },
+ "2082": {
+  "proceeds_sar": {
+   "value": "4547160744",
+   "source_url": "https://www.arabnews.com/node/1928716/business-economy",
+   "quote": "the company is selling 81.2 million shares in a range of SR51-SR56 per share or an 11.1 percent stake ... could raise SR4.5 billion ($1.2 billion) at the top of the range",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "248",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1500728",
+   "quote": "The utility provider's institutional offering was 248 times oversubscribed, drawing orders of nearly SAR 1.127 trillion.",
+   "confidence": "high",
+   "type": "institutional"
+  }
+ },
+ "4071": {
+  "name_ar": {
+   "value": "الشركة العربية للتعهدات الفنية",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/4367",
+   "quote": "الاسم القانوني الكامل للشركة بالعربية: الشركة العربية للتعهدات الفنية",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "126.6",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1504993",
+   "quote": "the coverage size has reached 126.6 times for total shares ... The amount size of the participating parties' coverage for the shares offered for subscription was SAR 189.9 billion",
+   "confidence": "high",
+   "type": "institutional"
+  }
+ },
+ "1111": {
+  "proceeds_sar": {
+   "value": "3780000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1517802",
+   "quote": "The company offered 36 million shares ... at SAR 105 per share, for a total offering value of SAR 3.78 billion (36 million shares x SAR 105).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "121",
+   "source_url": "https://annualreport.tadawulgroup.sa/Resources/AnnualReport2021/company_profile/the_ipo.html",
+   "quote": "The offering being 121x oversubscribed by institutional investors generating SAR 458 Bn in demand.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Saudi_Tadawul_Group_en.pdf",
+   "quote": "The Offer price will be 105 Saudi Riyals per Offer Share (the \"Offer Price\"), with each Offer Share carrying a fully paid nominal value of ten Saudi Riyals (SAR 10).",
+   "confidence": "high"
+  }
+ },
+ "4162": {
+  "name_ar": {
+   "value": "شركة المنجم للأغذية",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/5135",
+   "quote": "شركة المنجم للأغذية",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "11.9",
+   "source_url": "https://www.arabnews.com/node/1987241/business-economy",
+   "quote": "Almunajem Foods Co. successfully completed the offering to individual investors, with 11.9 times oversubscription",
+   "confidence": "high",
+   "type": "retail"
+  },
+  "individual_subscribers_count": {
+   "value": "431302",
+   "source_url": "https://www.aleqt.com/2021/12/14/article_2228181.html",
+   "quote": "عدد المشاركين الأفراد 431,302",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/almunajem_en.pdf",
+   "quote": "The current share capital of the Company is six hundred million Saudi Riyals (SAR 600,000,000) divided into sixty million (60,000,000) ordinary shares with a fully paid-up nominal value of SAR 10 per share. ... The initial public offering ... consists of the sale of eighteen million (18,000,000) ord",
+   "confidence": "high"
+  }
+ },
+ "1321": {
+  "name_ar": {
+   "value": "شركة أنابيب الشرق المتكاملة للصناعة",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/13749",
+   "quote": "الاسم العربي الرسمي الكامل للشركة: شركة أنابيب الشرق المتكاملة للصناعة (East Pipes Integrated Company for Industry), ticker 1321 on Tadawul.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "504000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1529500",
+   "quote": "the final offer price was set at SAR 80 per share for 6.3 million shares, representing 30% of capital (504 million = 6.3M x SAR 80).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "allocation_factor": {
+   "value": "0.0173",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1531358",
+   "quote": "تخصيص الأسهم المتبقية على أساس تناسبي بناء على حجم طلب كل مكتتب إلى إجمالي الأسهم المتبقية المطلوب الاكتتاب فيها، وذلك بنسبة تخصيص تبلغ 0.0173%",
+   "confidence": "high",
+   "type": "na"
+  },
+  "individual_subscribers_count": {
+   "value": "209452",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1531358",
+   "quote": "عدد المشاركين الأفراد: 209.45 ألف فرد (Argaam states 209.45 thousand; precise figure surfaced as 209,452 individual subscribers).",
+   "confidence": "medium",
+   "type": "na"
+  }
+ },
+ "7203": {
+  "name_ar": {
+   "value": "شركة علم",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/11828",
+   "quote": "The Argaam Arabic company overview page for ticker 7203 displays the company name consistently as \"شركة علم\". Arabic news sources (Al Arabiya, Al Eqtisadiah, Okaz) likewise refer to it as \"شركة علم\".",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "69.5",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1532351",
+   "quote": "The company's institutional offering, which ended last week, was 69.5x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/elm_en.pdf",
+   "quote": "The initial public offering (the \"Offering\") consists of twenty-four million (24,000,000) ordinary shares ... at an Offer Price of One hundred and twenty-eight Saudi Riyals (SAR 128) per share, with a nominal value of ten Saudi Riyals (SAR 10) per share. The Offer Shares represent 30% of the Company",
+   "confidence": "high"
+  }
+ },
+ "4014": {
+  "oversubscription": {
+   "value": "65",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1531246",
+   "quote": "تغطية المؤسسات لاكتتاب \"دار المعدات الطبية والعلمية\" بـ65 مرة.. وتحديد سعر الطرح عند 52 ريالاً — بنسبة تغطية بلغت تقريباً 65 مرة من إجمالي الأسهم المطروحة",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "individual_subscribers_count": {
+   "value": "462198",
+   "source_url": "https://www.aleqt.com/2022/02/07/article_2258661.html",
+   "quote": "عدد المشاركين الأفراد 462,198",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "4163": {
+  "proceeds_sar": {
+   "value": "1861500000",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/al-dawaa-medical-services-company-announces-results-of-the-offering-period-for-individual-investors-oyptvh5w",
+   "quote": "The Final Offer Price for the Offering was set at SAR 73 per share ... The total Offering size is SAR 1.86 billion ... The Offering comprises 25,500,000 ordinary shares.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "53.8",
+   "source_url": "https://www.arabnews.com/node/2030151/business-economy",
+   "quote": "With the order book 53.8 times oversubscribed, the final offer price has been set at SR73 per share.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "institutional_coverage_multiple": {
+   "value": "53.8",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1537522",
+   "quote": "The IPO received a total demand of SAR 100.2 billion (a coverage of 53.8 times of offer shares).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1542855",
+   "quote": "whose capital currently stands at SAR 850 million, divided into 85 million shares.",
+   "confidence": "high"
+  }
+ },
+ "4164": {
+  "proceeds_sar": {
+   "value": "5109000000",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/nahdi-medical-company-completion-of-retail-offering-period-oqmjfb7a",
+   "quote": "The total Offering size is SAR 5,109 million (USD 1,362 million)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "59",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1542154",
+   "quote": "Nahdi sets final IPO price at SAR 131, order book 59x covered ... The company's institutional offering, which ended last week, was 59x covered, with total applications reaching nearly SAR 299 billion.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/nahdi_en.pdf",
+   "quote": "The current share capital of the Company is one billion three hundred million Saudi Riyals (SAR 1,300,000,000) divided into one hundred and thirty million (130,000,000) Ordinary Shares with a fully paid-up nominal value of SAR 10 per share",
+   "confidence": "high"
+  }
+ },
+ "1322": {
+  "proceeds_sar": {
+   "value": "1247400000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1547420",
+   "quote": "AMAK floated 19.8 million shares, or 30% of its share capital, at SAR 63 per share (total offering value approximately SAR 1.25 billion, i.e. 19.8 million shares x SAR 63).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "individual_subscribers_count": {
+   "value": "1374000",
+   "source_url": "https://www.okaz.com.sa/economy/saudi/2099843",
+   "quote": "بلغ عدد المكتتبين أكثر من 1.374.000 مكتتب قاموا بالاكتتاب بأكثر من 4 مليارات ريال (more than 1,374,000 individual subscribers; Argaam Arabic states \"عدد المشاركين الأفراد 1.37 مليون\").",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "6014": {
+  "name_ar": {
+   "value": "شركة الآمار الغذائية",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/13805",
+   "quote": "الاسم الرسمي الكامل: \"شركة الآمار الغذائية\" - مدرجة في تاسي برمز (6014)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "1222840080",
+   "source_url": "https://www.lw.com/en/news/2022/08/the-law-firm-of-salman-m-al-sudairi-and-latham-advise-alamar-foods-on-its-sar-billion-ipo",
+   "quote": "The Law Firm of Salman M. Al-Sudairi and Latham & Watkins have advised Alamar Foods ... on its SAR1.22 billion (approximately US$326 million) initial public offering (IPO). The MarketScreener headline states the precise figure as 'SAR 1.22284 billion', matching 10,633,392 shares x SAR 115 = SAR 1,22",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/alamar_en.pdf",
+   "quote": "The Company's current capital is two hundred and fifty-five million Saudi Riyals (SAR 255,000,000) paid in full, divided into twenty-five million, five hundred thousand (25,500,000) ordinary shares with a fully-paid equal nominal value of ten (10) Saudi Riyals per share. ... at an Offer Price of one",
+   "confidence": "high"
+  }
+ },
+ "2282": {
+  "name_ar": {
+   "value": "شركة نقي للمياه",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1578456",
+   "quote": "الاسم القانوني الرسمي: شركة نقي للمياه (نقي)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "414000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1576398",
+   "quote": "the final offer price was set at SAR 69 per share ... The company offered 6 million shares representing 30% of capital. At SAR 69/share, this equals approximately SAR 414 million in proceeds.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "30.3",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1576398",
+   "quote": "the final offer price was set at SAR 69 per share with a coverage ratio of 30.3 times of the total offer shares.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "individual_subscribers_count": {
+   "value": "231266",
+   "source_url": "https://www.aleqt.com/2022/08/03/article_2365061.html",
+   "quote": "عدد المشاركين الأفراد: 231,266 مشترك",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "2381": {
+  "oversubscription": {
+   "value": "61",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1596898",
+   "quote": "The company's institutional offering, which ended last week, was 61x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Arabian_Drilling_en.pdf",
+   "quote": "The Offering price will be one hundred Saudi Arabian Riyals (SAR 100) per Offer Share (the “Offer Price”), with each Offer Share carrying a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10) per Offer Share.",
+   "confidence": "high"
+  }
+ },
+ "7204": {
+  "name_ar": {
+   "value": "شركة العرض المتقن للخدمات التجارية",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1599649",
+   "quote": "شركة العرض المتقن للخدمات التجارية",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "61.4",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1599649",
+   "quote": "تمت تغطية اكتتاب الفئات المشاركة ﺑ61.4 مرة (institutional/participating tranche, 90% of the offering, covered 61.4 times; the retail tranche, 10% of the offering, was covered 3.75 times). The English IPO article states: 'participating parties IPO was 61.4x subscribed' and 'The retail subscription wa",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "individual_subscribers_count": {
+   "value": "70647",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1599649",
+   "quote": "اكتتاب 70,647 من المستثمرين الأفراد السعوديين والمقيمين الأجانب في المملكة ومواطني دول مجلس التعاون الخليجي",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "2083": {
+  "oversubscription": {
+   "value": "59",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1597062",
+   "quote": "with a coverage ratio of 59x.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/marafiq1_EN.pdf",
+   "quote": "A public offering of seventy-three million, ninety-four thousand, five hundred (73,094,500) ordinary shares of the Company with a fully paid nominal value of ten Saudi Riyals (SAR 10) per share. The Offer Price will be SAR 46 per share.",
+   "confidence": "high"
+  }
+ },
+ "6015": {
+  "proceeds_sar": {
+   "value": "6772601012",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/americana-restaurants-international-plc-announcement-of-commencement-of-trading-for-concurrent-dual-listing-on-adx-and-the-saudi-exchange-b3daycei",
+   "quote": "Americana Restaurants raised $1.80 billion in gross proceeds, equivalent to AED 6.62 billion or SAR 6.77 billion",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "58",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/americana-restaurants-international-plc-announcement-of-commencement-of-trading-for-concurrent-dual-listing-on-adx-and-the-saudi-exchange-b3daycei",
+   "quote": "The Offering drew significant demand from institutional and retail investors, generating total orders of $105 billion (equivalent to AED 386 billion or SAR 394 billion) and was 58x oversubscribed.",
+   "confidence": "high",
+   "type": "total"
+  },
+  "nominal_value": {
+   "value": "0.075",
+   "source_url": "https://www.americanarestaurants.com/wp-content/uploads/2022/11/Americana-Restaurants-KSA-Supplement-Prospectus.pdf",
+   "quote": "Nominal Value per Share (0.073) UAE Dirhams per share (equivalent to (0.075) Saudi Riyals).",
+   "confidence": "high"
+  }
+ },
+ "4142": {
+  "proceeds_sar": {
+   "value": "1419000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1610021",
+   "quote": "The cable producer offered 33 million shares, or 22% of its capital, on the main market, at SAR 43 per share (33,000,000 x SAR 43 = SAR 1,419,000,000; widely reported as the SAR 1.4 billion IPO).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "71.8",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1610021",
+   "quote": "the participating parties' IPO was 71.8x subscribed",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Riyadh_Cables_en.pdf",
+   "quote": "The current share capital of the Company is one billion, five hundred million Saudi Riyals (SAR 1,500,000,000) divided into one hundred and fifty million (150,000,000) fully paid ordinary shares with a nominal value of ten Saudi Riyals (SAR 10) per share",
+   "confidence": "high"
+  }
+ },
+ "4192": {
+  "name_ar": {
+   "value": "شركة متاجر السيف للتنمية والاستثمار",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/14891",
+   "quote": "شركة متاجر السيف للتنمية والاستثمار (تُعرّف اختصاراً / تجارياً باسم \"السيف غاليري\")",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "15.5",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1611459",
+   "quote": "the participating parties offering was 15.5x covered",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "retail_coverage_multiple": {
+   "value": "2.69",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1609594",
+   "quote": "نسبة تغطية الأسهم المطروحة لشريحة المكتتبين الأفراد قد وصلت إلى 269%",
+   "confidence": "high",
+   "type": "na"
+  },
+  "individual_subscribers_count": {
+   "value": "88439",
+   "source_url": "https://www.alarabiya.net/aswaq/financial-markets/2022/12/17/تغطية-طرح-الأفراد-في-السيف-غاليري-269-وتخصيص-10-أسهم-لكل-مكتتب-بحد-أدنى",
+   "quote": "اكتتاب 88.439 ألف من المستثمرين الأفراد السعوديين والمقيمين الأجانب في المملكة ومواطني دول مجلس التعاون الخليجي بقيمة 325.2 مليون ريال بسعر الطرح العام البالغ 115 ريالاً للسهم الواحد، مع نسبة تغطية للأفراد بلغت 269%",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "2223": {
+  "oversubscription": {
+   "value": "29.5",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1611714",
+   "quote": "Luberef's institutional offering, which was completed last week, was 29.5x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Luberef_en.pdf",
+   "quote": "The Company's current share capital is one billion six hundred eighty-seven million five hundred thousand Saudi Riyals (SAR 1,687,500,000) fully paid divided into one hundred sixty-eight million seven hundred fifty thousand (168,750,000) ordinary shares with ten Saudi Riyals (SAR 10) nominal value e",
+   "confidence": "high"
+  }
+ },
+ "1833": {
+  "name_ar": {
+   "value": "شركة الموارد للقوى البشرية",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/15170",
+   "quote": "شركة الموارد للقوى البشرية (ticker 1833, traded on تاسي/Tadawul) — the company's formal Arabic name as shown consistently on the Argaam Arabic company overview page, and repeated in the Arabic allocation article: \"تغطية الأفراد لاكتتاب الموارد للقوى البشرية في تاسي بنسبة 1644.9%\".",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "288000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1652116",
+   "quote": "The company offered 4.5 million shares, or 30% of its SAR 150 million capital, at SAR 64 per share. (4,500,000 shares x SAR 64 = SAR 288,000,000 offering value.)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "54",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1652116",
+   "quote": "The retail coverage reached 1644.9%, while the tranche of participating parties was 54x subscribed. (No single combined/total coverage figure is stated; the institutional/participating-parties book was the headline coverage at 54x. The retail tranche was 1644.9% i.e. 16.449x.)",
+   "confidence": "high",
+   "type": "institutional"
+  }
+ },
+ "4015": {
+  "oversubscription": {
+   "value": "67.2",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1649273",
+   "quote": "Institutional subscription was 67.2x covered (88.8x when excluding shares allocated to cornerstone investors).",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/jamjoom_en.pdf",
+   "quote": "Shares: Any ordinary share of the Company with a nominal value of SAR 10 per share in the capital of the Company.",
+   "confidence": "high"
+  }
+ },
+ "4082": {
+  "name_ar": {
+   "value": "شركة المرابحة المرنة للتمويل",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1648790",
+   "quote": "الاسم العربي الرسمي الكامل للشركة: \"شركة المرابحة المرنة للتمويل\" (also confirmed in saudiexchange.sa upcoming-IPO company profile titled \"شركة المرابحة المرنة للتمويل\")",
+   "confidence": "high",
+   "type": "na"
+  },
+  "sector": {
+   "value": "Financial Services",
+   "source_url": "https://www.argaam.com/en/tadawul/tasi/mrna",
+   "quote": "Morabaha Marina Financing Co. (MRNA, code 4082) Sector: Financial Services",
+   "confidence": "high",
+   "type": "na"
+  },
+  "retail_coverage_multiple": {
+   "value": "5.51",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1648807",
+   "quote": "Morabaha Marina retail IPO 551% covered; 10 shares/subscriber. Morabaha Marina Financing Co. (MMFC) closed its retail offering, which was 551% oversubscribed.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "institutional_coverage_multiple": {
+   "value": "4.01",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1646940",
+   "quote": "The company's institutional offering, which ended last week, was 401% covered. (Also confirmed by Maaal article titled: تغطية اكتتاب \"المرابحة المرنة للتمويل\" 401%)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/mrna_en.pdf",
+   "quote": "the share capital of the Company is five hundred million Saudi Arabian Riyals (SAR 500,000,000) divided to fifty million (50,000,000) ordinary shares, with a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10) per share (the \"Shares\").",
+   "confidence": "high"
+  }
+ },
+ "2283": {
+  "name_ar": {
+   "value": "شركة المطاحن الأولى",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/15705",
+   "quote": "شركة المطاحن الأولى",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "999000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1653080",
+   "quote": "The company offered 16.65 million shares, or 30% of its capital, at SAR 60 per share, totaling SAR 999 million in proceeds.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "68.9",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1653080",
+   "quote": "The retail tranche was 996.9% covered, while the tranche of participating parties was 68.9x oversubscribed.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/FMCPro.pdf",
+   "quote": "Nominal value per Share Ten Saudi Riyals (SAR 10) per Share.",
+   "confidence": "high"
+  }
+ },
+ "4262": {
+  "oversubscription": {
+   "value": "94.5",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1670615",
+   "quote": "The institutional offering closed last week. It was 94.5 times covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://argaamplus.s3.amazonaws.com/03183fc2-6e53-4ce1-963a-01b92febe1c1.pdf",
+   "quote": "As of the date of this Prospectus, the share capital of the Company is five hundred and fifty million Saudi Arabian Riyals (SAR 550,000,000), divided into fifty-five million (55,000,000) ordinary shares, with a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10) per share (the \"Shares\").",
+   "confidence": "high"
+  }
+ },
+ "2382": {
+  "name_ar": {
+   "value": "شركة أديس القابضة",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/14629",
+   "quote": "الاسم القانوني الرسمي للشركة كما ورد في صفحة أرقام للشركة: \"شركة أديس القابضة\"",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "62.7",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1676027",
+   "quote": "the tranche of participating parties was 62.7x subscribed",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1676027",
+   "quote": "Par Value SAR 1/share",
+   "confidence": "high"
+  }
+ },
+ "4263": {
+  "proceeds_sar": {
+   "value": "2544000000",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/sal-saudi-logistics-services-company-announcement-of-final-offer-price-wjpr602a",
+   "quote": "The total Offering size is SAR 2,544 million (USD 678 million).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "72",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/sal-saudi-logistics-services-company-announcement-of-final-offer-price-wjpr602a",
+   "quote": "The institutional book-building process generated an order book of SAR 182.4 billion (USD 48.6 billion) and resulted in a subscription of coverage of c.72x of the total offered shares.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/sal_en.pdf",
+   "quote": "Nominal Value per Share: Ten Saudi Arabian Riyals (SAR 10) per Share.",
+   "confidence": "high"
+  }
+ },
+ "4072": {
+  "proceeds_sar": {
+   "value": "831250000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1691643",
+   "quote": "The company offered 33.25 million shares, or 10% of its post-IPO capital, at SAR 25 per share, giving a total offering value of SAR 831.25 million.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "66",
+   "source_url": "https://www.mbc.net/news/30",
+   "quote": "The institutional book-building process generated an order book of SAR 54.5 billion and resulted in a subscription coverage of approximately 66x.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/MBC_en.pdf",
+   "quote": "Nominal Value per Share Ten Saudi Riyals (SAR 10) per share.",
+   "confidence": "high"
+  }
+ },
+ "4016": {
+  "oversubscription": {
+   "value": "138.7",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1708219",
+   "quote": "The retail offering was 54.3x covered, while the institutional offering was 138.7x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  }
+ },
+ "2284": {
+  "proceeds_sar": {
+   "value": "1178380800",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/modern-mills-company-announcement-of-completion-of-offering-period-for-individual-investors-and-final-allotment-of-shares-gt745i4w",
+   "quote": "The total Offering size is SAR 1,178 million (USD 314 million).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "127",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1715704",
+   "quote": "The institutional offering was 127x covered",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/modern_mills_en.pdf",
+   "quote": "Nominal value per Share: One Saudi Riyal (SAR 1) per Share. ... fully paid ordinary shares with a nominal value of one Saudi Riyal (SAR 1) per share, at an offer price of forty eight Saudi Riyals (SAR 48)",
+   "confidence": "high"
+  }
+ },
+ "4017": {
+  "name_ar": {
+   "value": "شركة مستشفى الدكتور سليمان عبدالقادر فقيه",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/4286",
+   "quote": "الاسم الرسمي الكامل للشركة بالعربية هو: \"شركة مستشفى الدكتور سليمان عبدالقادر فقيه\" والشركة معروفة اختصاراً باسم (فقيه الطبية) وتتداول تحت رمز 4017",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "119",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1730953",
+   "quote": "The company has recently announced finalizing the bookbuilding process for participating parties, with an estimated 119x coverage.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Fakeeh_Care_Group_en.pdf",
+   "quote": "Par Value per Share: One Saudi Riyal (SAR 1) per Share.",
+   "confidence": "high"
+  }
+ },
+ "2084": {
+  "name_ar": {
+   "value": "شركة مياهنا",
+   "source_url": "https://cma.gov.sa/MediaCenter/NEWS/pages/CMA_N_3513.aspx",
+   "quote": "طلب شركة مياهنا تسجيل وطرح أسهمها للاكتتاب العام",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "555193125",
+   "source_url": "https://www.ipox.com/ipo-calendar/miahona",
+   "quote": "Miahona plans to raise SAR 555.19 million (USD 148.01 million)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "6.1",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1730940",
+   "quote": "The offering was 6.1x covered, the statement added.",
+   "confidence": "high",
+   "type": "total"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1733405",
+   "quote": "Par Value: SAR 1",
+   "confidence": "high"
+  }
+ },
+ "1834": {
+  "name_ar": {
+   "value": "الشركة السعودية لحلول القوى البشرية",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1731674",
+   "quote": "الشركة السعودية لحلول القوى البشرية - سماسكو",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "900000000",
+   "source_url": "https://ipo.smasco.com/wp-content/uploads/2024/05/SMASCO-Final-Allotment-Announcement-for-IPO_EN_V3.pdf",
+   "quote": "The total size of the Offering is SAR 900 million (USD 240 million).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "128",
+   "source_url": "https://ipo.smasco.com/wp-content/uploads/2024/05/SMASCO-Final-Allotment-Announcement-for-IPO_EN_V3.pdf",
+   "quote": "Following the successful completion of the institutional book-building period which set the Final Offer Price at SAR 7.50 per share and resulted in an oversubscription coverage of 128x of the total offered shares",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/smasco_en.pdf",
+   "quote": "Nominal Value per Share: One Saudi Arabian Riyal (SAR 1) per Share. ... Offering of one hundred and twenty million (120,000,000) ordinary Shares with a fully paid nominal value of one Saudi Arabian Riyal (SAR 1) per Share, representing thirty per cent. (30%) of the Company's capital",
+   "confidence": "high"
+  }
+ },
+ "8313": {
+  "name_ar": {
+   "value": "شركة رسن لتقنية المعلومات",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1732200",
+   "quote": "الاسم القانوني: شركة رسن لتقنية المعلومات",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "841380000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1729735",
+   "quote": "setting the final IPO price at SAR 37 per share; 22.74 million ordinary shares allocated (22,740,000 x SAR 37 = SAR 841,380,000, i.e. SAR 841 million offering value, confirmed by Gulf Business / Bloomberg reporting a $224 million / SAR 841 million offering).",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/rasan_en.pdf",
+   "quote": "Nominal Value per Share One Saudi Riyal (SAR 1) per share.",
+   "confidence": "high"
+  }
+ },
+ "4143": {
+  "name_ar": {
+   "value": "شركة مجموعة التيسير تالكو الصناعية",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/16491",
+   "quote": "شركة مجموعة التيسير تالكو الصناعية",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/talco_en.pdf",
+   "quote": "The Offering price will be forty three Saudi Arabian Riyals (SAR 43) per Offer Share (the \"Offer Price\"), with each Offer Share carrying a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10) per Offer Share.",
+   "confidence": "high"
+  },
+  "individual_subscribers_count": {
+   "value": "685900",
+   "source_url": "https://www.aleqt.com/2024/06/02/article_2731361.html",
+   "quote": "عدد المشاركين 685.9 ألف مكتتب",
+   "confidence": "medium"
+  }
+ },
+ "4165": {
+  "oversubscription": {
+   "value": "8.21",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1755313",
+   "quote": "The retail offering of Almajed for Oud Co. was 821.33% oversubscribed as retail investors subscribed to 1.50 million shares",
+   "confidence": "high",
+   "type": "retail"
+  },
+  "retail_coverage_multiple": {
+   "value": "8.21",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1755313",
+   "quote": "The retail offering of Almajed for Oud Co. was 821.33% oversubscribed as retail investors subscribed to 1.50 million shares",
+   "confidence": "high",
+   "type": "na"
+  },
+  "individual_subscribers_count": {
+   "value": "236130",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1755292",
+   "quote": "اكتتاب 236.13 ألف مستثمر بسعر الطرح النهائي الذي بلغ 94 ريالاً للسهم الواحد",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Almajed_en.pdf",
+   "quote": "fully paid ordinary shares, with a nominal value of ten (10) Saudi Riyals per share ... (\"Offer Share\"), with a paid-up nominal value of ten Saudi Riyal (SAR 10)",
+   "confidence": "high"
+  }
+ },
+ "2285": {
+  "name_ar": {
+   "value": "شركة المطاحن العربية للمنتجات الغذائية",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1757059",
+   "quote": "الاسم القانوني الكامل: \"شركة المطاحن العربية للمنتجات الغذائية\"",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "132",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/arabian-mills-for-food-products-company-announces-final-offer-price-of-its-initial-public-offering-a0kdgu29",
+   "quote": "The institutional offering was approximately 132 times oversubscribed, indicating the strong level of demand from institutional investors.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1759381",
+   "quote": "Par Value SAR 10/share",
+   "confidence": "high"
+  }
+ },
+ "2286": {
+  "name_ar": {
+   "value": "شركة المطاحن الرابعة",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1758977",
+   "quote": "تغطية اكتتاب المطاحن الرابعة بنحو 3.94 مرة وتخصيص 10 أسهم كحد أدنى لكل فرد — الاسم الرسمي: شركة المطاحن الرابعة",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "858600000",
+   "source_url": "https://enterpriseam.com/ksa/en/news/story/fa494059-8419-458e-a4a2-28179abc396b/fourth-milling-company-could-raise-up-to-sar-858.6-mn-from-tadawul-ipo",
+   "quote": "The company could raise as much as SAR 858.6 mn (USD 228.8 mn) from the offering, by our math. (162,000,000 shares x SAR 5.3 = SAR 858,600,000)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "119",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1764248",
+   "quote": "The institutional offering was nearly 119x subscribed",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Milling_Company_en.pdf",
+   "quote": "The Offering will consist of one hundred and sixty-two million (162,000,000) Ordinary Shares with a fully paid-up nominal value of one Saudi Riyal (SAR 1) per share at an offering price of SAR 5.30.",
+   "confidence": "high"
+  }
+ },
+ "1835": {
+  "oversubscription": {
+   "value": "138.2",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1768002",
+   "quote": "The coverage ratio for the institutional book-building process reached approximately 13,820% of the total shares offered, with SAR 55 billion in demand from diverse investors.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Tamkeen_en.pdf",
+   "quote": "As of the date of this Prospectus, the share capital of the Company is two hundred and sixty-five million Saudi Arabian Riyals (SAR 265,000,000), divided into twenty-six million five hundred thousand (26,500,000) ordinary shares, with a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10) p",
+   "confidence": "high"
+  }
+ },
+ "4083": {
+  "name_ar": {
+   "value": "الشركة المتحدة الدولية القابضة",
+   "source_url": "https://www.zawya.com/ar/البيانات-الصحفية/بيانات-الشركات/الشركة-المتحدة-الدولية-القابضة-تعلن-عن-نتائج-عملية-اكتتاب-المستثمرين-الأفراد-nnf4cf2f",
+   "quote": "الشركة المتحدة الدولية القابضة",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "132",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1773421",
+   "quote": "participating parties were 132x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "individual_subscribers_count": {
+   "value": "214922",
+   "source_url": "https://www.zawya.com/ar/البيانات-الصحفية/بيانات-الشركات/الشركة-المتحدة-الدولية-القابضة-تعلن-عن-نتائج-عملية-اكتتاب-المستثمرين-الأفراد-nnf4cf2f",
+   "quote": "شهدت عملية الاكتتاب مشاركة 214,922 مكتتب",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "4018": {
+  "shares_offered": {
+   "value": "13291074",
+   "source_url": "https://www.zawya.com/en/press-release/companies-news/almoosa-health-company-announces-completion-of-the-offering-period-h6gmbl1v",
+   "quote": "The Offering consists of 13,291,074 ordinary Shares through (1) 3,987,494 ordinary Shares offered by the Selling Shareholder, and (2) the issuance and sale of 9,303,580 ordinary New Shares.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "name_ar": {
+   "value": "شركة الموسى الصحية",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1778995",
+   "quote": "الاسم الرسمي: \"شركة الموسى الصحية\"؛ \"اكتتب 395,986 من المستثمرين...مما أدى إلى تغطية شريحة اكتتاب المستثمرين الافراد بواقع 408.71%\"",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "1687966398",
+   "source_url": "https://efgholding.com/en/media/news/Almoosa",
+   "quote": "EFG Hermes Completes Advisory on USD 449 Million IPO of Almoosa Healthcare Company on the Saudi Exchange; \"The company offered 13,291,074 total shares at SAR 127 per share.\" (offering value = 127 x 13,291,074 = SAR 1,687,966,398, equal to ~USD 449 million at the SAR/USD peg)",
+   "confidence": "medium",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "103",
+   "source_url": "https://efgholding.com/en/media/news/Almoosa",
+   "quote": "the institutional book-building process attracted an order book of approximately SAR 173 billion and was 103 times oversubscribed",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/almoosa_health_en.pdf",
+   "quote": "Offer Price of one hundred twenty-seven Saudi Riyals (SAR 127) per Share, with a nominal value of ten Saudi Riyals (SAR 10) per Share",
+   "confidence": "high"
+  }
+ },
+ "4193": {
+  "oversubscription": {
+   "value": "139.4",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1779326",
+   "quote": "The participating categories IPO was 139.4x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/nice_one_en.pdf",
+   "quote": "The offer price shall be thirty five (SAR 35) per Offer Share (hereinafter the “Offer Price”), which represents a fully paid nominal value of one Saudi Riyal (SAR 1) per Share.",
+   "confidence": "high"
+  }
+ },
+ "4084": {
+  "name_ar": {
+   "value": "شركة دراية المالية",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1793593",
+   "quote": "شركة دراية المالية - الاسم القانوني العربي الرسمي كما ورد في مقال أرقام العربي عن نتائج تخصيص اكتتاب الأفراد",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "162",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1796059",
+   "quote": "Meanwhile, institutional investors' IPO was 162x oversubscribed.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "2",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Derayah_EN.pdf",
+   "quote": "Its current capital amounts to four hundred and ninety-nine million, four hundred and seventy thousand, three hundred and ninety Saudi Riyals (SAR 499,470,390), divided into two hundred and forty-nine million, seven hundred and thirty-five thousand, one hundred and ninety-five (249,735,195) ordinary",
+   "confidence": "high"
+  }
+ },
+ "2287": {
+  "oversubscription": {
+   "value": "208.4",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1797851",
+   "quote": "Meanwhile, institutional IPO was 208.4x oversubscribed.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/entaj_en.pdf",
+   "quote": "Nominal Value per Share: Ten Saudi Arabian Riyals (SAR 10) per Share. ... divided into thirty million (30,000,000) ordinary Shares, with a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10) per Share.",
+   "confidence": "high"
+  }
+ },
+ "4325": {
+  "proceeds_sar": {
+   "value": "1961792130",
+   "source_url": "https://gibcapital.com/newsroom/gib-capital-successfully-completes-sar-196-billion-ipo-of-umm-al-qura-for-development-and-construction-company/",
+   "quote": "The IPO, consisting of 130.8 million shares with a total offering size of SAR 1.96 billion",
+   "confidence": "high",
+   "type": "na"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Umm_Al_Qura_En.pdf",
+   "quote": "The initial public offering ... consists of the offering of one hundred and thirty million, seven hundred and eighty-six thousand, one hundred and forty-two (130,786,142) ordinary Shares ... at an Offer Price of Fifteen (SAR 15) per Share, with a nominal value of ten Saudi Riyals (SAR 10) per Share.",
+   "confidence": "high"
+  }
+ },
+ "1323": {
+  "name_ar": {
+   "value": "الشركة المتحدة لصناعات الكرتون",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1814688",
+   "quote": "تغطية اكتتاب المتحدة لصناعة الكرتون في تاسي 8.9 مرة.. وتخصيص 6 أسهم لكل مكتتب — الاسم القانوني: الشركة المتحدة لصناعات الكرتون",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "600000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1816988",
+   "quote": "United Carton Industries Co. (UCIC) starts trading on the Main Market (TASI) today, May 27, under the symbol 1323 ... at SAR 50 per share. The company offered 12 million shares, or 30% of its capital, on TASI.",
+   "confidence": "medium",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "8.9",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1814699",
+   "quote": "The IPO was 8.9x covered. ... The institutional offering earlier took place, at a coverage ratio of 126x.",
+   "confidence": "high",
+   "type": "retail"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/ucic_en.pdf",
+   "quote": "The Offering will consist of twelve million (12,000,000) Offer Shares with a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10)... a capital of SAR 400,000,000 divided into 40,000,000 shares, with a nominal value of SAR 10 per share",
+   "confidence": "high"
+  }
+ },
+ "4264": {
+  "shares_offered": {
+   "value": "51300000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1817340",
+   "quote": "The Capital Market Authority (CMA) approved the company's application to list and offer 51.3 million shares on TASI ... representing 30% of its post-IPO capital.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "name_ar": {
+   "value": "شركة طيران ناس",
+   "source_url": "https://www.argaam.com/ar/tadawul/tasi/flynas",
+   "quote": "شركة طيران ناس - القطاع: النقل (Argaam Arabic company profile lists the official Arabic legal name as \"شركة طيران ناس\").",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "4104000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1815703",
+   "quote": "Total Offering Value: SAR 4.1 billion at SAR 80 per share for 51.3 million shares (51,300,000 x SAR 80 = SAR 4,104,000,000); Argaam reports the IPO 'scheduled to raise SAR4.1 billion'.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "100",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1821543",
+   "quote": "The institutional offering was nearly 100x covered, with orders of more than SAR 409 billion.",
+   "confidence": "high",
+   "type": "institutional"
+  }
+ },
+ "4019": {
+  "oversubscription": {
+   "value": "64.7",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1821908",
+   "quote": "the institutional subscription ended with the offering 64.7x oversubscribed",
+   "confidence": "high",
+   "type": "institutional"
+  }
+ },
+ "6018": {
+  "oversubscription": {
+   "value": "44.1",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1827290",
+   "quote": "The institutional tranche of the sale closed last week, and was nearly 44.1x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Sport_Clubs_EN.pdf",
+   "quote": "hundred and four million (104,000,000) ordinary shares, each with a fully paid nominal value of one Saudi Riyal (SAR 1). ... Pursuant to the Extraordinary General Assembly resolution dated 18/02/1446H (corresponding to 22/08/2024G), the nominal value of the Company's shares was reduced from ten Saud",
+   "confidence": "high"
+  }
+ },
+ "4194": {
+  "oversubscription": {
+   "value": "9.67",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1840484",
+   "quote": "the institutional IPO was 967% subscribed",
+   "confidence": "medium",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1840484",
+   "quote": "Share Par Value: SAR 10",
+   "confidence": "high"
+  }
+ },
+ "4326": {
+  "oversubscription": {
+   "value": "107",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1833948",
+   "quote": "The final price of the IPO on the Main Market (TASI) was set at SAR 14 per share, with the offering oversubscribed 107 times, according to a Tadawul statement.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/almajdiah_en.pdf",
+   "quote": "the General Assembly resolved to reduce the nominal value of each Share from ten Saudi Riyals (SAR 10) to one Saudi Riyal (SAR 1) per Share. ... three hundred million (300,000,000) Ordinary Shares with an equal value of one Saudi Riyal (SAR 1) per share.",
+   "confidence": "high"
+  }
+ },
+ "4265": {
+  "oversubscription": {
+   "value": "85.6",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1860343",
+   "quote": "The retail tranche was 647% oversubscribed, while the institutional book was covered 85.6 times.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/cherry_en.pdf",
+   "quote": "three hundred million Saudi Arabian Riyals (SAR 300,000,000), divided into thirty million (30,000,000) ordinary shares with a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10) per Share. ... at a price of twenty-eight Saudi Arabian Riyals (SAR 28) per Offer Share (the \"Offer Price\"), wit",
+   "confidence": "high"
+  }
+ },
+ "6019": {
+  "oversubscription": {
+   "value": "102.9",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1861403",
+   "quote": "The company's institutional offering was roughly 102.9x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/Al Masar_Al Shamil_en.pdf",
+   "quote": "fully paid ordinary shares with a nominal value of ten Saudi riyals (SAR 10) per share",
+   "confidence": "high"
+  }
+ },
+ "4147": {
+  "name_ar": {
+   "value": "شركة اتحاد جروننفلدر سعدي القابضة",
+   "source_url": "https://www.argaam.com/ar/company/companyoverview/marketid/3/companyid/3574",
+   "quote": "شركة اتحاد جروننفلدر سعدي القابضة (سي جي إس) (4147)",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "61.6",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1862944",
+   "quote": "The institutional tranche was approximately 61.6x covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/CGS_EN.pdf",
+   "quote": "The Company's current share capital is one hundred million Saudi Riyals (SAR 100,000,000), divided into one hundred million (100,000,000) ordinary shares with a nominal value of one Saudi Riyal (SAR 1) per share.",
+   "confidence": "high"
+  },
+  "min_allocation_shares": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/CGS_EN.pdf",
+   "quote": "The minimum allocation per Individual Subscriber is ten (10) Offer Shares, and the balance of Offer Shares, if any, will be allocated on a pro rata basis based on the number of Offer Shares applied for by each Individual Subscriber.",
+   "confidence": "high"
+  }
+ },
+ "4327": {
+  "oversubscription": {
+   "value": "11.1",
+   "source_url": "https://ent.news/2025/12/82.pdf",
+   "quote": "The total value of applications placed during the book building process for the participating parties exceeded SAR 9,964 million, representing a coverage of 11.1 times.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1864155",
+   "quote": "Nominal/Par Value Per Share: SAR 10 per share (Argaam: Alramz launches retail subscription for 2.57M shares at SAR 70). Corroborated by capital structure: pre-IPO capital SAR 300 million divided into 30 million shares = SAR 10 nominal value per share.",
+   "confidence": "high"
+  },
+  "allocation_factor": {
+   "value": "100",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1865299",
+   "quote": "تم تخصيص جميع الأسهم المكتتبة من قبل المكتتبين الأفراد ولم ينتج عن ذلك أي فائض (all shares subscribed by individual subscribers were allocated, with no surplus). Because the retail tranche was undersubscribed at 36%, every individual subscriber received 100% of their subscribed shares.",
+   "confidence": "medium"
+  }
+ },
+ "1324": {
+  "proceeds_sar": {
+   "value": "251100000",
+   "source_url": "https://www.zawya.com/en/capital-markets/equities/saudi-arabias-saleh-abdulaziz-al-rashed-sets-ipo-offer-price-dn1m7v90",
+   "quote": "The final price implies a total offer size of SAR 251 million ... The offering consists of 5,580,000 ordinary shares, representing 30% of the company's issued share capital, at SAR 45 per share.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "67.7",
+   "source_url": "https://www.zawya.com/en/capital-markets/equities/saudi-arabias-saleh-abdulaziz-al-rashed-sets-ipo-offer-price-dn1m7v90",
+   "quote": "The institutional tranche was 67.7 times oversubscribed",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://www.sahmcapital.com/news/content/zawya-pressr-saleh-abdulaziz-al-rashed-sons-company-announces-ipo-offer-price-range-and-commencement-of-institutional-book-building-2026-02-01",
+   "quote": "one hundred eighty-six million Saudi Arabian Riyals (SAR 186,000,000), divided into eighteen million six hundred thousand (18,600,000) ordinary shares, with a fully paid nominal value of ten Saudi Arabian Riyals (SAR 10) per Share.",
+   "confidence": "high"
+  }
+ },
+ "7205": {
+  "name_ar": {
+   "value": "شركة دار البلد لحلول الأعمال",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/1906746",
+   "quote": "دار البلد لحلول الأعمال",
+   "confidence": "high",
+   "type": "na"
+  },
+  "proceeds_sar": {
+   "value": "204750000",
+   "source_url": "https://www.agbi.com/finance/2026/05/first-saudi-ipo-since-iran-war-set-to-raise-55m/",
+   "quote": "Dar Albalad for Business Solutions Company, an IT services provider across the private and public sectors, is set to raise SAR205 million ($55 million) from its listing on the Saudi stock exchange.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "66.6",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1907407",
+   "quote": "Institutional subscription was 66.6 times covered.",
+   "confidence": "high",
+   "type": "institutional"
+  },
+  "nominal_value": {
+   "value": "1",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1906666",
+   "quote": "On Dec. 31, 2025, the Capital Market Authority (CMA) approved the company's application to float 21 million shares on TASI, representing 30% of its SAR 70 million capital, divided into 70 million shares, at a par value of SAR 1 each.",
+   "confidence": "high"
+  }
+ },
+ "1830": {
+  "proceeds_sar": {
+   "value": "817180468",
+   "source_url": "https://www.whitecase.com/news/press-release/white-case-advises-leejam-sports-company-us218-million-ipo",
+   "quote": "White & Case LLP advised Leejam Sports Company on its SAR 817 million (approximately US$218 million) initial public offering of 30 percent of its share capital on the Saudi Stock Exchange (Tadawul). The institutional book building process was completed with a price set at SR52 per share.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "8.3",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/565761",
+   "quote": "خصص 90% منها للمؤسسات وتم تغطيتها بـ 8.3 مرة",
+   "confidence": "high",
+   "type": "institutional"
+  }
+ },
+ "4291": {
+  "proceeds_sar": {
+   "value": "247000000",
+   "source_url": "https://in.marketscreener.com/quote/stock/NATIONAL-COMPANY-FOR-LEAR-64310758/news/National-Company-for-Learning-and-Education-has-completed-an-IPO-in-the-amount-of-SAR-247-million-34526635/",
+   "quote": "National Company for Learning and Education has completed an IPO in the amount of SAR 247 million.",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "7200": {
+  "proceeds_sar": {
+   "value": "216000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/599428",
+   "quote": "The company floats 4.8 million of its shares in a public offering. ... Saudi retail investors, today, will start subscription to around 480,000 of Al Moammar Information Systems Co.'s shares at SAR 45 a share.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "retail_coverage_multiple": {
+   "value": "1.4868",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/600688",
+   "quote": "نسبة التغطية في أسهم الشركة المطروحة لاكتتاب المكتتبين الأفراد بلغت 148.68 %",
+   "confidence": "high",
+   "type": "na"
+  },
+  "institutional_coverage_multiple": {
+   "value": "1.10",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/599428",
+   "quote": "Institutional offering was 110 percent oversubscribed.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "individual_subscribers_count": {
+   "value": "7947",
+   "source_url": "https://www.argaam.com/ar/article/articledetail/id/600688",
+   "quote": "وبلغ عدد المكتتبين الأفراد 7947 مكتتبا",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "4321": {
+  "proceeds_sar": {
+   "value": "2470000000",
+   "source_url": "https://www.zawya.com/mena/en/press-releases/story/Arabian_Centres_Company_completion_of_IPO-ZAWYA20190514074248/",
+   "quote": "The Offering size is SAR 2.5 billion excluding the Purchase Option ... The Offering includes a total of 95,000,000 shares ... The price for the Offering has been set at SAR 26 per share",
+   "confidence": "high",
+   "type": "na"
+  },
+  "oversubscription": {
+   "value": "1.26",
+   "source_url": "https://www.zawya.com/mena/en/press-releases/story/Arabian_Centres_Company_completion_of_IPO-ZAWYA20190514074248/",
+   "quote": "The book building process generated an order book of SAR 3.1 billion and resulted in a subscription of 126% of the Offer Shares",
+   "confidence": "high",
+   "type": "total"
+  }
+ },
+ "1831": {
+  "proceeds_sar": {
+   "value": "776250000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/614132",
+   "quote": "Maharah Human Resources Co. offered 11.25 million shares, or 30 percent of its share capital, in an initial public offering (IPO) at SAR 69 each.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "retail_coverage_multiple": {
+   "value": "2.30",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/614132",
+   "quote": "The retail offering was 230 percent oversubscribed, attracting 31,000 subscribers purchasing 2.59 million shares at total proceeds of SAR 178.79 million.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "institutional_coverage_multiple": {
+   "value": "9.04",
+   "source_url": "https://www.maaal.com/archives/20190502/122656",
+   "quote": "أعلنت سامبا كابيتال ... وأن نسبة التغطية بلغت 904 بالمائة من إجمالي الأسهم المطروحة وبسعر 69 ريالاً للسهم الواحد. بلغت نسبة تغطية صناديق الاستثمار 675%، كما بلغت نسبة تغطية الأشخاص المرخص لهم ... 229%، وبإجمالي نسبة تغطية 904% للأسهم المطروحة للاكتتاب.",
+   "confidence": "high",
+   "type": "na"
+  },
+  "allocation_factor": {
+   "value": "36",
+   "source_url": "https://maaal.com/archives/201905/123632-2/",
+   "quote": "تم تخصيص الأسهم المتبقية على أساس تناسبي بناء على حجم طلب كل مكتتب إلى إجمالي الأسهم المتبقية المطلوب الاكتتاب فيها، وذلك بنسبة تخصيص (36%) تقريباً لفئات المكتتبين المستحقة لسهم واحد أو أكثر.",
+   "confidence": "medium",
+   "type": "na"
+  }
+ },
+ "4292": {
+  "proceeds_sar": {
+   "value": "348000000",
+   "source_url": "https://www.argaam.com/en/article/articledetail/id/1300716",
+   "quote": "Offer Price: SAR 29 per share; Shares Offered: 12 million shares representing 30% of share capital; Total Offering Value: Approximately SAR 348 million (12 million shares x SAR 29).",
+   "confidence": "high",
+   "type": "na"
+  }
+ },
+ "1183": {
+  "nominal_value": {
+   "value": "10",
+   "source_url": "https://cma.gov.sa/en/Market/Prospectuses/Documents/saudi_home_loans_en.pdf",
+   "quote": "Thirty million (30,000,000) ordinary shares with a fully paid nominal value of ten Saudi riyals (SAR 10) per share, representing thirty percent (30%) of the Company's share capital, are offered at a price of twenty (20) Saudi Riyals per share",
+   "confidence": "high"
+  }
+ }
+}

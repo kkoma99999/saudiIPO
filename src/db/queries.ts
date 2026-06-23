@@ -34,7 +34,12 @@ import {
   type CorporateAction,
   type DividendEvent,
 } from "@/lib/metrics";
-import { retailOutcome } from "@/lib/retail-outcome";
+import {
+  retailOutcome,
+  outcomeForShares,
+  allocatedShares,
+  type OutcomeBasis,
+} from "@/lib/retail-outcome";
 import { chooseLatest, type EodClose, type LiveQuote, type ChosenPrice } from "@/lib/quote-select";
 import { ipoYear } from "@/lib/format";
 import type {
@@ -46,6 +51,7 @@ import type {
   Advisor,
   DebutStats,
   IpoValuation,
+  InvestmentOutcome,
   PeakStats,
   SeriesPoint,
 } from "@/types/domain";
@@ -373,6 +379,125 @@ export async function getAllCompanyMetrics(): Promise<CompanyMetrics[]> {
       );
     })
     .sort((a, b) => (a.ipoDate < b.ipoDate ? 1 : -1));
+}
+
+// A fixed 10,000 SAR application to every IPO, valued on the shares actually allotted. The
+// illustration amount; every SAR figure scales linearly with it.
+const INVESTMENT_AMOUNT_SAR = 10000;
+
+// What 10,000 SAR subscribed to each IPO would have become, on the shares you would actually
+// have been allotted (minimum allocation plus the pro-rata factor on the remainder). Ranks by
+// the actual money made, since the allotment, not the headline return, is what differs. A
+// company with no allocation factor on record or no current price is left unranked, not guessed.
+export async function getInvestmentOutcomes(): Promise<InvestmentOutcome[]> {
+  const [ipoRows, latest, live, actionRows, divRows] = await Promise.all([
+    db
+      .select({
+        symbol: companies.symbol,
+        nameEn: companies.nameEn,
+        nameAr: companies.nameAr,
+        ipoDate: ipos.ipoDate,
+        offerPrice: ipos.offerPrice,
+        minAllocationShares: ipos.minAllocationShares,
+        allocationFactor: ipos.allocationFactor,
+        allocationVerified: ipos.allocationVerified,
+      })
+      .from(ipos)
+      .innerJoin(companies, eq(companies.symbol, ipos.symbol)),
+    latestCloseMap(),
+    liveQuotesAll(),
+    db
+      .select({
+        symbol: corporateActions.symbol,
+        actionDate: corporateActions.actionDate,
+        factor: corporateActions.factor,
+      })
+      .from(corporateActions),
+    db
+      .select({ symbol: dividends.symbol, exDate: dividends.exDate, amount: dividends.amount })
+      .from(dividends),
+  ]);
+  const { quotes: liveMap } = live;
+
+  const actionsMap = new Map<string, CorporateAction[]>();
+  for (const a of actionRows) {
+    const key = a.symbol.trim();
+    const list = actionsMap.get(key) ?? [];
+    list.push({ actionDate: a.actionDate, factor: a.factor });
+    actionsMap.set(key, list);
+  }
+  const divsMap = new Map<string, DividendEvent[]>();
+  for (const d of divRows) {
+    const key = d.symbol.trim();
+    const list = divsMap.get(key) ?? [];
+    list.push({ exDate: d.exDate, amount: d.amount });
+    divsMap.set(key, list);
+  }
+
+  const outcomes = ipoRows
+    .map((r) => ({ ...r, symbol: r.symbol.trim() }))
+    .map((r): InvestmentOutcome => {
+      const chosen = chooseLatest(latest.get(r.symbol), liveMap.get(r.symbol));
+      const hasFactor = r.allocationFactor !== null;
+      const out: InvestmentOutcome = {
+        symbol: r.symbol,
+        nameEn: r.nameEn,
+        nameAr: r.nameAr,
+        ipoDate: r.ipoDate,
+        offerPrice: r.offerPrice,
+        currentDate: chosen?.date ?? null,
+        allocationVerified: r.allocationVerified,
+        hasFactor,
+        allottedShares: null,
+        capitalDeployed: null,
+        currentValue: null,
+        dividendsReceived: null,
+        netProfit: null,
+        returnPct: null,
+        bonusIncreasedShares: false,
+      };
+      if (!chosen) return out;
+
+      const actions = actionsMap.get(r.symbol) ?? [];
+      const divs = divsMap.get(r.symbol) ?? [];
+      const alloc = allocatedShares({
+        amountSar: INVESTMENT_AMOUNT_SAR,
+        offerPrice: r.offerPrice,
+        allocationFactorPercent: r.allocationFactor,
+        minAllocationShares: r.minAllocationShares,
+      });
+      if (alloc === null) return out;
+
+      const basis: OutcomeBasis = {
+        offerPrice: new Decimal(r.offerPrice).toString(),
+        cumulativeFactor: cumulativeFactorAfter(actions, r.ipoDate).toString(),
+        latestClose: new Decimal(chosen.close).toString(),
+        dividendsPerCurrentShare: cumulativeAdjustedDividends(divs, actions, chosen.date).toString(),
+        minAllocationShares: alloc.toString(),
+      };
+      const o = outcomeForShares(basis, alloc.toString());
+      return {
+        ...out,
+        allottedShares: o.shares,
+        capitalDeployed: o.capitalDeployed,
+        // Total position value: the shares at the current price plus the dividends collected,
+        // so currentValue minus capitalDeployed reconciles with netProfit.
+        currentValue: o.currentValue + o.dividendsReceived,
+        dividendsReceived: o.dividendsReceived,
+        netProfit: o.netSar,
+        returnPct: o.returnPct,
+        bonusIncreasedShares: o.bonusIncreasedShares,
+      };
+    });
+
+  // Rank by the actual money made. Unrankable rows (no factor or no price) sort last, newest
+  // first, so they read as a clear "not yet computable" tail rather than as zero-return rows.
+  return outcomes.sort((a, b) => {
+    if (a.netProfit === null && b.netProfit === null) return a.ipoDate < b.ipoDate ? 1 : -1;
+    if (a.netProfit === null) return 1;
+    if (b.netProfit === null) return -1;
+    return b.netProfit - a.netProfit;
+  });
 }
 
 export async function getCohorts(): Promise<CohortSummary[]> {

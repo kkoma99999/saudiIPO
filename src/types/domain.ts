@@ -39,6 +39,29 @@ export interface CompanyMetrics extends IpoRow {
   minAllocPnl: number | null;
 }
 
+// A fixed-amount subscription (10,000 SAR) to one IPO, valued on the shares actually
+// allotted. The allotment uses the minimum allocation and the individual allocation factor;
+// the unallocated balance is refunded and not counted. The SAR figures and the return come
+// from the tested retail-outcome engine. The computed fields are null when not computable:
+// no allocation factor on record, or no current price to value the holding.
+export interface InvestmentOutcome {
+  symbol: string;
+  nameEn: string;
+  nameAr: string | null;
+  ipoDate: string;
+  offerPrice: string;
+  currentDate: string | null;
+  allocationVerified: boolean;
+  hasFactor: boolean; // an allocation factor is on record; without it the row is not ranked
+  allottedShares: number | null;
+  capitalDeployed: number | null; // allottedShares * offer price, SAR
+  currentValue: number | null; // holding today (bonus/split adjusted) plus dividends received
+  dividendsReceived: number | null;
+  netProfit: number | null; // currentValue - capitalDeployed
+  returnPct: number | null; // on the capital actually deployed (equals the total return)
+  bonusIncreasedShares: boolean;
+}
+
 export interface CohortSummary {
   year: number;
   count: number;

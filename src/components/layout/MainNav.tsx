@@ -10,6 +10,7 @@ export function MainNav() {
   const links = [
     { href: "/", label: t.nav.home },
     { href: "/ipos", label: t.nav.ipos },
+    { href: "/invested", label: t.nav.invested },
     { href: "/data-sources", label: t.nav.sources },
   ];
   return (

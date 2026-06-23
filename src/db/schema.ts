@@ -85,7 +85,8 @@ export const ipos = pgTable(
     // at the IPO, and not in yfinance. All nullable: a company that does not disclose a
     // field leaves it null, never guessed. min_allocation_shares is the guaranteed
     // minimum shares per individual subscriber and drives the retail outcome calculator.
-    // allocation_factor is shares allocated per share requested for individuals.
+    // allocation_factor is the published pro-rata allocation rate (نسبة التخصيص التناسبية),
+    // a percent applied to the shares an individual requested ABOVE the guaranteed minimum.
     // allocation_verified stays false until a human checks the row against
     // allocation_source_url.
     retailTranchePct: numeric("retail_tranche_pct", { precision: 7, scale: 4 }),
