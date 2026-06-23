@@ -11,7 +11,6 @@ export function MainNav() {
     { href: "/", label: t.nav.home },
     { href: "/ipos", label: t.nav.ipos },
     { href: "/invested", label: t.nav.invested },
-    { href: "/data-sources", label: t.nav.sources },
   ];
   return (
     <nav className="flex items-center gap-5 text-[0.8rem] font-medium">

@@ -5,6 +5,7 @@ import type { RetailOutcomeResult } from "@/lib/retail-outcome";
 import { outcomeForShares } from "@/lib/retail-outcome";
 import { useI18n } from "@/lib/i18n/provider";
 import { formatSar, formatCount, formatPercent } from "@/lib/format";
+import { isArgaamUrl } from "@/lib/source";
 
 // "If you received the minimum allocation and held to today." The SAR figures scale
 // with the allocation, so the card lets the reader replace the minimum with the number
@@ -57,7 +58,7 @@ export function RetailOutcomeCard({
               {t.allocation.unverified}
             </span>
           )}
-          {sourceUrl && (
+          {sourceUrl && !isArgaamUrl(sourceUrl) && (
             <a
               href={sourceUrl}
               target="_blank"

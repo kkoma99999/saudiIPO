@@ -21,6 +21,7 @@ import {
 } from "@/lib/format";
 import { getI18n } from "@/lib/i18n/server";
 import { displayName, fmt } from "@/lib/i18n";
+import { isArgaamUrl } from "@/lib/source";
 
 export const dynamic = "force-dynamic";
 
@@ -213,7 +214,7 @@ export default async function CompanyPage({
             <div className="mt-6 overflow-hidden rounded-lg border border-border/70 bg-card">
               <div className="flex items-center justify-between border-b border-border/70 bg-secondary/40 px-4 py-2.5">
                 <h3 className="text-xs font-medium text-muted-foreground">{t.valuation.title}</h3>
-                {detail.valuation.sourceUrl && (
+                {detail.valuation.sourceUrl && !isArgaamUrl(detail.valuation.sourceUrl) && (
                   <a
                     href={detail.valuation.sourceUrl}
                     target="_blank"
@@ -256,7 +257,7 @@ export default async function CompanyPage({
                 <h3 className="text-xs font-medium text-muted-foreground">
                   {t.allocation.detailsTitle}
                 </h3>
-                {alloc.sourceUrl && (
+                {alloc.sourceUrl && !isArgaamUrl(alloc.sourceUrl) && (
                   <a
                     href={alloc.sourceUrl}
                     target="_blank"

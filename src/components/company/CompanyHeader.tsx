@@ -4,6 +4,7 @@ import { CompanyLogo } from "@/components/shared/CompanyLogo";
 import { formatDate } from "@/lib/format";
 import { getI18n } from "@/lib/i18n/server";
 import { displayName } from "@/lib/i18n";
+import { isArgaamUrl } from "@/lib/source";
 
 export async function CompanyHeader({
   m,
@@ -45,14 +46,16 @@ export async function CompanyHeader({
         <span>
           {t.detail.listed} {formatDate(m.ipoDate)}
         </span>
-        <a
-          href={sourceUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-primary underline-offset-2 hover:underline"
-        >
-          {t.detail.source}
-        </a>
+        {!isArgaamUrl(sourceUrl) && (
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline-offset-2 hover:underline"
+          >
+            {t.detail.source}
+          </a>
+        )}
       </div>
     </header>
   );
