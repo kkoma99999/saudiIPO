@@ -21,9 +21,6 @@ export function SiteHeader() {
               Saudi <span className="text-primary">IPO</span> Tracker
             </span>
           </span>
-          <span className="hidden text-[0.68rem] uppercase tracking-[0.1em] text-muted-foreground sm:inline">
-            TADAWUL · TASI
-          </span>
         </Link>
         <div className="flex items-center gap-4">
           <MainNav />
